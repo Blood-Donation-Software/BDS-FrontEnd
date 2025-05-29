@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Sidebar from '../../../components/Sidebar';
 
 const StaffLayout = () => {
     const router = useRouter();
@@ -63,8 +64,11 @@ const StaffLayout = () => {
         }
     ];
 
-    const handleNavigation = (route) => {
-        router.push(route);
+    // User info for staff
+    const userInfo = {
+        name: 'Nguyen Thi B',
+        role: 'Staff Member',
+        initials: 'NT'
     };
 
     const getStatusBadge = (status) => {
@@ -80,52 +84,7 @@ const StaffLayout = () => {
     return (
         <div className="flex h-screen bg-gray-50 border border-gray-200">
             {/* Sidebar */}
-            <div className="w-64 bg-white border-r border-gray-200">
-                {/* Header */}
-                <div className="p-4 border-b border-gray-200">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <span className="text-gray-600 text-sm">BB</span>
-                        </div>
-                        <div>
-                            <h1 className="font-semibold text-gray-900">Blood Bank</h1>
-                            <p className="text-sm text-gray-500">Staff Portal</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Navigation */}
-                <nav className="mt-4">
-                    {sidebarItems.map((item) => (
-                        <button
-                            key={item.id}
-                            onClick={() => handleNavigation(item.route)}
-                            className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${activeTab === item.id
-                                ? 'bg-red-50 border-l-4 border-red-500 text-red-700'
-                                : 'text-gray-700'
-                                }`}
-                        >
-                            <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
-                                {item.icon}
-                            </div>
-                            <span className="font-medium">{item.label}</span>
-                        </button>
-                    ))}
-                </nav>
-
-                {/* User Profile at Bottom */}
-                <div className="absolute bottom-0 w-64 p-4 border-t border-gray-200 bg-white">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                            <span className="text-gray-600 text-xs">NT</span>
-                        </div>
-                        <div>
-                            <h3 className="text-sm font-medium text-gray-900">Nguyen Thi B</h3>
-                            <p className="text-xs text-gray-500">Staff Member</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Sidebar items={sidebarItems} userInfo={userInfo} portalType="Staff" initialTab={activeTab} />
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col">
