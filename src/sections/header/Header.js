@@ -49,7 +49,7 @@ export default function Header() {
             {/* Hiến máu dropdown */}
             <NavigationMenu>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-lg">Hiến máu</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className="text-lg font-semibold">Hiến máu</NavigationMenuTrigger>
                     <NavigationMenuContent className="min-w-[250px] px-4 py-2 bg-white rounded-md shadow-md space-y-2">
                         <NavigationMenuLink asChild>
                         <Link href="/emergency-cases" className="block px-2 py-1 hover:bg-gray-100 rounded">
