@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function CallToAction() {
   return (
-    <div className="relative w-screen h-[500px] flex items-center justify-center overflow-hidden">
+    <div className="relative w-full h-[500px] flex items-center justify-center overflow-hidden">
       {/* Background image with red overlay */}
       <Image
         src="/banner.jpg"

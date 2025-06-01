@@ -1,29 +1,41 @@
 'use client'
+import { register } from '@/apis/auth';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
-  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const handleRegister = async () => {
+    if(!name || !email || !password){
+      toast.warning("Fields must not be bank!");
+      return;
+    }
+    if (password !== confirmPassword){
+      toast.warning("Password does not match!");
+      return;
+    }
+    try{
+      setLoading(true);
+      const message = await register({email,password,name});
+      console.log(message);
+      if(message === "verification email sent"){
+        router.push(`/verify?email=${email}`);
+      }
+    } catch(error){
+      console.log(error);
+    }
+    setLoading(false);
+  }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-
-      {/* Phần overlay làm mờ nền nếu cần */}
-      {/* Phần banner bên trái */}
-      <div className="hidden md:flex w-1/2 justify-center items-center flex-col px-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">HighBridge</h1>
-          <h2 className="text-xl font-semibold text-red-600">Giọt máu nghĩa tình - Kết nối trái tim</h2>
-          <p className="mt-4 text-gray-700 max-w-md">
-            HighBridge là cầu nối giữa người hiến máu và những bệnh nhân đang cần giúp đỡ. Mỗi hành động của bạn có thể cứu sống một người khác.
-          </p>
-        </div>
-      </div>
-
-      {/* Phần form đăng ký bên phải */}
-      <div className="flex-1 flex items-center justify-center p-8">
+    <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6 text-center">Đăng Ký</h1>
 
@@ -32,8 +44,8 @@ export default function RegisterPage() {
             <input
               type="text"
               placeholder="VD: Nguyễn Văn A"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             />
           </div>
@@ -70,9 +82,17 @@ export default function RegisterPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             />
           </div>
-
-          <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 mb-6">
-            Tạo tài khoản
+          
+          <button
+            className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 mb-6 flex items-center justify-center"
+            onClick={handleRegister}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="animate-spin w-5 h-5" />
+            ) : (
+              'Tạo tài khoản'
+            )}
           </button>
 
           <div className="flex flex-col gap-3 mb-6">
@@ -93,6 +113,5 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
-    </div>
   );
 }
