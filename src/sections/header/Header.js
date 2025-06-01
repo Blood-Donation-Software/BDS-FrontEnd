@@ -76,7 +76,7 @@ export default function Header() {
 
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
-                <Link href="/check-compatibility" className="font-semibold px-4 py-2 rounded-md text-lg hover:bg-gray-100 transition-colors">
+                <Link href="/blood-compatibility" className="font-semibold px-4 py-2 rounded-md text-lg hover:bg-gray-100 transition-colors">
                   Tra cứu tương thích
                 </Link>
               </NavigationMenuLink>

@@ -1,25 +1,31 @@
 'use client'
-import { useState } from 'react';
+import { login, loginGoogle } from '@/apis/auth';
+import { setToken } from '@/utils/token-store';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const handleLoginEmail = async () => {
+    try {
+      const message = await login({email,password});
+      if(message && message === "Login successful"){
+        router.push("/");
+      }
+    } catch(error) {
+      toast.warning("Invalid Credentials")
+    }
+  }
 
+  const handleLoginGoogle = async () => {
+    loginGoogle();
+  }
+  
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Phần banner bên trái */}
-      <div className="hidden md:flex w-1/2 justify-center items-center flex-col px-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">HighBridge</h1>
-          <h2 className="text-xl font-semibold text-red-600">Giọt máu nghĩa tình - Kết nối trái tim</h2>
-          <p className="mt-4 text-gray-700 max-w-md">
-            HighBridge là cầu nối giữa người hiến máu và những bệnh nhân đang cần giúp đỡ. Mỗi hành động của bạn có thể cứu sống một người khác.
-          </p>
-        </div>
-      </div>
-
-      {/* Phần form đăng nhập bên phải */}
-      <div className="flex-1 flex items-center justify-center p-8">
+    <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-6 text-center">Đăng Nhập</h1>
 
@@ -45,7 +51,9 @@ export default function LoginPage() {
             />
           </div>
 
-          <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 mb-6">
+          <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 mb-6"
+                  onClick={handleLoginEmail}
+          >
             Đăng nhập
           </button>
 
@@ -56,7 +64,9 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-col gap-3 mb-6">
-            <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
+            <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50"
+                    onClick={handleLoginGoogle}
+            >
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               <span>Đăng nhập qua Google</span>
             </button>
@@ -73,6 +83,5 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-    </div>
   );
 }
