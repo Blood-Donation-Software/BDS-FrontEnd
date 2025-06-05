@@ -21,7 +21,7 @@ export default function LoginPage() {
   }
 
   const handleLoginGoogle = async () => {
-    loginGoogle();
+    await loginGoogle();
   }
   
   return (

@@ -5,12 +5,12 @@ import { createContext, useState, useEffect, useContext } from "react";
 
 export const UserContext = createContext(null);
 
-export default function AuthProvider({ children }) {
+export default function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     
-    const fetchUserProfile = () => {
+    const fetchUserProfile = async () => {
         try{
-            const data = axiosInstance.get(endpoint.user.profile)
+            const data = await axiosInstance.get(endpoint.user.profile)
             .then(res => res.data);
             setUser(data);
         }

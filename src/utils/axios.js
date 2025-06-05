@@ -35,6 +35,10 @@ export const endpoint = {
   },
   user: {
     profile: `${BASE_URL}/user/info`,
+  },
+  bloodRequest: {
+    getAll: `${BASE_URL}/blood-request/request-list`,
+    create: `${BASE_URL}/blood-request/create-request`
   }
 }
 
