@@ -47,9 +47,9 @@ export default function BloodRequest() {
             <TableHead>Name</TableHead>
             <TableHead>Blood Type</TableHead>
             <TableHead>Volume</TableHead>
-            <TableHead>Hospital</TableHead>
             <TableHead>Urgency</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Action</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,7 +58,6 @@ export default function BloodRequest() {
                 <TableCell>{request.name}</TableCell>
                 <TableCell>{request.bloodType}</TableCell>
                 <TableCell>{request.volume}</TableCell>
-                <TableCell>{request.hospital}</TableCell>
                 <TableCell>
                 <span className={getUrgencyBadge(request.urgency)}>
                     {request.urgency}
