@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import BlogDetail from '@/sections/blogdetail/blogdetail';
 import Header from '@/sections/header/Header';
