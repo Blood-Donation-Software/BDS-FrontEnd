@@ -1,6 +1,5 @@
 'use client'
 import { login, loginGoogle } from '@/apis/auth';
-import { setToken } from '@/utils/token-store';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';

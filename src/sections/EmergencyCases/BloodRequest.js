@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function BloodRequest() {
   const { bloodRequests } = useBloodRequests()
@@ -38,18 +40,23 @@ export default function BloodRequest() {
     return baseClasses
   }
 
+  const getStatus = (status) => {
+    if (status === 'PENDING') return 'Chờ xử lý'
+    else if (status === 'PROCESSING') return 'Đang xử lý'
+    else if (status === 'Failed') return 'Đã hủy'
+    else if (status === 'Fulfilled') return 'Hoàn thành'
+  }
   return (
     <main className="flex-1 p-6">
     <div className="bg-white rounded border border-gray-200 overflow-x-auto">
         <Table>
         <TableHeader>
             <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Blood Type</TableHead>
-            <TableHead>Volume</TableHead>
-            <TableHead>Urgency</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Action</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Blood Type</TableHead>
+              <TableHead>Urgency</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -57,16 +64,21 @@ export default function BloodRequest() {
             <TableRow key={request.id}>
                 <TableCell>{request.name}</TableCell>
                 <TableCell>{request.bloodType}</TableCell>
-                <TableCell>{request.volume}</TableCell>
                 <TableCell>
                 <span className={getUrgencyBadge(request.urgency)}>
-                    {request.urgency}
+                  {request.urgency}
                 </span>
                 </TableCell>
                 <TableCell>
-                <span className={getStatusBadge(request.status)}>
-                    {request.status}
+                <span>
+                  {getStatus(request.status)}
                 </span>
+                </TableCell>
+                <TableCell>
+                  <Link href={`/staffs/emergency-request/${request.id}/confirmation`}>
+                    <Button variant="outline">Xử lý yêu cầu</Button>
+                  </Link>
+                    <Button variant="outline">Hủy yêu cầu</Button>
                 </TableCell>
             </TableRow>
             ))}

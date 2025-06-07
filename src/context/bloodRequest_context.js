@@ -1,13 +1,22 @@
 'use client';
 
-import { getAllRequest } from "@/apis/bloodrequest";
+import { getAllRequest, getRequestById } from "@/apis/bloodrequest";
+import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const BloodRequestContext = createContext(null);
 
 export default function BloodRequestProvider({ children }) {
     const [bloodRequests, setBloodRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [bloodRequest, setBloodRequest] = useState(null);
+    const [id, setId] = useState(null);
+    const findBloodRequest = async (id) => {
+        setIsLoading(() => true);
+        setId(id);
+        setBloodRequest(await getRequestById(id));
+        setIsLoading(() => false);
+    }
 
     const fetchBloodRequests = async () => {
         try {
@@ -16,7 +25,7 @@ export default function BloodRequestProvider({ children }) {
         } catch (error) {
             console.error("Failed to fetch blood requests", error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -25,7 +34,7 @@ export default function BloodRequestProvider({ children }) {
     }, []);
 
     return (
-        <BloodRequestContext.Provider value={{ bloodRequests, loading }}>
+        <BloodRequestContext.Provider value={{ bloodRequests, isLoading, findBloodRequest, bloodRequest, id }}>
             {children}
         </BloodRequestContext.Provider>
     );

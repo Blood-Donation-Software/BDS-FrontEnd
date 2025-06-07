@@ -9,3 +9,8 @@ export const createRequest = (bloodRequest) => {
     return axiosInstance.post(endpoint.bloodRequest.create, bloodRequest)
     .then(res=>res.data);
 }
+
+export const getRequestById = (id) => {
+    return axiosInstance.get(`${endpoint.bloodRequest.getById}/${id}`)
+    .then(res => res.data);
+}
