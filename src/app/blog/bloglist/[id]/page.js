@@ -17,18 +17,18 @@ const params = useParams();
   if (isLoading) {
     return (
       <>
-        <Header />
+        
         <div className="text-center py-12">Đang tải...</div>
-        <Footer />
+        
       </>
     );
   }
 
   return (
     <>
-      <Header />
+      
       <BlogDetail postId={params.id.toString()} />
-      <Footer />
+      
     </>
   );
 }

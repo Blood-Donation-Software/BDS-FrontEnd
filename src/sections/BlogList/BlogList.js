@@ -159,7 +159,7 @@ export default function BlogList() {
   );
 
    const BlogCard = ({ post }) => (
-    <Link href={`/bloglist/${post.id}`} className="h-full block">
+    <Link href={`/blog/bloglist/${post.id}`} className="h-full block">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
         <div className="relative h-48 w-full shrink-0">
           <Image
