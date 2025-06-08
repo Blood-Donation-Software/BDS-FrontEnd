@@ -43,64 +43,64 @@ function DonationEvents() {
             id: 1,
             name: "Ngày hội hiến máu nhân đạo",
             location: "Trung tâm Y tế Quận 1, TP.HCM",
-            startDate: "15/01/2024",
-            endDate: "15/01/2024",
+            date: "15/01/2024",
+            shift: "8:00 - 17:00"
         },
         {
             id: 2,
             name: "Chương trình hiến máu cứu người",
             location: "Đại học Bách Khoa TP.HCM",
-            startDate: "20/02/2024",
-            endDate: "21/02/2024",
+            date: "20/02/2024",
+            shift: "8:00 - 11:00"
         },
         {
             id: 3,
             name: "Hiến máu tình nguyện vì cộng đồng",
             location: "Trung tâm Hiến máu Nhân đạo TP.HCM",
-            startDate: "10/04/2024",
-            endDate: "15/05/2024",
+            date: "10/04/2024",
+            shift: "14:00 - 17:00"
         },
         {
             id: 4,
             name: "Ngày hội hiến máu sinh viên",
             location: "Đại học Khoa học Tự nhiên",
-            startDate: "10/06/2024",
-            endDate: "15/06/2024",
+            date: "10/06/2024",
+            shift: "8:00 - 11:00"
         },
         {
             id: 5,
             name: "Hiến máu nhân đạo cứu trẻ hoàn cảnh khó khăn",
             location: "Bệnh viện Nhi Đồng 1",
-            startDate: "10/07/2024",
-            endDate: "15/07/2024",
+            date: "10/07/2024",
+            shift: "8:00 - 17:00"
         },
         {
             id: 6,
             name: "Tuần lễ hiến máu toàn quốc",
             location: "Viện Huyết học & Truyền máu TW",
-            startDate: "01/08/2024",
-            endDate: "07/08/2024",
+            date: "01/08/2024",
+            shift: "14:00 - 17:00"
         },
         {
             id: 7,
             name: "Hiến máu tình nguyện mùa hè",
             location: "Đại học Sư Phạm TP.HCM",
-            startDate: "15/08/2024",
-            endDate: "16/08/2024",
+            date: "15/08/2024",
+            shift: "8:00 - 11:00"
         },
         {
             id: 8,
             name: "Chương trình hiến máu khu vực miền Nam",
             location: "Nhà Văn hóa Thanh niên",
-            startDate: "22/09/2024",
-            endDate: "25/09/2024",
+            date: "22/09/2024",
+            shift: "8:00 - 17:00"
         },
         {
             id: 9,
             name: "Hiến máu nhân đạo mùa lễ hội",
             location: "Công viên Lê Văn Tám",
-            startDate: "10/10/2024",
-            endDate: "12/10/2024",
+            date: "10/10/2024",
+            shift: "14:00 - 17:00"
         }
     ]
 
@@ -112,35 +112,27 @@ function DonationEvents() {
 
     // Check if an event falls within the selected date range
     const isEventInDateRange = (event) => {
-        try {
-            if (!dateRange || (!dateRange.from && !dateRange.to)) return true
+        if (!dateRange || (!dateRange.from && !dateRange.to)) return true
 
-            const eventStartDate = parseDate(event.startDate)
-            const eventEndDate = parseDate(event.endDate)
+        const eventDate = parseDate(event.date)
 
-            // Safety check for invalid dates
-            if (!eventStartDate || !eventEndDate) return true
+        // Safety check for invalid dates
+        if (!eventDate) return true
 
-            if (dateRange.from && dateRange.to) {
-                // Check if event dates overlap with the selected range
-                return (
-                    (isAfter(eventStartDate, dateRange.from) || isEqual(eventStartDate, dateRange.from)) &&
-                    (isBefore(eventStartDate, dateRange.to) || isEqual(eventStartDate, dateRange.to)) ||
-                    (isAfter(eventEndDate, dateRange.from) || isEqual(eventEndDate, dateRange.from)) &&
-                    (isBefore(eventEndDate, dateRange.to) || isEqual(eventEndDate, dateRange.to)) ||
-                    (isBefore(eventStartDate, dateRange.from) && isAfter(eventEndDate, dateRange.to))
-                )
-            } else if (dateRange.from) {
-                // Only start date selected
-                return isAfter(eventEndDate, dateRange.from) || isEqual(eventEndDate, dateRange.from)
-            } else if (dateRange.to) {
-                // Only end date selected
-                return isBefore(eventStartDate, dateRange.to) || isEqual(eventStartDate, dateRange.to)
-            }
-        } catch (e) {
-            console.log("Date filtering error:", e)
-            return true
+        if (dateRange.from && dateRange.to) {
+            // Check if event date is within the selected range
+            return (
+                (isAfter(eventDate, dateRange.from) || isEqual(eventDate, dateRange.from)) &&
+                (isBefore(eventDate, dateRange.to) || isEqual(eventDate, dateRange.to))
+            )
+        } else if (dateRange.from) {
+            // Only start date selected
+            return isAfter(eventDate, dateRange.from) || isEqual(eventDate, dateRange.from)
+        } else if (dateRange.to) {
+            // Only end date selected
+            return isBefore(eventDate, dateRange.to) || isEqual(eventDate, dateRange.to)
         }
+
         return true
     }
 
@@ -156,9 +148,15 @@ function DonationEvents() {
         if (sortOrder === 'default') {
             return a.id - b.id
         } else if (sortOrder === 'asc') {
-            return a.name.localeCompare(b.name)
+            // Sort by date ascending (older to newer)
+            const dateA = parseDate(a.date)
+            const dateB = parseDate(b.date)
+            return dateA - dateB
         } else if (sortOrder === 'desc') {
-            return b.name.localeCompare(a.name)
+            // Sort by date descending (newer to older)
+            const dateA = parseDate(a.date)
+            const dateB = parseDate(b.date)
+            return dateB - dateA
         }
         return 0
     })
@@ -270,12 +268,12 @@ function DonationEvents() {
                         size="icon"
                         onClick={toggleSortOrder}
                         className="shrink-0"
-                        title="Sắp xếp theo tên"
+                        title="Sắp xếp theo ngày"
                     >
                         <ArrowUpDown className="h-4 w-4" />
                         {sortOrder !== 'default' && (
                             <span className="sr-only">
-                                {sortOrder === 'asc' ? 'Sắp xếp từ A-Z' : 'Sắp xếp từ Z-A'}
+                                {sortOrder === 'asc' ? 'Sắp xếp từ cũ đến mới' : 'Sắp xếp từ mới đến cũ'}
                             </span>
                         )}
                     </Button>
@@ -287,7 +285,7 @@ function DonationEvents() {
                     <p className="text-gray-500">Không tìm thấy sự kiện nào phù hợp với tiêu chí tìm kiếm.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {currentItems.map((event) => (
                         <Card key={event.id} className="shadow-sm border border-gray-200">
                             <CardHeader className="pb-2">
@@ -302,7 +300,14 @@ function DonationEvents() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <CalendarIcon className="h-4 w-4 text-gray-500" />
-                                    <p className="text-sm text-gray-700">{event.startDate} - {event.endDate}</p>
+                                    <p className="text-sm text-gray-700">{event.date}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <svg className="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <p className="text-sm text-gray-700">{event.shift}</p>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex gap-2 pt-2">
