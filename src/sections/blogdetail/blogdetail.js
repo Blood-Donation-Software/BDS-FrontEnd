@@ -121,7 +121,7 @@ export default function BlogDetail({ postId }) {
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
           <Link 
-            href="/bloglist" 
+            href="/blog" 
             className="text-gray-600 hover:text-gray-800"
           >
             ← Quay lại
@@ -173,7 +173,7 @@ export default function BlogDetail({ postId }) {
         <div className="grid gap-6 md:grid-cols-2">
           {relatedPosts.map((related) => (
             <Link 
-              href={`/bloglist/${related.id}`} 
+              href={`/blog/${related.id}`} 
               key={related.id}
               className="group"
             >
