@@ -5,7 +5,6 @@ import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard } from "
 import BloodRequestProvider from "@/context/bloodRequest_context"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
 import { usePathname } from "next/navigation"
-import BloodStockProvider from "@/context/bloodStock_context"
 
 
 export default function Layout({ children }) {
@@ -50,12 +49,10 @@ export default function Layout({ children }) {
     <>
       <AppSidebar items={items}/>
       <BloodRequestProvider>
-        <BloodStockProvider>
           <main className="w-full">
             <AuthenticatedHeader items={items}/>
             {children}
           </main>
-        </BloodStockProvider>
       </BloodRequestProvider>
     </>
   )

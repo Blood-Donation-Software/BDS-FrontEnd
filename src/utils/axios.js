@@ -46,7 +46,8 @@ export const endpoint = {
     checkStock: `${BASE_URL}/medical-facility-stock/check-stock`,
     addToStock: `${BASE_URL}/medical-facility-stock/add-from-event`,
     withdraw: `${BASE_URL}/medical-facility-stock/withdrawn`,
-    getStock: `${BASE_URL}/medical-facility-stock/get-stock`
+    getStock: `${BASE_URL}/medical-facility-stock/get-stock`,
+    getStockByType: `${BASE_URL}/medical-facility-stock/get-stock-by-type`,
   }
 }
 
