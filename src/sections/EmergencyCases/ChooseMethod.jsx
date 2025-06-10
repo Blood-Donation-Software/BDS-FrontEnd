@@ -47,7 +47,9 @@ export default function ChooseMethodProcess() {
                     </div>
 
                     {/* Option 2: Contact donors */}
-                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => router.push(`/staffs/emergency-request/${id}/view-donors`)}
+                    >
                     <CardHeader className="pb-3">
                         <CardTitle className="flex items-center">
                         <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>

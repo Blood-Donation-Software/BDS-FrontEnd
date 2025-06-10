@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useBloodRequests } from "@/context/bloodRequest_context";
 import { useEffect } from "react";
+import { withdrawStock } from "@/apis/bloodStock";
 
 export default function TakeBloodFromStock() {
   const router = useRouter();
@@ -16,18 +17,13 @@ export default function TakeBloodFromStock() {
     isLoading,
   } = useBloodRequests();
 
-  useEffect(() => {
-    if (bloodRequest) {
-      findRequiredBlood();
-    }
-  }, [bloodRequest]);
-
   const handleBack = () => {
     router.back();
   };
 
-  const handleConfirm = () => {
-    router.push('/next-step'); // Replace with your actual next step route
+  const handleConfirm = async () => {
+    await  withdrawStock(bloodRequest);
+    router.push("/staffs/emergency-request")
   };
 
   const renderComponentInfo = () => {

@@ -43,8 +43,8 @@ export default function BloodRequest() {
   const getStatus = (status) => {
     if (status === 'PENDING') return 'Chờ xử lý'
     else if (status === 'PROCESSING') return 'Đang xử lý'
-    else if (status === 'Failed') return 'Đã hủy'
-    else if (status === 'Fulfilled') return 'Hoàn thành'
+    else if (status === 'FAILED') return 'Đã hủy'
+    else if (status === 'FULFILLED') return 'Hoàn thành'
   }
   return (
     <main className="flex-1 p-6">
