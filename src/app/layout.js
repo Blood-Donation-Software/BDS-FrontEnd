@@ -2,6 +2,7 @@ import Header from "@/sections/header/Header";
 import "./globals.css";
 import Footer from "@/sections/Footer/Footer";
 import { Toaster } from "sonner";
+import DonationEventProvider from "@/context/donationEvent_context";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,8 +13,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-            {children}
-            <Toaster position="top-center" richColors/>
+        <DonationEventProvider>
+          {children}
+          <Toaster position="top-center" richColors/>
+        </DonationEventProvider>
       </body>
     </html>
   );

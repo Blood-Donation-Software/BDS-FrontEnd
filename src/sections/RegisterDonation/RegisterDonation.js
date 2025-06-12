@@ -1,10 +1,22 @@
 'use client';
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useDonationEvents } from "@/context/donationEvent_context"
 
-function RegisterDonation() {
+function RegisterDonation({ params }) {
+    const { selectedEvent, selectedShift, selectEventById, selectShift } = useDonationEvents();
     const [answers, setAnswers] = useState({})
     const [otherText, setOtherText] = useState({})
+
+    useEffect(() => {
+        if (params?.id && !selectedEvent) {
+            selectEventById(params.id);
+        }
+    }, [params?.id, selectedEvent, selectEventById]);
+
+    const handleShiftSelect = (shift) => {
+        selectShift(shift);
+    };
 
     const handleAnswerChange = (questionId, value) => {
         setAnswers(prev => ({
@@ -21,14 +33,62 @@ function RegisterDonation() {
     }
 
     const handleSubmit = () => {
-        console.log('Submitted:', answers, otherText)
+        const submissionData = {
+            event: selectedEvent,
+            selectedShift: selectedShift,
+            healthSurvey: answers,
+            otherDetails: otherText
+        };
+        console.log('Submitted:', submissionData);
+        
+        // Validation for all-day events
+        if (selectedEvent?.isAllDay && !selectedShift) {
+            alert('Vui lòng chọn ca làm việc trước khi tiếp tục!');
+            return;
+        }
+        
         // Add your submission logic here
+        alert('Đã hoàn thành đăng ký thành công!');
     }
 
     return (
         <div className="health-survey-container">
             <div className="survey-header">
                 <h1>Khảo sát sức khỏe trước khi hiến máu</h1>
+                {selectedEvent && (
+                    <div className="event-info">
+                        <h2>{selectedEvent.name}</h2>
+                        <p><strong>Địa điểm:</strong> {selectedEvent.location}</p>
+                        <p><strong>Ngày:</strong> {selectedEvent.date}</p>
+                        
+                        {selectedEvent.isAllDay ? (
+                            <div className="shift-selection">
+                                <p><strong>Chọn ca làm việc:</strong></p>
+                                <div className="shift-options">
+                                    {selectedEvent.shifts.map((shift, index) => (
+                                        <label key={index} className="shift-option">
+                                            <input
+                                                type="radio"
+                                                name="shift"
+                                                value={shift}
+                                                checked={selectedShift === shift}
+                                                onChange={() => handleShiftSelect(shift)}
+                                            />
+                                            <span>{shift}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                                {selectedShift && (
+                                    <p className="selected-shift">
+                                        <strong>Ca đã chọn:</strong> {selectedShift}
+                                    </p>
+                                )}
+                            </div>
+                        ) : (
+                            <p><strong>Giờ:</strong> {selectedEvent.shifts[0]}</p>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="survey-content">
@@ -79,6 +139,7 @@ function RegisterDonation() {
                                 placeholder="Vui lòng ghi rõ bệnh lý..."
                                 value={otherText[2] || ''}
                                 onChange={(e) => handleOtherTextChange(2, e.target.value)}
+                                required
                             />
                         )}
                         <label className="radio-option">
@@ -486,6 +547,86 @@ function RegisterDonation() {
           font-size: 26px;
           margin-bottom: 10px;
           font-weight: bold;
+        }
+        
+        .event-info {
+          background-color: #f8f9fa;
+          padding: 20px;
+          border-radius: 8px;
+          margin-top: 20px;
+          border: 1px solid #e9ecef;
+        }
+        
+        .event-info h2 {
+          color: #d32f2f;
+          font-size: 20px;
+          margin-bottom: 10px;
+          font-weight: bold;
+        }
+        
+        .event-info p {
+          margin: 5px 0;
+          color: #495057;
+          font-size: 15px;
+        }
+        
+        .shift-selection {
+          margin-top: 15px;
+          padding-top: 15px;
+          border-top: 1px solid #dee2e6;
+        }
+        
+        .shift-options {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin: 10px 0;
+        }
+        
+        .shift-option {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px;
+          border: 2px solid #e9ecef;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          background-color: #ffffff;
+        }
+        
+        .shift-option:hover {
+          border-color: #007bff;
+          background-color: #f8f9fa;
+        }
+        
+        .shift-option input[type="radio"] {
+          margin: 0;
+          width: 16px;
+          height: 16px;
+        }
+        
+        .shift-option input[type="radio"]:checked + span {
+          font-weight: bold;
+          color: #007bff;
+        }
+        
+        .shift-option input[type="radio"]:checked {
+          accent-color: #007bff;
+        }
+        
+        .shift-option:has(input[type="radio"]:checked) {
+          border-color: #007bff;
+          background-color: #e7f3ff;
+        }
+        
+        .selected-shift {
+          margin-top: 10px;
+          padding: 10px;
+          background-color: #d4edda;
+          border: 1px solid #c3e6cb;
+          border-radius: 4px;
+          color: #155724;
         }
         
         .survey-content {
