@@ -28,8 +28,12 @@ import {
     PopoverTrigger,
 } from "../../components/ui/popover"
 import { format, isAfter, isBefore, isEqual, parse } from "date-fns"
+import { useDonationEvents } from "@/context/donationEvent_context"
+import { useRouter } from "next/navigation"
 
 function DonationEvents() {
+    const { events, selectEventById } = useDonationEvents();
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
     const [sortOrder, setSortOrder] = useState('default') // 'default', 'asc', 'desc'
@@ -37,72 +41,13 @@ function DonationEvents() {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const itemsPerPage = 6
 
-    // Mock data for donation events
-    const events = [
-        {
-            id: 1,
-            name: "Ngày hội hiến máu nhân đạo",
-            location: "Trung tâm Y tế Quận 1, TP.HCM",
-            date: "15/01/2024",
-            shift: "8:00 - 17:00"
-        },
-        {
-            id: 2,
-            name: "Chương trình hiến máu cứu người",
-            location: "Đại học Bách Khoa TP.HCM",
-            date: "20/02/2024",
-            shift: "8:00 - 11:00"
-        },
-        {
-            id: 3,
-            name: "Hiến máu tình nguyện vì cộng đồng",
-            location: "Trung tâm Hiến máu Nhân đạo TP.HCM",
-            date: "10/04/2024",
-            shift: "14:00 - 17:00"
-        },
-        {
-            id: 4,
-            name: "Ngày hội hiến máu sinh viên",
-            location: "Đại học Khoa học Tự nhiên",
-            date: "10/06/2024",
-            shift: "8:00 - 11:00"
-        },
-        {
-            id: 5,
-            name: "Hiến máu nhân đạo cứu trẻ hoàn cảnh khó khăn",
-            location: "Bệnh viện Nhi Đồng 1",
-            date: "10/07/2024",
-            shift: "8:00 - 17:00"
-        },
-        {
-            id: 6,
-            name: "Tuần lễ hiến máu toàn quốc",
-            location: "Viện Huyết học & Truyền máu TW",
-            date: "01/08/2024",
-            shift: "14:00 - 17:00"
-        },
-        {
-            id: 7,
-            name: "Hiến máu tình nguyện mùa hè",
-            location: "Đại học Sư Phạm TP.HCM",
-            date: "15/08/2024",
-            shift: "8:00 - 11:00"
-        },
-        {
-            id: 8,
-            name: "Chương trình hiến máu khu vực miền Nam",
-            location: "Nhà Văn hóa Thanh niên",
-            date: "22/09/2024",
-            shift: "8:00 - 17:00"
-        },
-        {
-            id: 9,
-            name: "Hiến máu nhân đạo mùa lễ hội",
-            location: "Công viên Lê Văn Tám",
-            date: "10/10/2024",
-            shift: "14:00 - 17:00"
-        }
-    ]
+    // Handle registration button click
+    const handleRegisterClick = (event) => {
+        selectEventById(event.id);
+        router.push(`/donation-registration/${event.id}`);
+    };
+
+    // Remove the local events array since we're using context now
 
     // Parse date string from DD/MM/YYYY format to Date object
     const parseDate = (dateString) => {
@@ -307,13 +252,15 @@ function DonationEvents() {
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <polyline points="12 6 12 12 16 14"></polyline>
                                     </svg>
-                                    <p className="text-sm text-gray-700">{event.shift}</p>
+                                    <p className="text-sm text-gray-700">
+                                        {event.isAllDay ? 'Cả ngày' : event.shifts[0]}
+                                    </p>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex gap-2 pt-2">
                                 <Button
                                     className="ml-auto w-auto bg-red-500 hover:bg-red-600 text-sm px-4"
-                                    onClick={() => window.location.href = `/donation-registration/${event.id}`}
+                                    onClick={() => handleRegisterClick(event)}
                                 >
                                     Đăng ký
                                 </Button>
