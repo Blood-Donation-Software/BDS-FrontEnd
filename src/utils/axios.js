@@ -1,6 +1,5 @@
 'use client'
 
-import { getRequestById } from '@/apis/bloodrequest';
 import { BASE_URL } from '@/global-config';
 import axios from 'axios';
 
@@ -36,18 +35,6 @@ export const endpoint = {
   },
   user: {
     profile: `${BASE_URL}/user/info`,
-  },
-  bloodRequest: {
-    getAll: `${BASE_URL}/blood-request/request-list`,
-    create: `${BASE_URL}/blood-request/create-request`,
-    getById: `${BASE_URL}/blood-request`
-  },
-  bloodStock: {
-    checkStock: `${BASE_URL}/medical-facility-stock/check-stock`,
-    addToStock: `${BASE_URL}/medical-facility-stock/add-from-event`,
-    withdraw: `${BASE_URL}/medical-facility-stock/withdrawn`,
-    getStock: `${BASE_URL}/medical-facility-stock/get-stock`,
-    getStockByType: `${BASE_URL}/medical-facility-stock/get-stock-by-type`,
   }
 }
 
