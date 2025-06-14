@@ -1,18 +1,23 @@
 'use client';
 
-import { createRequest } from "@/apis/bloodrequest";
+import { createRequest, searchPatient } from "@/apis/bloodrequest";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { AlertTriangle, CheckCircle, Clock, Hand, Search, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { debounce } from "lodash";
 
 export default function CreateBloodRequest() {
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const [bloodRequest, setBloodRequests] = useState({
     name: "",
@@ -20,9 +25,14 @@ export default function CreateBloodRequest() {
     address: "",
     personalId: "",
     endTime: "",
+    createdTime: new Date().toISOString(),
     urgency: "",
     bloodType: "",
-    componentRequests: []
+    componentRequests: [],
+    pregnant: false,
+    servedCountry: false,
+    disabled: false,
+    automation: true 
   });
 
   const bloodComponents = [
@@ -95,6 +105,13 @@ export default function CreateBloodRequest() {
     }));
   };
 
+  const handleProcessingTypeChange = (checked) => {
+    setBloodRequests(prev => ({
+      ...prev,
+      automation: checked ? true : false
+    }));
+  };
+
   const handleBloodRequest = (e) => {
     const { name, value } = e.target;
     setBloodRequests((prev) => ({
@@ -117,6 +134,54 @@ export default function CreateBloodRequest() {
     }));
   };
 
+  const handleSpecialCondition = (condition) => {
+    setBloodRequests((prev) => ({
+      ...prev,
+ 
+        [condition]: !prev[condition]
+    }))
+  };
+
+  const handleSearch = debounce(async (query) => {
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    // setIsSearching(true);
+    // try {
+    //   const results = await searchPatient(query);
+    //   setSearchResults(results);
+    // } catch (error) {
+    //   toast.error("Failed to search patients");
+    //   console.error(error);
+    // } finally {
+    //   setIsSearching(false);
+    // }
+  }, 500);
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    handleSearch(query);
+  };
+
+  const fillPatientData = (patient) => {
+    setBloodRequests({
+      ...bloodRequest,
+      name: patient.name || "",
+      phone: patient.phone || "",
+      address: patient.address || "",
+      personalId: patient.personalId || "",
+      bloodType: patient.bloodType || "",
+      pregnant: patient.pregnant || false,
+      servedCountry: patient.servedCountry || false,
+      disabled: patient.disabled || false
+    });
+    setSearchResults([]);
+    setSearchQuery("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -128,11 +193,77 @@ export default function CreateBloodRequest() {
       toast.error("Submission failed");
     }
   };
-
   return (
     <div className="bg-white w-full">
       <CardContent className="p-8">
         <form className="space-y-8" onSubmit={handleSubmit}>
+          {/* Processing Type Toggle */}
+          {/* <div className="flex items-center space-x-4 p-4 border rounded-lg bg-gray-50">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                  id="processingType"
+                  checked={bloodRequest.automation}
+                  onCheckedChange={handleProcessingTypeChange}
+                />
+              <Label htmlFor="processingType" className="font-medium flex items-center">
+                {bloodRequest.automation ? (
+                  <>
+                    <Zap className="h-4 w-4 mr-2 text-yellow-500" />
+                    Automatic Processing
+                  </>
+                ) : (
+                  <>
+                    <Hand className="h-4 w-4 mr-2 text-blue-500" />
+                    Manual Processing
+                  </>
+                )}
+              </Label>
+            </div>
+            <p className="text-sm text-gray-500">
+              {bloodRequest.automation 
+                ? "System will automatically process this request based on availability"
+                : "Request will require manual review and processing"}
+            </p>
+          </div> */}
+
+          {/* Patient Search */}
+          <div className="space-y-4">
+            <Label className="font-semibold text-gray-800 text-sm">Find Existing Patient</Label>
+            <div className="relative">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder="Search by ID, name or phone..."
+                  className="pl-10 pr-10"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {isSearching && (
+                  <div className="absolute right-3 top-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-400"></div>
+                  </div>
+                )}
+              </div>
+              
+              {searchResults.length > 0 && (
+                <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
+                  {searchResults.map((patient) => (
+                    <div
+                      key={patient.id}
+                      className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                      onClick={() => fillPatientData(patient)}
+                    >
+                      <div className="font-medium">{patient.name}</div>
+                      <div className="text-sm text-gray-600">
+                        ID: {patient.personalId} | Phone: {patient.phone}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Basic Patient Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
@@ -148,6 +279,7 @@ export default function CreateBloodRequest() {
                   placeholder={`Enter ${label.toLowerCase()}`}
                   className="h-[52px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                   onChange={handleBloodRequest}
+                  value={bloodRequest[field]}
                 />
               </div>
             ))}
@@ -159,6 +291,37 @@ export default function CreateBloodRequest() {
                 className="h-[52px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 onChange={handleDate}
               />
+            </div>
+          </div>
+
+          {/* Special Conditions */}
+          <div className="space-y-4">
+            <Label className="font-semibold text-gray-800 text-sm">Special Conditions</Label>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="pregnant" 
+                  checked={bloodRequest.pregnant}
+                  onCheckedChange={() => handleSpecialCondition('pregnant')}
+                />
+                <Label htmlFor="pregnant" className="font-normal">Pregnant Patient</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="servedCountry" 
+                  checked={bloodRequest.servedCountry}
+                  onCheckedChange={() => handleSpecialCondition('servedCountry')}
+                />
+                <Label htmlFor="servedCountry" className="font-normal">Served in Military</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="disabled" 
+                  checked={bloodRequest.disabled}
+                  onCheckedChange={() => handleSpecialCondition('disabled')}
+                />
+                <Label htmlFor="disabled" className="font-normal">Person with Disability</Label>
+              </div>
             </div>
           </div>
 
@@ -266,8 +429,15 @@ export default function CreateBloodRequest() {
 
           {/* Submit */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">Cancel</Button>
-            <Button type="submit" className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg">Submit Blood Request</Button>
+            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg"
+            >
+              {bloodRequest.automation ? "Submit & Auto-Process" : "Submit for Manual Review"}
+            </Button>
           </div>
         </form>
       </CardContent>
