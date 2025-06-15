@@ -75,6 +75,6 @@ jobs:
           ssh hoangworthy@pog.threemusketeer.click << EOF
             set -e
             cd /home/hoangworthy/Documents/bds-frontend
-            echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose pull bds-backend
+            echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose pull bds-frontend
             echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose up -d
           EOF
