@@ -20,7 +20,7 @@ export default function ProcessLayout({ children }) {
     if (params?.id) {
       findBloodRequest(params.id);
     }
-  }, [params?.id]);
+  }, [params?.id, findBloodRequest]);
 
 
   return (
