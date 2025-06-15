@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Users, Shield, Zap } from 'lucide-react';
+import Image from 'next/image';
 
 const AboutUs = () => {
     const coreValues = [
@@ -52,7 +53,7 @@ const AboutUs = () => {
                         </CardContent>
                     </Card> */}
 
-                    <img
+                    <Image
                         src="/aboutus2.webp"
                         alt="Vision"
                         className="w-full h-full object-cover rounded-lg"
@@ -105,7 +106,7 @@ const AboutUs = () => {
                             />
                         </CardContent>
                     </Card> */}
-                    <img
+                    <Image
                         src="/aboutus1.jpg"
                         alt="Mission"
                         className="w-full h-full object-cover rounded-lg"
