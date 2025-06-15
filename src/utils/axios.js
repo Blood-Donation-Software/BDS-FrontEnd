@@ -18,7 +18,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        // window.location.href = '/login';
       }
     }
     return Promise.reject(
@@ -29,25 +29,28 @@ axiosInstance.interceptors.response.use(
 
 export const endpoint = {
   auth: {
-    login: `${BASE_URL}/user/login`,
-    register: `${BASE_URL}/user/register`,
-    verify: `${BASE_URL}/user/verify`,
+    login: `${BASE_URL}/api/auth/login`,
+    register: `${BASE_URL}/api/auth/register`,
+    verify: `${BASE_URL}/api/auth/verify`,
     loginGoogle: `${BASE_URL}/oauth2/authorization/google`
   },
   user: {
-    profile: `${BASE_URL}/user/info`,
+    profile: `${BASE_URL}/api/user/profile`,
+    getAllProfile: `${BASE_URL}/api/user/profile/list-profile`
   },
   bloodRequest: {
-    getAll: `${BASE_URL}/blood-request/request-list`,
-    create: `${BASE_URL}/blood-request/create-request`,
-    getById: `${BASE_URL}/blood-request`
+    getAll: `${BASE_URL}/api/blood-request/request-list`,
+    create: `${BASE_URL}/api/blood-request/create-request`,
+    getById: `${BASE_URL}/api/blood-request`,
+    addDonor: `${BASE_URL}/api/blood-request/add-donor`,
+    fulfillRequest: `${BASE_URL}/api/blood-request/fulfill-request`
   },
   bloodStock: {
-    checkStock: `${BASE_URL}/medical-facility-stock/check-stock`,
-    addToStock: `${BASE_URL}/medical-facility-stock/add-from-event`,
-    withdraw: `${BASE_URL}/medical-facility-stock/withdrawn`,
-    getStock: `${BASE_URL}/medical-facility-stock/get-stock`,
-    getStockByType: `${BASE_URL}/medical-facility-stock/get-stock-by-type`,
+    checkStock: `${BASE_URL}/api/medical-facility-stock/check-stock`,
+    addToStock: `${BASE_URL}/api/medical-facility-stock/add-from-event`,
+    withdraw: `${BASE_URL}/api/medical-facility-stock/withdrawn`,
+    getStock: `${BASE_URL}/api/medical-facility-stock/get-stock`,
+    getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
   }
 }
 

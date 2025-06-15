@@ -10,13 +10,14 @@ export const BloodRequestContext = createContext(null);
 export default function BloodRequestProvider({ children }) {
     const [bloodRequests, setBloodRequests] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [bloodRequest, setBloodRequest] = useState(null);
+    const [bloodRequest, setBloodRequest] = useState();
     const [id, setId] = useState(null);
     const [requiredBlood, setRequiredBlood] = useState();
     const findBloodRequest = async (id) => {
         setIsLoading(() => true);
         setId(id);
-        setBloodRequest(await getRequestById(id));
+        const data = await getRequestById(id)
+        setBloodRequest(data);
         setIsLoading(() => false);
     }
 
@@ -38,16 +39,18 @@ export default function BloodRequestProvider({ children }) {
         } catch (error) {
             console.error("Failed to fetch blood requests", error);
         } finally {
-            setIsLoading(false);
+            setIsLoading(() => false);
         }
     };
 
     useEffect(() => {
+        setIsLoading(() => true);
         fetchBloodRequests();
+        setIsLoading(() => false)
     }, []);
 
     return (
-        <BloodRequestContext.Provider value={{ bloodRequests, isLoading, findBloodRequest, bloodRequest, id, findRequiredBlood, requiredBlood }}>
+        <BloodRequestContext.Provider value={{ bloodRequests, isLoading, findBloodRequest, bloodRequest, id, findRequiredBlood, requiredBlood, setBloodRequest }}>
             {children}
         </BloodRequestContext.Provider>
     );
