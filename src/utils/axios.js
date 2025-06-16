@@ -51,6 +51,11 @@ export const endpoint = {
     withdraw: `${BASE_URL}/api/medical-facility-stock/withdrawn`,
     getStock: `${BASE_URL}/api/medical-facility-stock/get-stock`,
     getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
+  },
+  bloodDonation: {
+    createEvent: `${BASE_URL}/api/donation-event/create`,
+    listEvent: `${BASE_URL}/api/donation-event/list-donation`,
+    approveEvent: (eventId) => `${BASE_URL}/api/donation-event/list-donation`,
   }
 }
 
