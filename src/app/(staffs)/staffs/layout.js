@@ -40,7 +40,7 @@ export default function Layout({ children }) {
     nav: `${pathname}/create-request`
   },
   {
-    title: "Blood Stock",
+    title: "Blood Stock Management",
     url: "/staffs/blood-stock",
     icon: Warehouse,
   },

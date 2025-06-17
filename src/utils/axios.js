@@ -1,8 +1,10 @@
 'use client'
 
 import { getRequestById } from '@/apis/bloodrequest';
+import { getAllAccount } from '@/apis/user';
 import { BASE_URL } from '@/global-config';
 import axios from 'axios';
+import { add } from 'lodash';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -36,7 +38,8 @@ export const endpoint = {
   },
   user: {
     profile: `${BASE_URL}/api/user/profile`,
-    getAllProfile: `${BASE_URL}/api/user/profile/list-profile`
+    getAllProfile: `${BASE_URL}/api/user/profile/list-profile`,
+    getAllAccount: `${BASE_URL}/api/user/account/list-account`,
   },
   bloodRequest: {
     getAll: `${BASE_URL}/api/blood-request/request-list`,
@@ -51,6 +54,7 @@ export const endpoint = {
     withdraw: `${BASE_URL}/api/medical-facility-stock/withdrawn`,
     getStock: `${BASE_URL}/api/medical-facility-stock/get-stock`,
     getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
+    addStock: `${BASE_URL}/api/medical-facility-stock/add-blood-into-stock`,
   },
   bloodDonation: {
     createEvent: `${BASE_URL}/api/donation-event/create`,
