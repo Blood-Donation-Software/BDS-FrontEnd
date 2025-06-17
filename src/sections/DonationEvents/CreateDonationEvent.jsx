@@ -1,59 +1,89 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { CalendarIcon, Clock, MapPin, Droplet, Plus, Trash2 } from 'lucide-react'
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Textarea } from "@/components/ui/textarea"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 
+// Import or fetch your Vietnam provinces data
+import vietnamProvinces from '@/data/vietnam-provinces.json'
+import { createEvent } from '@/apis/bloodDonation'
 
 export default function CreateDonationEventPage() {
   const router = useRouter()
   const [date, setDate] = useState()
   const [event, setEvent] = useState({
     name: '',
-    location: '',
-    description: '',
+    location: 'City Hospital',
+    address: '123 Street',
+    ward: '',
+    district: '',
+    city: '',
     donationDate: '',
-    donationType: 'WHOLE_BLOOD',
+    totalMemberCount: 6,
     status: 'PENDING',
-    totalMemberCount: 50,
+    donationType: 'WHOLE_BLOOD',
     timeSlots: [
-      { startTime: '09:00', endTime: '10:00', maxCapacity: 10 },
-      { startTime: '10:00', endTime: '11:00', maxCapacity: 15 }
+      { startTime: '09:00', endTime: '10:00', maxCapacity: 4 },
+      { startTime: '10:00', endTime: '11:00', maxCapacity: 2 }
     ]
   })
 
+  // State for available districts and wards based on selection
+  const [availableDistricts, setAvailableDistricts] = useState([])
+  const [availableWards, setAvailableWards] = useState([])
+
+  // Initialize cities from the JSON data
+  const cities = vietnamProvinces.map(province => ({
+    value: province.name,
+    label: province.name
+  }))
+
+  // Update districts when city changes
+  useEffect(() => {
+    if (event.city) {
+      const selectedCity = vietnamProvinces.find(p => p.name === event.city)
+      if (selectedCity) {
+        const districts = selectedCity.districts.map(district => ({
+          value: district.name,
+          label: district.name
+        }))
+        setAvailableDistricts(districts)
+        setEvent(prev => ({ ...prev, district: '', ward: '' }))
+      }
+    }
+  }, [event.city])
+
+  // Update wards when district changes
+  useEffect(() => {
+    if (event.city && event.district) {
+      const selectedCity = vietnamProvinces.find(p => p.name === event.city)
+      if (selectedCity) {
+        const selectedDistrict = selectedCity.districts.find(d => d.name === event.district)
+        if (selectedDistrict) {
+          const wards = selectedDistrict.wards.map(ward => ({
+            value: ward.name,
+            label: ward.name
+          }))
+          setAvailableWards(wards)
+          setEvent(prev => ({ ...prev, ward: '' }))
+        }
+      }
+    }
+  }, [event.district, event.city])
+
   const donationTypes = [
     { value: 'WHOLE_BLOOD', label: 'Whole Blood' },
-    { value: 'PLASMA', label: 'Plasma' },
     { value: 'PLATELETS', label: 'Platelets' },
-    { value: 'DOUBLE_RED_CELLS', label: 'Double Red Cells' }
   ]
 
   const handleDateSelect = (selectedDate) => {
@@ -76,7 +106,7 @@ export default function CreateDonationEventPage() {
         { 
           startTime: newEndTime, 
           endTime: add30Minutes(newEndTime), 
-          maxCapacity: 10 
+          maxCapacity: 2
         }
       ]
     })
@@ -100,7 +130,7 @@ export default function CreateDonationEventPage() {
     newTimeSlots[index] = { ...newTimeSlots[index], [field]: value }
     
     if (field === 'startTime') {
-      const [hours, minutes] = (value).split(':').map(Number)
+      const [hours, minutes] = value.split(':').map(Number)
       const endTime = new Date()
       endTime.setHours(hours, minutes + 60, 0)
       newTimeSlots[index].endTime = format(endTime, 'HH:mm')
@@ -111,64 +141,51 @@ export default function CreateDonationEventPage() {
 
   const validateForm = () => {
     if (!event.name) {
-      toast({
-        title: "Error",
-        description: "Event name is required",
-        variant: "destructive",
-      })
+      toast.error("Event name is required")
       return false
     }
     if (!event.location) {
-      toast({
-        title: "Error",
-        description: "Location is required",
-        variant: "destructive",
-      })
+      toast.error("Location is required")
       return false
     }
     if (!event.donationDate) {
-      toast({
-        title: "Error",
-        description: "Date is required",
-        variant: "destructive",
-      })
+      toast.error("Date is required")
       return false
     }
     if (event.timeSlots.length === 0) {
-      toast({
-        title: "Error",
-        description: "At least one time slot is required",
-        variant: "destructive",
-      })
+      toast.error("At least one time slot is required")
       return false
     }
     return true
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     if (!validateForm()) return
     
-    const newEvent = {
-      ...event,
-      registeredMemberCount: 0,
-      accountId: 1, // From auth context
-      createdDate: format(new Date(), 'yyyy-MM-dd'),
-      timeSlotDtos: event.timeSlots.map((slot, index) => ({
-        ...slot,
-        currentRegistrations: 0,
-        id: index + 1,
-        eventId: Date.now() // Temporary ID
+    const requestData = {
+      name: event.name,
+      location: event.location,
+      address: event.address,
+      ward: event.ward,
+      district: event.district,
+      city: event.city,
+      donationDate: event.donationDate,
+      totalMemberCount: event.totalMemberCount,
+      status: 'PENDING',
+      donationType: event.donationType,
+      timeSlotDtos: event.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        maxCapacity: slot.maxCapacity
       }))
     }
-    
-    console.log('Submitting event:', newEvent)
-    toast({
-      title: "Success",
-      description: "Blood donation event created successfully!",
-    })
-    // router.push('/blood-donation-events')
+
+    const data = await createEvent(requestData);
+
+    toast.success("Blood donation event created successfully!")
+    router.push(`/blood-donation-events/${data.id}`)
   }
 
   return (
@@ -191,7 +208,7 @@ export default function CreateDonationEventPage() {
                 <Label htmlFor="name">Event Name *</Label>
                 <Input
                   id="name"
-                  placeholder="Community Blood Drive"
+                  placeholder="Blood Donation Drive 2024"
                   value={event.name}
                   onChange={(e) => setEvent({...event, name: e.target.value})}
                 />
@@ -218,37 +235,106 @@ export default function CreateDonationEventPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location *</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="location"
-                    placeholder="Downtown Health Center, 123 Wellness St."
-                    className="pl-10"
-                    value={event.location}
-                    onChange={(e) => setEvent({...event, location: e.target.value})}
-                  />
-                </div>
+                <Input
+                  id="location"
+                  value={event.location}
+                  onChange={(e) => setEvent({...event, location: e.target.value})}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={event.address}
+                  onChange={(e) => setEvent({...event, address: e.target.value})}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>City *</Label>
+                <Select
+                  value={event.city}
+                  onValueChange={(value) => setEvent({...event, city: value})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city) => (
+                      <SelectItem key={city.value} value={city.value}>
+                        {city.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>District *</Label>
+                <Select
+                  value={event.district}
+                  onValueChange={(value) => setEvent({...event, district: value})}
+                  disabled={!event.city}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={event.city ? "Select district" : "Select city first"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableDistricts.map((district) => (
+                      <SelectItem key={district.value} value={district.value}>
+                        {district.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Ward *</Label>
+                <Select
+                  value={event.ward}
+                  onValueChange={(value) => setEvent({...event, ward: value})}
+                  disabled={!event.district}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={event.district ? "Select ward" : "Select district first"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableWards.map((ward) => (
+                      <SelectItem key={ward.value} value={ward.value}>
+                        {ward.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             
-            <div className='space-y-2'>
-              <label>Donation Date *</label>
-                    <div className='w-[50%]'>
-                        <Popover>
-                        <PopoverTrigger asChild>
-                            <div className="flex items-center gap-2">
-                            <CalendarIcon className="text-muted-foreground" />
-                            <Input
-                                readOnly
-                                className="cursor-pointer"
-                            />
-                            </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="" align="start">
-                            <Calendar/>
-                        </PopoverContent>
-                        </Popover>
-                    </div>
-                </div>
+              <div className="space-y-2">
+                <Label>Donation Date *</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={handleDateSelect}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="totalMemberCount">Total Capacity</Label>
@@ -260,19 +346,6 @@ export default function CreateDonationEventPage() {
                   onChange={(e) => setEvent({
                     ...event, 
                     totalMemberCount: parseInt(e.target.value) || 0
-                  })}
-                />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Event details and instructions for donors..."
-                  value={event.description}
-                  onChange={(e) => setEvent({
-                    ...event, 
-                    description: e.target.value
                   })}
                 />
               </div>
@@ -320,7 +393,6 @@ export default function CreateDonationEventPage() {
                           type="time"
                           className="pl-10"
                           value={slot.endTime}
-                          disabled
                         />
                       </div>
                     </div>

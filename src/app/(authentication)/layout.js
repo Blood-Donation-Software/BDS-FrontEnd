@@ -6,10 +6,10 @@ export default function AuthenticationLayout({children}) {
             {/* Phần banner bên trái */}
             <div className="hidden md:flex w-1/2 justify-center items-center flex-col px-8">
                 <div className="text-center">
-                <h1 className="text-3xl font-bold mb-4">HighBridge</h1>
+                <h1 className="text-3xl font-bold mb-4">HopeWell</h1>
                 <h2 className="text-xl font-semibold text-red-600">Giọt máu nghĩa tình - Kết nối trái tim</h2>
                 <p className="mt-4 text-gray-700 max-w-md">
-                    HighBridge là cầu nối giữa người hiến máu và những bệnh nhân đang cần giúp đỡ. Mỗi hành động của bạn có thể cứu sống một người khác.
+                    HopeWell là cầu nối giữa người hiến máu và những bệnh nhân đang cần giúp đỡ. Mỗi hành động của bạn có thể cứu sống một người khác.
                 </p>
                 </div>
             </div>
