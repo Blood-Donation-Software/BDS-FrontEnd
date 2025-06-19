@@ -31,6 +31,7 @@ export default function LoginPage() {
 
   const handleLoginGoogle = async () => {
     await loginGoogle();
+    await loginGoogle();
   }
 
   useEffect(() => {

@@ -15,6 +15,7 @@ export const checkStockByType = (componentTypes, bloodType) => {
 
 export const withdrawStock = (bloodRequest) => {
     return axiosInstance.post(endpoint.bloodStock.withdraw,bloodRequest)
+<<<<<<< HEAD
 }
 
 export const addToStock = (bloodUnit) => {
@@ -25,4 +26,6 @@ export const addToStock = (bloodUnit) => {
 export const deleteStock = (id) => {
     return axiosInstance.delete(`${endpoint.bloodStock.deleteStock(id)}`)
         .then(res => res.data);
+=======
+>>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
 }

@@ -1,223 +1,125 @@
-'use client'
-import { useState, useEffect } from "react"
-import { getAllAccount } from "@/apis/user"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Plus,
-  Pencil,
-  Trash2,
-  Power,
-} from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function AccountManagement() {
-  const [accounts, setAccounts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [roleFilter, setRoleFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' })
-  const [pagination, setPagination] = useState({
-    pageNumber: 0,
-    pageSize: 10,
-    totalElements: 0,
-    totalPages: 1
-  })
-
-  const getStatusVariant = (status) => {
-    switch (status) {
-      case 'ENABLE': return 'default'
-      case 'DISABLE': return 'destructive'
-      default: return 'outline'
-    }
-  }
-
-  const fetchUsers = async (page = 0, size = 10, sort = 'id,asc') => {
-    setLoading(true)
-    try {
-      const data = await getAllAccount(page, size, sort)
-      setAccounts(data.content)
-      setPagination({
-        pageNumber: data.number,
-        pageSize: data.size,
-        totalElements: data.totalElements,
-        totalPages: data.totalPages
-      })
-    } catch (error) {
-      console.error("Failed to fetch accounts:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSort = (key) => {
-    let direction = 'asc'
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc'
-    }
-    setSortConfig({ key, direction })
-    fetchUsers(pagination.pageNumber, pagination.pageSize, `${key},${direction}`)
-  }
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < pagination.totalPages) {
-      fetchUsers(newPage)
-    }
-  }
-
-  const filteredAccounts = accounts.filter(account => {
-    const matchesSearch = account.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesRole = !roleFilter || account.role === roleFilter
-    const matchesStatus = !statusFilter || account.status === statusFilter
-    return matchesSearch && matchesRole && matchesStatus
-  })
-
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  return (
-    <div className="p-6 space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search accounts..."
-            className="pl-9"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Roles" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="*">All Roles</SelectItem>
-              <SelectItem value="ADMIN">Admin</SelectItem>
-              <SelectItem value="MEMBER">Member</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="*">All Status</SelectItem>
-              <SelectItem value="ENABLE">Enable</SelectItem>
-              <SelectItem value="DISABLE">Disable</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add User
-          </Button>
-        </div>
-      </div>
-
-            <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {/* ... (table headers remain the same) */}
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              Array(5).fill(0).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-full" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-4 w-full" /></TableCell>
-                </TableRow>
-              ))
-            ) : filteredAccounts.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No results
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredAccounts.map((account) => (
-                <TableRow key={account.id}>
-                  <TableCell className="font-medium">{account.id}</TableCell>
-                  <TableCell>{account.email}</TableCell>
-                  <TableCell>{account.role}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(account.status)}>
-                      {account.status || 'N/A'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="icon">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      {account.status === 'ENABLE' ? (
-                        <Button variant="outline" size="icon" className="text-destructive hover:text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      ) : (
-                        <Button variant="outline" size="icon" className="text-green-600 hover:text-green-700">
-                          <Power className="h-4 w-4" />
-                        </Button>
-                      )}
+    const accounts = [
+        { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'Donor', status: 'Active', lastLogin: '2 hours ago' },
+        { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Staff', status: 'Active', lastLogin: 'Yesterday' },
+        { id: 3, name: 'Mike Wilson', email: 'mike.w@example.com', role: 'Donor', status: 'Inactive', lastLogin: '3 weeks ago' },
+        { id: 4, name: 'Lisa Brown', email: 'lisa.brown@example.com', role: 'Staff', status: 'Active', lastLogin: '1 day ago' },
+        { id: 5, name: 'David Lee', email: 'david.lee@example.com', role: 'Admin', status: 'Active', lastLogin: '5 hours ago' },
+    ];
+    const getStatusBadge = (status) => {
+        const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
+        if (status === 'Active') {
+            return `${baseClasses} bg-green-100 text-green-800`;
+        } else if (status === 'Inactive') {
+            return `${baseClasses} bg-gray-100 text-gray-800`;
+        }
+        return baseClasses;
+    };
+    return(
+        <div className="p-5">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+                <div className="relative flex-1 max-w-md">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                    <input
+                        type="text"
+                        className="py-2 pl-10 pr-4 w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+                        placeholder="Search accounts..."
+                    />
+                </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-muted-foreground">
-          Page {pagination.pageNumber + 1} of {pagination.totalPages}
+                <div className="flex items-center space-x-2">
+                    <select className="py-2 px-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
+                        <option value="">All Roles</option>
+                        <option value="donor">Donor</option>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                    </select>
+
+                    <select className="py-2 px-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+
+                    <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md flex items-center space-x-2 transition-colors">
+                        <span className="text-lg">+</span>
+                        <span>Add User</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Accounts Table */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                {/* Table Header */}
+                <div className="px-6 py-4 border-b border-gray-200">
+                    <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-500">
+                        <div className="col-span-3">Name</div>
+                        <div className="col-span-3">Email</div>
+                        <div className="col-span-2">Role</div>
+                        <div className="col-span-2">Status</div>
+                        <div className="col-span-2">Actions</div>
+                    </div>
+                </div>
+
+                {/* Table Body */}
+                <div className="divide-y divide-gray-200">
+                    {accounts.map((account) => (
+                        <div key={account.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                            <div className="grid grid-cols-12 gap-4 items-center">
+                                {/* Name */}
+                                <div className="col-span-3">
+                                    <div className="flex items-center">
+                                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                                            <span className="text-gray-600 text-xs">{account.name.split(' ').map(n => n[0]).join('')}</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-medium text-gray-900">{account.name}</h3>
+                                            <p className="text-xs text-gray-500">Last login: {account.lastLogin}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Email */}
+                                <div className="col-span-3">
+                                    <span className="text-sm text-gray-900">{account.email}</span>
+                                </div>
+
+                                {/* Role */}
+                                <div className="col-span-2">
+                                    <span className="text-sm text-gray-900">{account.role}</span>
+                                </div>
+
+                                {/* Status */}
+                                <div className="col-span-2">
+                                    <span className={getStatusBadge(account.status)}>
+                                        {account.status}
+                                    </span>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="col-span-2 flex items-center space-x-2">
+                                    <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+                                    <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.pageNumber - 1)}
-            disabled={pagination.pageNumber === 0}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.pageNumber + 1)}
-            disabled={pagination.pageNumber === pagination.totalPages - 1}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
+    );
 }

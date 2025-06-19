@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client'
 import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
@@ -311,215 +312,32 @@ export default function BloodStockManagement() {
                 value={filters.search}
                 onChange={(e) => setFilters({...filters, search: e.target.value})}
               />
+=======
+import { SidebarTrigger } from "@/components/ui/sidebar";
+
+export default function StockDashboard() {
+    const bloodStockData = [
+        { type: 'aPos', label: 'A+', units: 150 },
+        { type: 'aNeg', label: 'A-', units: 80 },
+        { type: 'bPos', label: 'B+', units: 120 },
+        { type: 'bNeg', label: 'B-', units: 60 },
+        { type: 'oPos', label: 'O+', units: 200 },
+        { type: 'oNeg', label: 'O-', units: 100 },
+        { type: 'abPos', label: 'AB+', units: 90 },
+        { type: 'abNeg', label: 'AB-', units: 40 }
+    ];
+    return(
+        <main className="flex-1 p-6">
+            <div className="grid grid-cols-4 gap-6">
+                {bloodStockData.map((item) => (
+                    <div key={item.type} className="bg-white p-6 rounded border border-gray-200">
+                        <div className="mb-2 text-sm text-gray-600">{item.label}</div>
+                        <div className="text-3xl font-bold text-red-500">{item.units}</div>
+                        <div className="text-xs text-gray-500">units available</div>
+                    </div>
+                ))}
+>>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
             </div>
-             <div className='flex space-x-5'>
-                <Select
-                value={filters.bloodType}
-                onValueChange={(value) => setFilters({...filters, bloodType: value})}
-                >
-                <SelectTrigger>
-                    <SelectValue placeholder="Blood Type" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="*">All Blood Types</SelectItem>
-                    {bloodTypeOptions.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                    </SelectItem>
-                    ))}
-                </SelectContent>
-                </Select>
-
-                <Select
-                value={filters.componentType}
-                onValueChange={(value) => setFilters({...filters, componentType: value})}
-                >
-                <SelectTrigger>
-                    <SelectValue placeholder="Component Type" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="*">All Components</SelectItem>
-                    {componentTypeOptions.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                    </SelectItem>
-                    ))}
-                </SelectContent>
-                </Select>
-
-                <Select
-                value={filters.expiryStatus}
-                onValueChange={(value) => setFilters({...filters, expiryStatus: value})}
-                >
-                <SelectTrigger>
-                    <SelectValue placeholder="Expiry Status" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="*">All Statuses</SelectItem>
-                    <SelectItem value="good">Good (&gt;30 days)</SelectItem>
-                    <SelectItem value="warning">Warning (8-30 days)</SelectItem>
-                    <SelectItem value="critical">Critical (≤7 days)</SelectItem>
-                    <SelectItem value="expired">Expired</SelectItem>
-                </SelectContent>
-                </Select>
-             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Blood Stock Table */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle>Blood Inventory</CardTitle>
-            <div className="text-sm text-muted-foreground">
-              Showing {filteredStock.length} of {bloodStock.length} units
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table className="px-0">
-            <TableHeader className="px-0">
-              <TableRow>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort('bloodType')}
-                    className="px-0"
-                  >
-                    Blood Type
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>Component</TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort('volume')}
-                    className="px-0 py-0"
-                  >
-                    Volume (ml)
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleSort('expiryDate')}
-                    className="px-0"
-                  >
-                    Expiry Date
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStock.length > 0 ? (
-                filteredStock.map((unit) => {
-                  const expiryStatus = getExpiryStatus(unit.expiryDate)
-                  return (
-                    <TableRow key={unit.id}>
-                      <TableCell>
-                        <Badge variant="outline">
-                          {bloodTypeMap[unit.bloodType]}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{componentTypeMap[unit.componentType]}</TableCell>
-                      <TableCell>{unit.volume.toFixed(1)}</TableCell>
-                      <TableCell>{format(new Date(unit.expiryDate), 'MMM dd, yyyy')}</TableCell>
-                      <TableCell>
-                        <Badge variant={expiryStatus.variant}>
-                          {expiryStatus.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem 
-                              className="text-destructive"
-                              onClick={() => handleDelete(unit.id)}
-                            >
-                              Discard
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    No blood units found matching your filters
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Units</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{bloodStock.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Volume</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {bloodStock.reduce((sum, unit) => sum + unit.volume, 0).toFixed(1)} ml
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Expiring Soon</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {bloodStock.filter(unit => {
-                const diffDays = Math.ceil(
-                  (new Date(unit.expiryDate) - new Date()) / (1000 * 60 * 60 * 24)
-                )
-                return diffDays <= 7 && diffDays >= 0
-              }).length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Expired</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {bloodStock.filter(unit => {
-                return new Date(unit.expiryDate) < new Date()
-              }).length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  )
+        </main>
+    );
 }

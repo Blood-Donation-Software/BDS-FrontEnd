@@ -1,9 +1,13 @@
 'use client'
 
 import { getRequestById } from '@/apis/bloodrequest';
+<<<<<<< HEAD
 import { deleteStock } from '@/apis/bloodStock';
 import { getAllAccount, updateProfile } from '@/apis/user';
 import { AVATAR_URL, BASE_URL } from '@/global-config';
+=======
+import { BASE_URL } from '@/global-config';
+>>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
 import axios from 'axios';
 import { add } from 'lodash';
 
@@ -38,6 +42,7 @@ export const endpoint = {
     loginGoogle: `${BASE_URL}/oauth2/authorization/google`
   },  
   user: {
+<<<<<<< HEAD
     updateProfile: `${BASE_URL}/api/user/profile/update`,
     getProfile: `${BASE_URL}/api/user/profile`,
     getAllProfile: `${BASE_URL}/api/user/profile/list-profile`,
@@ -45,15 +50,17 @@ export const endpoint = {
     genAvatar: (name,rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
+=======
+    profile: `${BASE_URL}/user/info`,
+>>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
   },
   bloodRequest: {
-    getAll: `${BASE_URL}/api/blood-request/request-list`,
-    create: `${BASE_URL}/api/blood-request/create-request`,
-    getById: `${BASE_URL}/api/blood-request`,
-    addDonor: `${BASE_URL}/api/blood-request/add-donor`,
-    fulfillRequest: `${BASE_URL}/api/blood-request/fulfill-request`
+    getAll: `${BASE_URL}/blood-request/request-list`,
+    create: `${BASE_URL}/blood-request/create-request`,
+    getById: `${BASE_URL}/blood-request`
   },
   bloodStock: {
+<<<<<<< HEAD
     checkStock: `${BASE_URL}/api/medical-facility-stock/check-stock`,
     addToStock: `${BASE_URL}/api/medical-facility-stock/add-from-event`,
     withdraw: `${BASE_URL}/api/medical-facility-stock/withdrawn`,
@@ -85,6 +92,16 @@ export const endpoint = {
     checkEmail: `${BASE_URL}/api/organizers/check-email`,
     getTotalCount: `${BASE_URL}/api/organizers/stats/count`,
     getActiveCount: `${BASE_URL}/api/organizers/stats/active-count`,
+=======
+    checkStock: `${BASE_URL}/medical-facility-stock/check-stock`,
+    addToStock: `${BASE_URL}/medical-facility-stock/add-from-event`,
+    withdraw: `${BASE_URL}/medical-facility-stock/withdrawn`,
+    getStock: `${BASE_URL}/medical-facility-stock/get-stock`,
+    getStockByType: `${BASE_URL}/medical-facility-stock/get-stock-by-type`,
+  },
+  donationEvent: {
+    getAll: `${BASE_URL}/api/donation-event/list-donation`,
+>>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
   }
 }
 
