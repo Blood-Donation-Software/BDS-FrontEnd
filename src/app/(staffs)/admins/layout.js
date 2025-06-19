@@ -3,6 +3,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/sidebar/sidebar"
 import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard } from "lucide-react"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
+import { ROLES, RouteProtection } from "@/components/auth"
 
 
 export default function Layout({ children }) {
@@ -33,7 +34,9 @@ export default function Layout({ children }) {
        <AppSidebar items={items}/>
        <main className="w-full">
         <AuthenticatedHeader items={items}/>
-         {children}
+          <RouteProtection requiredRole={ROLES.ADMIN} hideOnNoAccess={true} redirectTo="/">
+            {children}
+          </RouteProtection>
        </main>
     </>
   )

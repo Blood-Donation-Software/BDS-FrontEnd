@@ -1,10 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { CalendarIcon, Clock, Droplet, Plus, Trash2, Loader2, Building2, User, MapPin, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,14 +17,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 import vietnamProvinces from '@/data/vietnam-provinces.json'
-import { createEvent } from '@/apis/bloodDonation'
+import { getEventById, updateEventRequest } from '@/apis/bloodDonation'
 import { getActiveOrganizers, createOrganizer, checkEmailExists } from '@/apis/organizer'
 
 // Sort provinces alphabetically
 const sortedProvinces = vietnamProvinces.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }))
+
 // Zod validation schemas
 const timeSlotSchema = z.object({
   startTime: z.string()
@@ -64,7 +66,8 @@ const donationEventSchema = z.object({
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return date >= today
-  }, "Donation date must be today or in the future"), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
+  }, "Donation date must be today or in the future"),
+  donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS', 'RED_BLOOD_CELL'], {
     required_error: "Please select a donation type"
   }),
   totalMemberCount: z.number()
@@ -132,15 +135,21 @@ const donationTypes = [
   { value: 'WHOLE_BLOOD', label: 'Whole Blood' },
   { value: 'PLASMA', label: 'Plasma' },
   { value: 'PLATELETS', label: 'Platelets' },
+  { value: 'RED_BLOOD_CELL', label: 'Red Blood Cell' },
 ]
 
-export default function CreateDonationEventPage() {
+export default function EditDonationEventPage() {
   const router = useRouter()
+  const params = useParams()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isCreatingOrganizer, setIsCreatingOrganizer] = useState(false)
   const [organizers, setOrganizers] = useState([])
   const [activeTab, setActiveTab] = useState("event")
   const [organizersLoading, setOrganizersLoading] = useState(true)
+  const [eventLoading, setEventLoading] = useState(true)
+  const [eventData, setEventData] = useState(null)
+  const [error, setError] = useState(null)
+
   // Event form
   const eventForm = useForm({
     resolver: zodResolver(donationEventSchema),
@@ -151,12 +160,12 @@ export default function CreateDonationEventPage() {
       city: '',
       district: '',
       ward: '',
-      donationDate: undefined, donationType: 'WHOLE_BLOOD',
+      donationDate: undefined,
+      donationType: 'WHOLE_BLOOD',
       totalMemberCount: 0,
       organizerId: '',
       timeSlots: [
-        { startTime: '09:00', endTime: '10:00', maxCapacity: 25 },
-        { startTime: '10:00', endTime: '11:00', maxCapacity: 25 }
+        { startTime: '09:00', endTime: '10:00', maxCapacity: 25 }
       ]
     }
   })
@@ -178,33 +187,124 @@ export default function CreateDonationEventPage() {
     }
   })
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: eventForm.control,
     name: "timeSlots"
   })
 
   const watchedCity = eventForm.watch("city")
   const watchedDistrict = eventForm.watch("district")
-
   const watchedOrganizerCity = organizerForm.watch("city")
   const watchedOrganizerDistrict = organizerForm.watch("district")
   const watchedTimeSlots = eventForm.watch("timeSlots")
 
-  // Load organizers on component mount
-  useEffect(() => {
-    loadOrganizers()
-  }, [])
-
-  const loadOrganizers = async () => {
+  // Helper function to parse different date formats
+  const parseDate = (dateString) => {
+    if (!dateString) return new Date()
+    
+    // Try ISO format first (YYYY-MM-DD or full ISO string)
+    if (dateString.includes('T') || dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      try {
+        return parseISO(dateString)
+      } catch (error) {
+        console.warn('Failed to parse ISO date:', dateString)
+      }
+    }
+    
+    // Try DD-MM-YYYY format
+    if (dateString.match(/^\d{2}-\d{2}-\d{4}$/)) {
+      try {
+        const [day, month, year] = dateString.split('-')
+        return new Date(year, month - 1, day) // month is 0-indexed
+      } catch (error) {
+        console.warn('Failed to parse DD-MM-YYYY date:', dateString)
+      }
+    }
+    
+    // Try MM/DD/YYYY format
+    if (dateString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+      try {
+        return new Date(dateString)
+      } catch (error) {
+        console.warn('Failed to parse MM/DD/YYYY date:', dateString)
+      }
+    }
+    
+    // Fallback to Date constructor
     try {
-      setOrganizersLoading(true)
-      const data = await getActiveOrganizers()
-      setOrganizers(data)
+      return new Date(dateString)
     } catch (error) {
-      console.error('Error loading organizers:', error)
-      toast.error('Failed to load organizers')
-    } finally {
-      setOrganizersLoading(false)
+      console.error('Failed to parse date:', dateString, error)
+      return new Date() // Return current date as fallback
+    }
+  }
+
+  // Load event data and organizers on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!params?.id) {
+        setError('Event ID not found')
+        setEventLoading(false)
+        return
+      }
+
+      try {
+        // Load event data and organizers in parallel
+        const [eventResponse, organizersResponse] = await Promise.all([
+          getEventById(params.id),
+          getActiveOrganizers()
+        ])
+
+        setEventData(eventResponse)
+        setOrganizers(organizersResponse)
+
+        // Populate the form with event data
+        populateForm(eventResponse)
+        
+      } catch (error) {
+        console.error('Error loading data:', error)
+        setError('Failed to load event details')
+        toast.error('Failed to load event details')
+      } finally {
+        setEventLoading(false)
+        setOrganizersLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [params?.id])
+
+  // Function to populate form with existing event data
+  const populateForm = (event) => {
+    // Basic event information
+    eventForm.setValue("name", event.name || '')
+    eventForm.setValue("hospital", event.hospital || '')
+    eventForm.setValue("address", event.address || '')
+    eventForm.setValue("city", event.city || '')
+    eventForm.setValue("district", event.district || '')
+    eventForm.setValue("ward", event.ward || '')
+    eventForm.setValue("donationType", event.donationType || 'WHOLE_BLOOD')
+    eventForm.setValue("totalMemberCount", event.totalMemberCount || 0)
+    eventForm.setValue("organizerId", event.organizerId ? event.organizerId.toString() : '')
+
+    // Parse and set donation date
+    if (event.donationDate) {
+      try {
+        const parsedDate = parseDate(event.donationDate)
+        eventForm.setValue("donationDate", parsedDate)
+      } catch (error) {
+        console.error('Error parsing donation date:', error)
+      }
+    }
+
+    // Set time slots
+    if (event.timeSlotDtos && event.timeSlotDtos.length > 0) {
+      const timeSlots = event.timeSlotDtos.map(slot => ({
+        startTime: slot.startTime || '09:00',
+        endTime: slot.endTime || '10:00',
+        maxCapacity: slot.maxCapacity || 25
+      }))
+      replace(timeSlots)
     }
   }
 
@@ -258,7 +358,7 @@ export default function CreateDonationEventPage() {
     organizerForm.setValue("ward", "")
   }, [watchedOrganizerDistrict, organizerForm])
   // Calculate total capacity from time slots
-  useEffect(() => {
+    useEffect(() => {
     const totalCapacity = watchedTimeSlots?.reduce((sum, slot) => {
       return sum + (slot.maxCapacity || 0);
     }, 0) || 0;
@@ -268,6 +368,7 @@ export default function CreateDonationEventPage() {
     eventForm,
     ...(watchedTimeSlots?.map(slot => slot.maxCapacity) || [])
   ]);
+
   const handleAddTimeSlot = () => {
     const lastSlot = fields[fields.length - 1]
     let newStartTime = lastSlot ? lastSlot.endTime : '09:00'
@@ -285,6 +386,7 @@ export default function CreateDonationEventPage() {
       maxCapacity: 25
     })
   }
+
   const addMinutes = (time, minutes) => {
     const [hours, mins] = time.split(':').map(Number)
     const date = new Date()
@@ -316,7 +418,26 @@ export default function CreateDonationEventPage() {
     }
     return conflicts
   }
+
+  const loadOrganizers = async () => {
+    try {
+      setOrganizersLoading(true)
+      const data = await getActiveOrganizers()
+      setOrganizers(data)
+    } catch (error) {
+      console.error('Error loading organizers:', error)
+      toast.error('Failed to load organizers')
+    } finally {
+      setOrganizersLoading(false)
+    }
+  }
+
   const onSubmitEvent = async (data) => {
+    if (!params?.id) {
+      toast.error('Event ID not found')
+      return
+    }
+
     setIsSubmitting(true)
     try {
       // Get the selected organizer details if organizerId is provided
@@ -360,11 +481,11 @@ export default function CreateDonationEventPage() {
         }))
       }
 
-      const response = await createEvent(eventData)
-      toast.success("Blood donation event request submitted successfully!")
-      router.push(`/blood-donation-events/my-requests`)
+      const response = await updateEventRequest(params.id, eventData)
+      toast.success("Blood donation event updated successfully!")
+      router.push(`/staffs/donation-event/${params.id}`)
     } catch (error) {
-      console.error('Error creating event:', error)
+      console.error('Error updating event:', error)
 
       // Handle different types of API errors
       if (error.response) {
@@ -384,11 +505,14 @@ export default function CreateDonationEventPage() {
             }
             break
           case 401:
-            toast.error("You are not authorized to create events")
+            toast.error("You are not authorized to update events")
             router.push('/login')
             break
           case 403:
-            toast.error("You don't have permission to create events")
+            toast.error("You don't have permission to update events")
+            break
+          case 404:
+            toast.error("Event not found")
             break
           case 409:
             toast.error("An event with this name already exists")
@@ -400,7 +524,7 @@ export default function CreateDonationEventPage() {
             toast.error("Server error. Please try again later")
             break
           default:
-            toast.error(`Error: ${errorData.message || 'Failed to create event'}`)
+            toast.error(`Error: ${errorData.message || 'Failed to update event'}`)
         }
       } else if (error.request) {
         toast.error("Network error. Please check your connection")
@@ -471,20 +595,61 @@ export default function CreateDonationEventPage() {
       setIsCreatingOrganizer(false)
     }
   }
+
+  // Loading state
+  if (eventLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span>Loading event details...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error || !eventData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Alert variant="destructive">
+          <AlertDescription>
+            {error || 'Event not found'}
+          </AlertDescription>
+        </Alert>
+        <Button 
+          variant="outline" 
+          className="mt-4"
+          onClick={() => router.push('/staffs/donation-event')}
+        >
+          Back to Events
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Create New Blood Donation Event Request</h1>
-          <p className="text-muted-foreground mt-2">Submit a request for a new blood donation campaign</p>
+          <h1 className="text-3xl font-bold">Edit Blood Donation Event</h1>
+          <p className="text-muted-foreground mt-2">Update the details of "{eventData.name}"</p>
         </div>
+        <Button 
+          variant="outline"
+          onClick={() => router.push(`/staffs/donation-event/${params.id}`)}
+        >
+          Back to Details
+        </Button>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2" key={activeTab}>
           <TabsTrigger value="event" className="flex items-center gap-2">
             <Droplet className="h-4 w-4" />
-            Create Request
+            Edit Event
           </TabsTrigger>
           <TabsTrigger value="organizer" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
@@ -492,7 +657,7 @@ export default function CreateDonationEventPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Event Creation Tab */}
+        {/* Event Edit Tab */}
         <TabsContent value="event">
           <Form {...eventForm}>
             <form onSubmit={eventForm.handleSubmit(onSubmitEvent)}>
@@ -526,7 +691,7 @@ export default function CreateDonationEventPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Donation Type *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select donation type" />
@@ -543,7 +708,8 @@ export default function CreateDonationEventPage() {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />                  </div>
+                    />
+                  </div>
 
                   {/* Organizer Selection */}
                   <div className="space-y-4">
@@ -571,7 +737,8 @@ export default function CreateDonationEventPage() {
                               <SelectTrigger>
                                 <SelectValue placeholder={organizersLoading ? "Loading organizers..." : "Select an organizer (optional)"} />
                               </SelectTrigger>
-                            </FormControl>                            <SelectContent>
+                            </FormControl>
+                            <SelectContent>
                               <SelectItem value="*">No organizer</SelectItem>
                               {organizers.length === 0 ? (
                                 <SelectItem value="none" disabled>No organizers found</SelectItem>
@@ -597,7 +764,7 @@ export default function CreateDonationEventPage() {
                   {/* Location Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Location Details</h3>
-
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={eventForm.control}
@@ -628,7 +795,8 @@ export default function CreateDonationEventPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
                         control={eventForm.control}
                         name="city"
                         render={({ field }) => (
@@ -664,7 +832,8 @@ export default function CreateDonationEventPage() {
                                 <SelectTrigger>
                                   <SelectValue placeholder={watchedCity ? "Select district" : "Select province first"} />
                                 </SelectTrigger>
-                              </FormControl>                              <SelectContent>
+                              </FormControl>
+                              <SelectContent>
                                 {getDistricts().map((district) => (
                                   <SelectItem key={district.name} value={district.name}>
                                     {district.name}
@@ -688,7 +857,8 @@ export default function CreateDonationEventPage() {
                                 <SelectTrigger>
                                   <SelectValue placeholder={watchedDistrict ? "Select ward" : "Select district first"} />
                                 </SelectTrigger>
-                              </FormControl>                              <SelectContent>
+                              </FormControl>
+                              <SelectContent>
                                 {getWards().map((ward) => (
                                   <SelectItem key={ward.name} value={ward.name}>
                                     {ward.name}
@@ -742,6 +912,7 @@ export default function CreateDonationEventPage() {
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={eventForm.control}
                       name="totalMemberCount"
@@ -767,7 +938,9 @@ export default function CreateDonationEventPage() {
                     />
                   </div>
 
-                  <Separator />                  {/* Time Slots */}
+                  <Separator />
+
+                  {/* Time Slots */}
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
@@ -787,6 +960,7 @@ export default function CreateDonationEventPage() {
                         Add Time Slot
                       </Button>
                     </div>
+
                     <div className="space-y-4">
                       {fields.map((field, index) => {
                         const conflictingSlots = getConflictingSlots(watchedTimeSlots)
@@ -812,6 +986,7 @@ export default function CreateDonationEventPage() {
                                 </div>
                               </div>
                             )}
+
                             <FormField
                               control={eventForm.control}
                               name={`timeSlots.${index}.startTime`}
@@ -884,9 +1059,11 @@ export default function CreateDonationEventPage() {
                                 disabled={fields.length <= 1}
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Remove                            </Button>
+                                Remove
+                              </Button>
                             </div>
-                          </div>)
+                          </div>
+                        )
                       })}
                     </div>
 
@@ -911,7 +1088,7 @@ export default function CreateDonationEventPage() {
                   <Button
                     variant="outline"
                     type="button"
-                    onClick={() => router.push('/blood-donation-events')}
+                    onClick={() => router.push(`/staffs/donation-event/${params.id}`)}
                     disabled={isSubmitting}
                   >
                     Cancel
@@ -920,10 +1097,10 @@ export default function CreateDonationEventPage() {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Submitting Request...
+                        Updating Event...
                       </>
                     ) : (
-                      'Submit Request'
+                      'Update Event'
                     )}
                   </Button>
                 </CardFooter>
@@ -1067,7 +1244,8 @@ export default function CreateDonationEventPage() {
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <FormField
                         control={organizerForm.control}
                         name="city"
                         render={({ field }) => (
@@ -1103,7 +1281,8 @@ export default function CreateDonationEventPage() {
                                 <SelectTrigger>
                                   <SelectValue placeholder={watchedOrganizerCity ? "Select district" : "Select province first"} />
                                 </SelectTrigger>
-                              </FormControl>                              <SelectContent>
+                              </FormControl>
+                              <SelectContent>
                                 {getOrganizerDistricts().map((district) => (
                                   <SelectItem key={district.name} value={district.name}>
                                     {district.name}
@@ -1127,7 +1306,8 @@ export default function CreateDonationEventPage() {
                                 <SelectTrigger>
                                   <SelectValue placeholder={watchedOrganizerDistrict ? "Select ward" : "Select district first"} />
                                 </SelectTrigger>
-                              </FormControl>                              <SelectContent>
+                              </FormControl>
+                              <SelectContent>
                                 {getOrganizerWards().map((ward) => (
                                   <SelectItem key={ward.name} value={ward.name}>
                                     {ward.name}

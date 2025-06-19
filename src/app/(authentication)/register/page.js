@@ -5,14 +5,40 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { genAvatar } from '@/apis/user';
 
 export default function RegisterPage() {
+  const { loggedIn, account } = useUserProfile();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
+
+  // Helper to get avatar as base64 string
+  async function getAvatarAsBase64(name) {
+    const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result); // Full base64 string with data:image/png;base64,...
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+  useEffect(() => {
+    if (loggedIn) {
+      if (account && account.role === 'ADMIN') {
+        router.push('/admins/dashboard');
+      } else if (account && account.role === 'STAFF') {
+        router.push('/staffs/dashboard');
+      } else {
+        router.push('/');
+      }
+    }
+  }, [loggedIn, router]);
   const handleRegister = async () => {
     if(!name || !email || !password){
       toast.warning("Fields must not be bank!");
@@ -24,13 +50,19 @@ export default function RegisterPage() {
     }
     try{
       setLoading(true);
-      const message = await register({email,password,name});
-      console.log(message);
+      const avatarBase64 = await getAvatarAsBase64(name.trim());
+      const account = {
+        email,
+        password,
+        name,
+        avatar: avatarBase64 // send full base64 string
+      };
+      const message = await register(account);
       if(message === "verification email sent"){
         router.push(`/verify?email=${email}`);
       }
     } catch(error){
-      console.log(error);
+      toast.warning(error.password);
     }
     setLoading(false);
   }

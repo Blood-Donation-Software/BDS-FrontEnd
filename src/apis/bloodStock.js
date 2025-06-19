@@ -21,3 +21,8 @@ export const addToStock = (bloodUnit) => {
     return axiosInstance.post(endpoint.bloodStock.addStock, bloodUnit)
     .then(res => res.data);
 }
+
+export const deleteStock = (id) => {
+    return axiosInstance.delete(`${endpoint.bloodStock.deleteStock(id)}`)
+        .then(res => res.data);
+}

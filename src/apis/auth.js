@@ -12,12 +12,9 @@ export const loginGoogle = () => {
     window.location.href = `${endpoint.auth.loginGoogle}`;
 };
 
-export const register = ({email,password,name}) => {
-    return axiosInstance.post(endpoint.auth.register, {
-        email,
-        password,
-        name
-    }).then(res => res.data);
+export const register = (account) => {
+    return axiosInstance.post(endpoint.auth.register, account)
+    .then(res => res.data);
 };
 
 export const verifyOtp = (otp) => {
@@ -30,4 +27,8 @@ export const verifyOtp = (otp) => {
 
 export const resendOtp = () => {
 
+}
+
+export const logout = () => {
+  return axiosInstance.get('/api/auth/logout');
 }

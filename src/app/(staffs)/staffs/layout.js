@@ -5,6 +5,7 @@ import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard } from "
 import BloodRequestProvider from "@/context/bloodRequest_context"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
 import { usePathname } from "next/navigation"
+import { ROLES, RouteProtection } from "@/components/auth"
 
 
 export default function Layout({ children }) {
@@ -51,7 +52,9 @@ export default function Layout({ children }) {
       <BloodRequestProvider>
           <main className="w-full">
             <AuthenticatedHeader items={items}/>
-            {children}
+              <RouteProtection requiredRole={ROLES.STAFF} hideOnNoAccess={true} redirectTo="/">
+                {children}
+              </RouteProtection>
           </main>
       </BloodRequestProvider>
     </>

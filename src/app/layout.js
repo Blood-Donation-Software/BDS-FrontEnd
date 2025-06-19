@@ -3,6 +3,7 @@ import "./globals.css";
 import Footer from "@/sections/Footer/Footer";
 import { Toaster } from "sonner";
 import { PublicEnvScript } from "next-runtime-env";
+import UserProvider from "@/context/user_context";
 
 export const metadata = {
   title: "Create Next App",
@@ -16,7 +17,9 @@ export default function RootLayout({ children }) {
         <PublicEnvScript />
       </head>
       <body>
+        <UserProvider>
           {children}
+        </UserProvider>
           <Toaster position="top-center" richColors/>
       </body>
     </html>

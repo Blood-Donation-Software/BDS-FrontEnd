@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MoreVertical, Plus, Search, ArrowUpDown } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
-import { addToStock, checkStock } from '@/apis/bloodStock'
+import { addToStock, checkStock, deleteStock } from '@/apis/bloodStock'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { add } from 'lodash'
@@ -156,8 +156,14 @@ export default function BloodStockManagement() {
     return { status: "Good", variant: "success" }
   }
 
-  const handleDelete = (id) => {
-    setBloodStock(bloodStock.filter(item => item.id !== id))
+  const handleDelete = async (id) => {
+    try {
+      await deleteStock(id)
+      setBloodStock(bloodStock.filter(item => item.id !== id))
+      toast.success('Blood unit deleted successfully!')
+    } catch (error) {
+      toast.error('Failed to delete blood unit. Please try again.')
+    }
   }
 
   const handleAddChange = (e) => {
