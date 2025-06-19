@@ -1,6 +1,5 @@
 'use client'
 import { login, loginGoogle } from '@/apis/auth';
-import { getAccount } from '@/apis/user';
 import { useUserProfile } from '@/context/user_context';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -30,7 +29,6 @@ export default function LoginPage() {
   }
 
   const handleLoginGoogle = async () => {
-    await loginGoogle();
     await loginGoogle();
   }
 

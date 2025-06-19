@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 'use client'
 import { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
@@ -13,7 +12,6 @@ import { format } from 'date-fns'
 import { addToStock, checkStock, deleteStock } from '@/apis/bloodStock'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { add } from 'lodash'
 import { toast } from 'sonner'
 
 // Blood type and component mappings
@@ -303,8 +301,7 @@ export default function BloodStockManagement() {
           <CardDescription>Filter blood units by specific criteria</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search blood units..."
@@ -312,32 +309,154 @@ export default function BloodStockManagement() {
                 value={filters.search}
                 onChange={(e) => setFilters({...filters, search: e.target.value})}
               />
-=======
-import { SidebarTrigger } from "@/components/ui/sidebar";
-
-export default function StockDashboard() {
-    const bloodStockData = [
-        { type: 'aPos', label: 'A+', units: 150 },
-        { type: 'aNeg', label: 'A-', units: 80 },
-        { type: 'bPos', label: 'B+', units: 120 },
-        { type: 'bNeg', label: 'B-', units: 60 },
-        { type: 'oPos', label: 'O+', units: 200 },
-        { type: 'oNeg', label: 'O-', units: 100 },
-        { type: 'abPos', label: 'AB+', units: 90 },
-        { type: 'abNeg', label: 'AB-', units: 40 }
-    ];
-    return(
-        <main className="flex-1 p-6">
-            <div className="grid grid-cols-4 gap-6">
-                {bloodStockData.map((item) => (
-                    <div key={item.type} className="bg-white p-6 rounded border border-gray-200">
-                        <div className="mb-2 text-sm text-gray-600">{item.label}</div>
-                        <div className="text-3xl font-bold text-red-500">{item.units}</div>
-                        <div className="text-xs text-gray-500">units available</div>
-                    </div>
-                ))}
->>>>>>> 874435d2c0dd0c48c141f345f39be682ed8ef5a5
             </div>
-        </main>
-    );
+            
+            <Select value={filters.bloodType} onValueChange={(v) => setFilters({...filters, bloodType: v})}>
+              <SelectTrigger>
+                <SelectValue placeholder="All blood types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="*">All blood types</SelectItem>
+                {bloodTypeOptions.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.componentType} onValueChange={(v) => setFilters({...filters, componentType: v})}>
+              <SelectTrigger>
+                <SelectValue placeholder="All components" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="*">All components</SelectItem>
+                {componentTypeOptions.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({...filters, expiryStatus: v})}>
+              <SelectTrigger>
+                <SelectValue placeholder="All expiry status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="*">All status</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+                <SelectItem value="critical">Critical (≤7 days)</SelectItem>
+                <SelectItem value="warning">Warning (≤30 days)</SelectItem>
+                <SelectItem value="good">Good (&gt;30 days)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Blood Stock Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Blood Stock Inventory</CardTitle>
+          <CardDescription>
+            Total units: {filteredStock.length}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead 
+                  className="cursor-pointer"
+                  onClick={() => handleSort('bloodType')}
+                >
+                  Blood Type
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer"
+                  onClick={() => handleSort('componentType')}
+                >
+                  Component
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer"
+                  onClick={() => handleSort('quantity')}
+                >
+                  Quantity
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer"
+                  onClick={() => handleSort('volume')}
+                >
+                  Volume (ml)
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer"
+                  onClick={() => handleSort('expiryDate')}
+                >
+                  Expiry Date
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredStock.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8">
+                    No blood units found matching your criteria.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredStock.map((unit) => {
+                  const { status, variant } = getExpiryStatus(unit.expiryDate)
+                  return (
+                    <TableRow key={unit.id}>
+                      <TableCell className="font-medium">
+                        {bloodTypeMap[unit.bloodType]}
+                      </TableCell>
+                      <TableCell>
+                        {componentTypeMap[unit.componentType]}
+                      </TableCell>
+                      <TableCell>{unit.quantity}</TableCell>
+                      <TableCell>{unit.volume}</TableCell>
+                      <TableCell>
+                        {format(new Date(unit.expiryDate), 'MMM dd, yyyy')}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={variant}>{status}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(unit.id)}
+                              className="text-red-600"
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
