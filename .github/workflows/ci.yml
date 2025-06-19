@@ -1,0 +1,80 @@
+on:
+  push:
+    branches:
+      - Deploy/Develop
+  workflow_dispatch:
+
+jobs:
+  tag_docker:
+    runs-on: ubuntu-latest
+    name: Tag for Docker Image
+    steps:
+      - name: Checkout with full history & tags
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+  build-and-push-image:
+    needs: tag_docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository (with tags)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DH_REPO_NAME }}:latest
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DH_REPO_NAME }}:latest
+          cache-to: |
+            type=gha,mode=max
+            type=inline
+        
+
+  deploy: 
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_SECRET_KEY }}
+
+      - name: Add host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H pog.threemusketeer.click >> ~/.ssh/known_hosts
+
+      - name: Connect, Pull, and Build Docker
+        run: |
+          ssh hoangworthy@pog.threemusketeer.click << EOF
+            set -e
+            cd /home/hoangworthy/Documents/bds-frontend
+            echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose pull bds-frontend
+            echo "${{ secrets.SSH_PASS }}" | sudo -S docker compose up -d
+          EOF

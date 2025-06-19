@@ -17,9 +17,9 @@ export default function CallToAction() {
 
       {/* Centered content */}
       <div className="relative z-20 flex flex-col items-center text-center px-4">
-        <h1 className="text-5xl font-extrabold text-white leading-tight mb-2 drop-shadow-lg">
+        <h1 className="text-5xl font-extrabold be-vietnam-pro-semibold text-white leading-tight mb-2 drop-shadow-lg">
           Hệ thống quản lý hiến máu<br />
-          <span className="text-5xl font-extrabold">Trung tâm y tế HopeWell</span>
+          <span className="text-5xl font-extrabold be-vietnam-pro-semibold">Trung tâm y tế HopeWell</span>
         </h1>
         <p className="text-xl text-white mt-2 mb-8 max-w-2xl">
           Kết nối người hiến máu với người cần máu, quản lý hiệu quả nguồn máu và quy trình hiến máu

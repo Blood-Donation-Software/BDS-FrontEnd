@@ -3,6 +3,7 @@
 import { getRequestById } from '@/apis/bloodrequest';
 import { BASE_URL } from '@/global-config';
 import axios from 'axios';
+import { add } from 'lodash';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +19,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        window.location.href = '/login';
+        // window.location.href = '/login';
       }
     }
     return Promise.reject(
@@ -29,9 +30,9 @@ axiosInstance.interceptors.response.use(
 
 export const endpoint = {
   auth: {
-    login: `${BASE_URL}/user/login`,
-    register: `${BASE_URL}/user/register`,
-    verify: `${BASE_URL}/user/verify`,
+    login: `${BASE_URL}/api/auth/login`,
+    register: `${BASE_URL}/api/auth/register`,
+    verify: `${BASE_URL}/api/auth/verify`,
     loginGoogle: `${BASE_URL}/oauth2/authorization/google`
   },
   user: {
