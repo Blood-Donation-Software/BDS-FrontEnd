@@ -7,6 +7,7 @@ function RegisterDonation({ params }) {
     const { selectedEvent, selectedShift, selectEventById, selectShift } = useDonationEvents();
     const [answers, setAnswers] = useState({})
     const [otherText, setOtherText] = useState({})
+    const [selectedAnswer, setSelectedAnswer] = useState([])
 
     useEffect(() => {
         if (params?.id && !selectedEvent) {
@@ -41,8 +42,8 @@ function RegisterDonation({ params }) {
         };
         console.log('Submitted:', submissionData);
         
-        // Validation for all-day events
-        if (selectedEvent?.isAllDay && !selectedShift) {
+        // Check if user needs to select a time slot for events with multiple slots
+        if (selectedEvent?.timeSlotDtos && selectedEvent.timeSlotDtos.length > 1 && !selectedShift) {
             alert('Vui lòng chọn ca làm việc trước khi tiếp tục!');
             return;
         }
@@ -59,24 +60,28 @@ function RegisterDonation({ params }) {
                     <div className="event-info">
                         <h2>{selectedEvent.name}</h2>
                         <p><strong>Địa điểm:</strong> {selectedEvent.location}</p>
-                        <p><strong>Ngày:</strong> {selectedEvent.date}</p>
+                        <p><strong>Địa chỉ:</strong> {selectedEvent.address}, {selectedEvent.ward}, {selectedEvent.district}, {selectedEvent.city}</p>
+                        <p><strong>Ngày:</strong> {selectedEvent.donationDate}</p>
                         
-                        {selectedEvent.isAllDay ? (
+                        {selectedEvent.timeSlotDtos && selectedEvent.timeSlotDtos.length > 1 ? (
                             <div className="shift-selection">
                                 <p><strong>Chọn ca làm việc:</strong></p>
                                 <div className="shift-options">
-                                    {selectedEvent.shifts.map((shift, index) => (
-                                        <label key={index} className="shift-option">
-                                            <input
-                                                type="radio"
-                                                name="shift"
-                                                value={shift}
-                                                checked={selectedShift === shift}
-                                                onChange={() => handleShiftSelect(shift)}
-                                            />
-                                            <span>{shift}</span>
-                                        </label>
-                                    ))}
+                                    {selectedEvent.timeSlotDtos.map((timeSlot, index) => {
+                                        const shiftLabel = `${timeSlot.startTime} - ${timeSlot.endTime} (Tối đa: ${timeSlot.maxCapacity} người)`;
+                                        return (
+                                            <label key={index} className="shift-option">
+                                                <input
+                                                    type="radio"
+                                                    name="shift"
+                                                    value={shiftLabel}
+                                                    checked={selectedShift === shiftLabel}
+                                                    onChange={() => handleShiftSelect(shiftLabel)}
+                                                />
+                                                <span>{shiftLabel}</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                                 {selectedShift && (
                                     <p className="selected-shift">
@@ -84,8 +89,10 @@ function RegisterDonation({ params }) {
                                     </p>
                                 )}
                             </div>
+                        ) : selectedEvent.timeSlotDtos && selectedEvent.timeSlotDtos.length === 1 ? (
+                            <p><strong>Giờ:</strong> {selectedEvent.timeSlotDtos[0].startTime} - {selectedEvent.timeSlotDtos[0].endTime}</p>
                         ) : (
-                            <p><strong>Giờ:</strong> {selectedEvent.shifts[0]}</p>
+                            <p><strong>Giờ:</strong> Chưa có thông tin thời gian</p>
                         )}
                     </div>
                 )}

@@ -32,7 +32,8 @@ import { useDonationEvents } from "@/context/donationEvent_context"
 import { useRouter } from "next/navigation"
 
 function DonationEvents() {
-    const { events, selectEventById } = useDonationEvents();
+    // All hooks must be at the top, before any return or conditional
+    const { events, loading, error, selectEventById } = useDonationEvents();
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('')
     const [currentPage, setCurrentPage] = useState(1)
@@ -41,25 +42,57 @@ function DonationEvents() {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
     const itemsPerPage = 6
 
+    // Reset to page 1 when filters change - MOVED TO TOP
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchQuery, dateRange, sortOrder])
+
     // Handle registration button click
     const handleRegisterClick = (event) => {
         selectEventById(event.id);
         router.push(`/donation-registration/${event.id}`);
     };
 
-    // Remove the local events array since we're using context now
+    // All hooks are now at the top. Only after this, do conditional returns:
+    // Show loading state
+    if (loading) {
+        return (
+            <div className="container mx-auto py-8 px-4">
+                <h1 className="text-2xl font-bold mb-2">Sự kiện hiến máu</h1>
+                <p className="text-gray-600 mb-6">Tham gia các sự kiện hiến máu tình nguyện để cứu sống nhiều người cần giúp đỡ.</p>
+                <div className="text-center py-10">
+                    <p className="text-gray-500">Đang tải sự kiện...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state
+    if (error) {
+        return (
+            <div className="container mx-auto py-8 px-4">
+                <h1 className="text-2xl font-bold mb-2">Sự kiện hiến máu</h1>
+                <p className="text-gray-600 mb-6">Tham gia các sự kiện hiến máu tình nguyện để cứu sống nhiều người cần giúp đỡ.</p>
+                <div className="text-center py-10">
+                    <p className="text-red-500">Lỗi: {error}</p>
+                    <p className="text-gray-500 mt-2">Không thể tải danh sách sự kiện</p>
+                </div>
+            </div>
+        );
+    }
 
     // Parse date string from DD/MM/YYYY format to Date object
     const parseDate = (dateString) => {
         if (!dateString) return null
-        return parse(dateString, 'dd/MM/yyyy', new Date())
+        // Handle the new date format "DD-MM-YYYY"
+        return parse(dateString, 'dd-MM-yyyy', new Date())
     }
 
     // Check if an event falls within the selected date range
     const isEventInDateRange = (event) => {
         if (!dateRange || (!dateRange.from && !dateRange.to)) return true
 
-        const eventDate = parseDate(event.date)
+        const eventDate = parseDate(event.donationDate)
 
         // Safety check for invalid dates
         if (!eventDate) return true
@@ -82,9 +115,12 @@ function DonationEvents() {
     }
 
     // Filter events based on search query and date range
-    const filteredEvents = events.filter(event =>
+    // const filteredEvents = events.filter(event =>
+    const filteredEvents = (events || []).filter(event =>
         (event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.location.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            event.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            event.city.toLowerCase().includes(searchQuery.toLowerCase())) &&
         isEventInDateRange(event)
     )
 
@@ -94,22 +130,17 @@ function DonationEvents() {
             return a.id - b.id
         } else if (sortOrder === 'asc') {
             // Sort by date ascending (older to newer)
-            const dateA = parseDate(a.date)
-            const dateB = parseDate(b.date)
+            const dateA = parseDate(a.donationDate)
+            const dateB = parseDate(b.donationDate)
             return dateA - dateB
         } else if (sortOrder === 'desc') {
             // Sort by date descending (newer to older)
-            const dateA = parseDate(a.date)
-            const dateB = parseDate(b.date)
+            const dateA = parseDate(a.donationDate)
+            const dateB = parseDate(b.donationDate)
             return dateB - dateA
         }
         return 0
     })
-
-    // Reset to page 1 when filters change
-    useEffect(() => {
-        setCurrentPage(1)
-    }, [searchQuery, dateRange, sortOrder])
 
     // Calculate pagination
     const totalPages = Math.ceil(sortedEvents.length / itemsPerPage)
@@ -147,7 +178,7 @@ function DonationEvents() {
                 <div className="w-full md:w-1/2">
                     <Input
                         type="text"
-                        placeholder="Tìm kiếm sự kiện, địa điểm, hoặc tổ chức..."
+                        placeholder="Tìm kiếm sự kiện, địa điểm, địa chỉ, hoặc thành phố..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full"
@@ -243,9 +274,12 @@ function DonationEvents() {
                                         {event.location}
                                     </CardDescription>
                                 </div>
+                                <div className="text-sm text-gray-600 pl-6">
+                                    {event.address}, {event.ward}, {event.district}, {event.city}
+                                </div>
                                 <div className="flex items-center gap-2">
                                     <CalendarIcon className="h-4 w-4 text-gray-500" />
-                                    <p className="text-sm text-gray-700">{event.date}</p>
+                                    <p className="text-sm text-gray-700">{event.donationDate}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <svg className="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -253,7 +287,22 @@ function DonationEvents() {
                                         <polyline points="12 6 12 12 16 14"></polyline>
                                     </svg>
                                     <p className="text-sm text-gray-700">
-                                        {event.isAllDay ? 'Cả ngày' : event.shifts[0]}
+                                        {event.timeSlotDtos && event.timeSlotDtos.length > 0 ? (
+                                            event.timeSlotDtos.length === 1 ? 
+                                                `${event.timeSlotDtos[0].startTime} - ${event.timeSlotDtos[0].endTime}` :
+                                                `${event.timeSlotDtos.length} time slots`
+                                        ) : 'No time slots'}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <svg className="h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                    <p className="text-sm text-gray-700">
+                                        {event.totalMemberCount} members
                                     </p>
                                 </div>
                             </CardContent>

@@ -49,6 +49,9 @@ export const endpoint = {
     withdraw: `${BASE_URL}/medical-facility-stock/withdrawn`,
     getStock: `${BASE_URL}/medical-facility-stock/get-stock`,
     getStockByType: `${BASE_URL}/medical-facility-stock/get-stock-by-type`,
+  },
+  donationEvent: {
+    getAll: `${BASE_URL}/api/donation-event/list-donation`,
   }
 }
 
