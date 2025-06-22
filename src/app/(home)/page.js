@@ -78,7 +78,7 @@ export default function Home() {
                   <p className="text-gray-500 text-sm">Người hiến máu thường xuyên</p>
                 </div>
               </div>
-              <p className="text-gray-700 italic">"Hiến máu không chỉ giúp người khác mà còn giúp tôi cảm thấy mình có ích hơn. HopeWell luôn tạo điều kiện tốt nhất cho người hiến máu."</p>
+              <p className="text-gray-700 italic">&quotHiến máu không chỉ giúp người khác mà còn giúp tôi cảm thấy mình có ích hơn. HopeWell luôn tạo điều kiện tốt nhất cho người hiến máu.&quot</p>
             </div>
             <div className="bg-gray-50 p-8 rounded-lg">
               <div className="flex items-center mb-4">
@@ -90,7 +90,7 @@ export default function Home() {
                   <p className="text-gray-500 text-sm">Người nhận máu</p>
                 </div>
               </div>
-              <p className="text-gray-700 italic">"Nhờ có máu từ HopeWell, tôi đã vượt qua ca phẫu thuật nguy hiểm. Cảm ơn tất cả những người hiến máu đã cứu sống tôi."</p>
+              <p className="text-gray-700 italic">&quotNhờ có máu từ HopeWell, tôi đã vượt qua ca phẫu thuật nguy hiểm. Cảm ơn tất cả những người hiến máu đã cứu sống tôi.&quot</p>
             </div>
           </div>
         </div>

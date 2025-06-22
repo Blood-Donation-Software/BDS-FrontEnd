@@ -1,4 +1,4 @@
-import DonationEvents from "@/sections/DonationEvent/DonationEvents"
+import DonationEvents from "@/sections/DonationEvents/DonationEvents"
 
 export default function DonationEventsPage() {
     return(

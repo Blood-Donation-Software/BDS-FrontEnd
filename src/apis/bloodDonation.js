@@ -70,3 +70,54 @@ export const deleteEventRequest = (eventId) => {
     return axiosInstance.delete(endpoint.bloodDonation.deleteEventRequest(eventId))
         .then(res => res.data);
 }
+
+// Register for donation event
+export const registerForEvent = (eventId, timeSlotId, jsonForm) => {
+    return axiosInstance.post(endpoint.eventRegistration.register(eventId, timeSlotId), jsonForm, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.data);
+}
+
+// Cancel event registration
+export const cancelEventRegistration = (eventId) => {
+    return axiosInstance.post(endpoint.eventRegistration.cancel(eventId))
+        .then(res => res.data);
+}
+
+// Get checkin token for user registration
+export const getCheckinToken = (eventId) => {
+    return axiosInstance.get(endpoint.checkin.getToken(eventId))
+        .then(res => res.data);
+}
+
+// Get donor information from checkin token (for staff)
+export const getCheckinInfo = (eventId, checkinToken) => {
+    return axiosInstance.get(endpoint.checkin.getInfo(eventId), {
+        params: { checkinToken }
+    }).then(res => res.data);
+}
+
+// Check in donor (for staff)
+export const checkInDonor = (eventId, action, checkinToken) => {
+    return axiosInstance.post(endpoint.checkin.checkIn(eventId), null, {
+        params: { action, checkinToken }
+    }).then(res => res.data);
+}
+
+// Get event donors (for staff)
+export const getEventDonors = (eventId, page = 0, size = 10, sortBy = 'id', ascending = true) => {
+    const params = { page, size, sortBy, ascending };
+    return axiosInstance.get(`${endpoint.bloodDonation.listEvent}/${eventId}/donors`, { params })
+        .then(res => res.data);
+}
+
+// Record blood donations for completed event (for staff)
+export const recordDonations = (eventId, donationRecords) => {
+    const bulkRecordDto = {
+        singleBloodUnitRecords: donationRecords
+    };
+    return axiosInstance.post(endpoint.bloodDonation.recordDonation(eventId), bulkRecordDto)
+        .then(res => res.data);
+}

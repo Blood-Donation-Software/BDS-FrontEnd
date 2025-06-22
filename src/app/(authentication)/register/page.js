@@ -38,7 +38,7 @@ export default function RegisterPage() {
         router.push('/');
       }
     }
-  }, [loggedIn, router]);
+  }, [loggedIn, router, account]);
   const handleRegister = async () => {
     if(!name || !email || !password){
       toast.warning("Fields must not be bank!");

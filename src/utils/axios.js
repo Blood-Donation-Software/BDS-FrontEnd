@@ -36,8 +36,7 @@ export const endpoint = {
     register: `${BASE_URL}/api/auth/register`,
     verify: `${BASE_URL}/api/auth/verify`,
     loginGoogle: `${BASE_URL}/oauth2/authorization/google`
-  },  
-  user: {
+  },    user: {
     updateProfile: `${BASE_URL}/api/user/profile/update`,
     getProfile: `${BASE_URL}/api/user/profile`,
     getAllProfile: `${BASE_URL}/api/user/profile/list-profile`,
@@ -45,6 +44,7 @@ export const endpoint = {
     genAvatar: (name,rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
+    getDonationHistory: `${BASE_URL}/api/user/profile/history`,
     profile: `${BASE_URL}/user/info`,
   },
   bloodRequest: {
@@ -60,7 +60,7 @@ export const endpoint = {
     getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
     addStock: `${BASE_URL}/api/medical-facility-stock/add-blood-into-stock`,
     deleteStock: (id) => `${BASE_URL}/api/medical-facility-stock/${id}`,
-  },      bloodDonation: {
+  },          bloodDonation: {
     createEvent: `${BASE_URL}/api/donation-event-request/create`,
     listEvent: `${BASE_URL}/api/donation-event/list-donation`,
     approveEvent: (eventId) => `${BASE_URL}/api/donation-event/list-donation`,
@@ -69,6 +69,15 @@ export const endpoint = {
     verifyRequest: (requestId) => `${BASE_URL}/api/donation-event-request/pending/${requestId}/verify`,
     updateEventRequest: (eventId) => `${BASE_URL}/api/donation-event-request/update/${eventId}`,
     deleteEventRequest: (eventId) => `${BASE_URL}/api/donation-event-request/delete/${eventId}`,
+    recordDonation: (eventId) => `${BASE_URL}/api/donation-event/list-donation/${eventId}/record-donations`,
+  },eventRegistration: {
+    register: (eventId, timeSlotId) => `${BASE_URL}/api/event-registration/${eventId}/${timeSlotId}/register`,
+    registerOffline: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/registerOffline`,
+    cancel: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/cancel`,
+  },  checkin: {
+    getToken: (eventId) => `${BASE_URL}/api/checkin/${eventId}/checkin-token`,
+    getInfo: (eventId) => `${BASE_URL}/api/checkin/info/${eventId}`,
+    checkIn: (eventId) => `${BASE_URL}/api/checkin/action/${eventId}`,
   },
   organizer: {
     getAll: `${BASE_URL}/api/organizers`,

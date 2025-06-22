@@ -42,7 +42,7 @@ export default function LoginPage() {
         router.push('/');
       }
     }
-  }, [loggedIn, router]);
+  }, [loggedIn, router, account]);
 
   return (
     <div className="flex-1 flex items-center justify-center p-8">

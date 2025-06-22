@@ -22,7 +22,7 @@ export default function Layout({ children }) {
     icon: Newspaper,
     button: true,
     btnName: "New Blog",
-    nav: `${pathname}/create-blog`
+    nav: `${pathname}/create`
   },
   {
     title: "Donation Events",

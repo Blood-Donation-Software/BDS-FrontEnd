@@ -2,10 +2,12 @@ import axiosInstance, { endpoint } from "@/utils/axios"
 
 export const getAllProfile = (page,size) => {
     return axiosInstance.get(endpoint.user.getAllProfile,
-        {params : {
-            page,
-            size
-        }}
+        {
+            params : {
+                page,
+                size
+            }
+        }
     )
     .then(res => res.data);
 }
@@ -44,6 +46,16 @@ export const uploadAvatar = (accountId, avatarFile) => {
     return axiosInstance.put(endpoint.user.updateAvatar(accountId), formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
-        },
+        },    }).then(res => res.data);
+}
+
+export const getDonationHistory = (page = 0, size = 10, sortBy = 'id', ascending = true) => {
+    return axiosInstance.get(endpoint.user.getDonationHistory, {
+        params: {
+            page,
+            size,
+            sortBy,
+            ascending
+        }
     }).then(res => res.data);
 }
