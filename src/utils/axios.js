@@ -46,6 +46,9 @@ export const endpoint = {
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
     getDonationHistory: `${BASE_URL}/api/user/profile/history`,
     profile: `${BASE_URL}/user/info`,
+    enableAccount: (accountId) => `${BASE_URL}/api/user/account/${accountId}/enable`,
+    disableAccount: (accountId) => `${BASE_URL}/api/user/account/${accountId}/disable`,
+    updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
   },
   bloodRequest: {
     getAll: `${BASE_URL}/blood-request/request-list`,
