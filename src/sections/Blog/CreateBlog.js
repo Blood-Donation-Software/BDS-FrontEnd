@@ -9,7 +9,7 @@ import Image from '@tiptap/extension-image'
 import TextAlign from '@tiptap/extension-text-align'
 import Highlight from '@tiptap/extension-highlight'
 import '@/styles/tiptap.css'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,6 +17,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { 
   Bold, 
   Italic, 
@@ -41,9 +47,13 @@ import {
   AlignRight,
   AlignJustify,
   Highlighter,
-  Underline as UnderlineIcon
+  Underline as UnderlineIcon,
+  ChevronDown,
+  Upload,
+  Globe
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { createBlogRequest } from '@/apis/blog'
 
 // Custom toolbar component
 const MenuBar = ({ editor }) => {
@@ -171,14 +181,95 @@ const MenuBar = ({ editor }) => {
 
     // update link
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
-  }
-
-  // Handle image insertion
+  }  // Handle image insertion
   const addImage = () => {
-    const url = window.prompt('Image URL')
+    // Create a file input element
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.multiple = false
 
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run()
+    input.onchange = async (event) => {
+      const file = event.target.files[0]
+      if (file) {
+        try {
+          // Validate file size (max 5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size should be less than 5MB')
+            return
+          }
+
+          // Validate file type
+          if (!file.type.startsWith('image/')) {
+            toast.error('Please select a valid image file')
+            return
+          }
+
+          // Show loading toast
+          const loadingToast = toast.loading('Processing image...')
+
+          // Create a local preview URL
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const imageUrl = e.target.result
+            
+            // Insert image into editor
+            editor.chain().focus().setImage({ 
+              src: imageUrl,
+              alt: file.name,
+              title: file.name
+            }).run()
+            
+            // Dismiss loading toast and show success
+            toast.dismiss(loadingToast)
+            toast.success('Image uploaded and added to blog content')
+          }
+          
+          reader.onerror = () => {
+            toast.dismiss(loadingToast)
+            toast.error('Failed to read image file')
+          }
+          
+          reader.readAsDataURL(file)
+        } catch (error) {
+          console.error('Error processing image:', error)
+          toast.error('Failed to add image')
+        }
+      }
+    }
+
+    // Trigger file selection
+    input.click()
+  }
+  // Handle image insertion via URL (alternative option)
+  const addImageByUrl = () => {
+    const url = window.prompt('Enter Image URL:', 'https://')
+
+    if (url && url !== 'https://') {
+      try {
+        // Basic URL validation
+        if (!url.match(/^https?:\/\/.+/)) {
+          toast.error('Please enter a valid URL starting with http:// or https://')
+          return
+        }
+
+        // Check if URL looks like an image
+        const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg)$/i
+        if (!imageExtensions.test(url) && !url.includes('unsplash') && !url.includes('imgur')) {
+          const confirm = window.confirm('The URL doesn\'t appear to be an image. Continue anyway?')
+          if (!confirm) return
+        }
+
+        editor.chain().focus().setImage({ 
+          src: url,
+          alt: 'Image from URL',
+          title: 'Image from URL'
+        }).run()
+        
+        toast.success('Image added from URL')      } catch (error) {
+        console.error('Error adding image from URL:', error)
+        toast.error('Failed to add image from URL')
+      }
     }
   }
 
@@ -278,9 +369,7 @@ const MenuBar = ({ editor }) => {
           })}
         </div>
 
-        <Separator orientation="vertical" className="h-6 mx-2" />
-
-        {/* Link and Image */}
+        <Separator orientation="vertical" className="h-6 mx-2" />        {/* Link and Image */}
         <div className="flex gap-1">
           <Button
             variant={editor.isActive('link') ? "default" : "ghost"}
@@ -290,14 +379,31 @@ const MenuBar = ({ editor }) => {
           >
             <Link2 className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={addImage}
-            title="Add Image"
-          >
-            <ImageIcon className="h-4 w-4" />
-          </Button>
+          
+          {/* Image dropdown with upload and URL options */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                title="Add Image"
+                className="flex items-center gap-1"
+              >
+                <ImageIcon className="h-4 w-4" />
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <DropdownMenuItem onClick={addImage} className="flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                Upload from Computer
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={addImageByUrl} className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Add from URL
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
@@ -308,14 +414,106 @@ export default function CreateBlog() {
   const router = useRouter()
   const [formData, setFormData] = useState({
     title: '',
-    excerpt: '',
-    tags: [],
-    status: 'draft'
+    content: '',
+    status: 'INACTIVE' // ACTIVE or INACTIVE based on BlogStatus enum
   })
-  const [newTag, setNewTag] = useState('')
+  const [thumbnail, setThumbnail] = useState(null)
+  const [thumbnailPreview, setThumbnailPreview] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState({})
-  // Initialize TipTap editor
+
+  // Handle dropped image
+  const handleDroppedImage = async (file, view, event) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please drop an image file')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB')
+      return
+    }
+
+    const loadingToast = toast.loading('Processing dropped image...')
+
+    try {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const imageUrl = e.target.result
+        
+        // Get the position where the image was dropped
+        const coordinates = view.posAtCoords({
+          left: event.clientX,
+          top: event.clientY,
+        })
+        
+        if (coordinates) {
+          view.dispatch(
+            view.state.tr.insert(coordinates.pos, view.state.schema.nodes.image.create({
+              src: imageUrl,
+              alt: file.name,
+              title: file.name,
+            }))
+          )
+        }
+        
+        toast.dismiss(loadingToast)
+        toast.success('Image dropped and added to blog content')
+      }
+      
+      reader.onerror = () => {
+        toast.dismiss(loadingToast)
+        toast.error('Failed to process dropped image')
+      }
+      
+      reader.readAsDataURL(file)
+    } catch (error) {
+      toast.dismiss(loadingToast)
+      toast.error('Failed to add dropped image')
+      console.error('Error processing dropped image:', error)
+    }
+  }
+
+  // Handle pasted image
+  const handlePastedImage = async (file, view) => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Pasted image size should be less than 5MB')
+      return
+    }
+
+    const loadingToast = toast.loading('Processing pasted image...')
+
+    try {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const imageUrl = e.target.result
+        
+        // Insert at current cursor position
+        const { from } = view.state.selection
+        view.dispatch(
+          view.state.tr.insert(from, view.state.schema.nodes.image.create({
+            src: imageUrl,
+            alt: 'Pasted image',
+            title: 'Pasted image',
+          }))
+        )
+        
+        toast.dismiss(loadingToast)
+        toast.success('Pasted image added to blog content')
+      }
+      
+      reader.onerror = () => {
+        toast.dismiss(loadingToast)
+        toast.error('Failed to process pasted image')
+      }
+      
+      reader.readAsDataURL(file)
+    } catch (error) {
+      toast.dismiss(loadingToast)
+      toast.error('Failed to add pasted image')
+      console.error('Error processing pasted image:', error)
+    }
+  }// Initialize TipTap editor
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -323,7 +521,11 @@ export default function CreateBlog() {
       Link.configure({
         openOnClick: false,
       }),
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          class: 'rounded-lg shadow-md max-w-full h-auto',
+        },
+      }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -336,13 +538,42 @@ export default function CreateBlog() {
       attributes: {
         class: 'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[400px] p-4',
       },
+      handleDrop: (view, event, slice, moved) => {
+        if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
+          const file = event.dataTransfer.files[0]
+          
+          // Check if it's an image
+          if (file.type.startsWith('image/')) {
+            // Prevent default drop behavior
+            event.preventDefault()
+            
+            // Handle the image upload
+            handleDroppedImage(file, view, event)
+            return true
+          }
+        }
+        return false
+      },
+      handlePaste: (view, event, slice) => {
+        const items = Array.from(event.clipboardData?.items || [])
+        const imageItem = items.find(item => item.type.startsWith('image/'))
+        
+        if (imageItem) {
+          event.preventDefault()
+          const file = imageItem.getAsFile()
+          if (file) {
+            handlePastedImage(file, view)
+          }
+          return true
+        }
+        return false
+      },
     },
     onUpdate: ({ editor }) => {
       // You can handle content changes here if needed
       console.log('Content updated:', editor.getHTML())
     }
   })
-
   // Handle form input changes
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -355,53 +586,60 @@ export default function CreateBlog() {
     }
   }
 
-  // Add tag
-  const addTag = () => {
-    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, newTag.trim()]
-      }))
-      setNewTag('')
+  // Handle thumbnail upload
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file')
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size should be less than 5MB')
+        return
+      }
+      
+      setThumbnail(file)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setThumbnailPreview(e.target.result)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
-  // Remove tag
-  const removeTag = (tagToRemove) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }))
+  // Remove thumbnail
+  const removeThumbnail = () => {
+    setThumbnail(null)
+    setThumbnailPreview(null)
   }
-
-  // Handle tag input key press
-  const handleTagKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      addTag()
-    }
-  }
-
   // Validate form
   const validateForm = () => {
     const newErrors = {}
 
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required'
+    } else if (formData.title.length > 100) {
+      newErrors.title = 'Title must not exceed 100 characters'
     }
 
-    if (!formData.excerpt.trim()) {
-      newErrors.excerpt = 'Excerpt is required'
+    const content = editor?.getHTML()
+    if (!content || content === '<p>Start writing your blog post...</p>' || content.replace(/<[^>]*>/g, '').trim().length < 10) {
+      newErrors.content = 'Content must be at least 10 characters long'
     }
 
-    if (!editor?.getHTML() || editor.getHTML() === '<p>Start writing your blog post...</p>') {
-      newErrors.content = 'Blog content is required'
+    if (!thumbnail) {
+      newErrors.thumbnail = 'Thumbnail image is required'
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-
   // Save as draft
   const saveDraft = async () => {
     if (!validateForm()) {
@@ -412,28 +650,30 @@ export default function CreateBlog() {
     setIsLoading(true)
     try {
       const blogData = {
-        ...formData,
+        title: formData.title,
         content: editor.getHTML(),
-        status: 'draft'
+        status: 'INACTIVE' // Draft status
       }
 
-      // TODO: Replace with actual API call
-      console.log('Saving draft:', blogData)
+      const result = await createBlogRequest(blogData, thumbnail)
+      toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      toast.success('Draft saved successfully!')
+      // Redirect to blog list or dashboard
+      router.push('/blog')
     } catch (error) {
       console.error('Error saving draft:', error)
-      toast.error('Failed to save draft')
+      if (error.response?.data) {
+        toast.error(`Failed to save draft: ${error.response.data}`)
+      } else {
+        toast.error('Failed to save draft. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Publish blog
-  const publishBlog = async () => {
+  // Submit for publication
+  const submitForPublication = async () => {
     if (!validateForm()) {
       toast.error('Please fill in all required fields')
       return
@@ -442,22 +682,23 @@ export default function CreateBlog() {
     setIsLoading(true)
     try {
       const blogData = {
-        ...formData,
+        title: formData.title,
         content: editor.getHTML(),
-        status: 'published'
+        status: 'ACTIVE' // Published status
       }
 
-      // TODO: Replace with actual API call
-      console.log('Publishing blog:', blogData)
+      const result = await createBlogRequest(blogData, thumbnail)
+      toast.success('Blog submitted for publication! It will be reviewed by administrators.')
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      toast.success('Blog published successfully!')
-      router.push('/blog') // Redirect to blog list
+      // Redirect to blog list or dashboard
+      router.push('/blog')
     } catch (error) {
-      console.error('Error publishing blog:', error)
-      toast.error('Failed to publish blog')
+      console.error('Error submitting blog:', error)
+      if (error.response?.data) {
+        toast.error(`Failed to submit blog: ${error.response.data}`)
+      } else {
+        toast.error('Failed to submit blog. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -484,8 +725,7 @@ export default function CreateBlog() {
           </Button>
           <h1 className="text-3xl font-bold">Create New Blog Post</h1>
         </div>
-        
-        <div className="flex gap-2">
+          <div className="flex gap-2">
           <Button variant="outline" onClick={previewBlog}>
             <Eye className="h-4 w-4 mr-2" />
             Preview
@@ -496,14 +736,14 @@ export default function CreateBlog() {
             disabled={isLoading}
           >
             <Save className="h-4 w-4 mr-2" />
-            Save Draft
+            Save as Draft
           </Button>
           <Button 
-            onClick={publishBlog}
+            onClick={submitForPublication}
             disabled={isLoading}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            {isLoading ? 'Publishing...' : 'Publish'}
+            {isLoading ? 'Submitting...' : 'Submit for Publication'}
           </Button>
         </div>
       </div>
@@ -531,35 +771,67 @@ export default function CreateBlog() {
                 )}
               </div>
             </CardContent>
-          </Card>
-
-          {/* Excerpt */}
+          </Card>          {/* Thumbnail */}
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Label htmlFor="excerpt">Excerpt *</Label>
-                <Textarea
-                  id="excerpt"
-                  placeholder="Write a brief excerpt or summary of your blog post..."
-                  value={formData.excerpt}
-                  onChange={(e) => handleInputChange('excerpt', e.target.value)}
-                  rows={3}
-                  className={errors.excerpt ? 'border-red-500' : ''}
-                />
-                {errors.excerpt && (
+                <Label htmlFor="thumbnail">Thumbnail Image *</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                  {thumbnailPreview ? (
+                    <div className="relative">
+                      <img 
+                        src={thumbnailPreview} 
+                        alt="Thumbnail preview" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removeThumbnail}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="mt-4">
+                        <label htmlFor="thumbnail" className="cursor-pointer">
+                          <span className="mt-2 block text-sm font-medium text-gray-900">
+                            Click to upload thumbnail
+                          </span>
+                          <span className="mt-1 block text-sm text-gray-500">
+                            PNG, JPG, GIF up to 5MB
+                          </span>
+                        </label>
+                        <input
+                          id="thumbnail"
+                          type="file"
+                          className="sr-only"
+                          accept="image/*"
+                          onChange={handleThumbnailChange}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {errors.thumbnail && (
                   <p className="text-sm text-red-500 flex items-center gap-1">
                     <AlertCircle className="h-3 w-3" />
-                    {errors.excerpt}
+                    {errors.thumbnail}
                   </p>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Editor */}
-          <Card>
+          {/* Editor */}          <Card>
             <CardHeader>
               <CardTitle>Content *</CardTitle>
+              <CardDescription>
+                Write your blog content. You can add images by clicking the image button, drag and drop files, or paste images directly into the editor.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className={`border rounded-lg ${errors.content ? 'border-red-500' : 'border-gray-200'}`}>
@@ -579,54 +851,8 @@ export default function CreateBlog() {
               )}
             </CardContent>
           </Card>
-        </div>
-
-        {/* Sidebar */}
+        </div>        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Tags */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Hash className="h-4 w-4" />
-                Tags
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a tag..."
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={handleTagKeyPress}
-                  className="flex-1"
-                />
-                <Button size="sm" onClick={addTag} disabled={!newTag.trim()}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              {formData.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {formData.tags.map((tag, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      {tag}
-                      <button
-                        onClick={() => removeTag(tag)}
-                        className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Publication Status */}
           <Card>
             <CardHeader>
@@ -636,7 +862,7 @@ export default function CreateBlog() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  You can save as draft or publish immediately. Drafts can be edited and published later.
+                  Your blog will be submitted for review. Administrators will approve or reject your submission.
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -649,21 +875,39 @@ export default function CreateBlog() {
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Title:</span>
-                <span className={formData.title.length > 60 ? 'text-orange-500' : 'text-green-600'}>
-                  {formData.title.length}/60
+                <span>Title Length:</span>
+                <span className={formData.title.length > 80 ? 'text-orange-500' : 'text-green-600'}>
+                  {formData.title.length}/100
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Excerpt:</span>
-                <span className={formData.excerpt.length > 160 ? 'text-orange-500' : 'text-green-600'}>
-                  {formData.excerpt.length}/160
+                <span>Content Length:</span>
+                <span className="text-green-600">
+                  {editor ? editor.getText().length : 0} characters
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Tags:</span>
-                <span>{formData.tags.length}</span>
+                <span>Thumbnail:</span>
+                <span className={thumbnail ? 'text-green-600' : 'text-red-500'}>
+                  {thumbnail ? 'Uploaded' : 'Required'}
+                </span>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Guidelines */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Guidelines</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm text-gray-600">
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Title should be clear and descriptive</li>
+                <li>Content must be at least 10 characters</li>
+                <li>Use appropriate formatting for readability</li>
+                <li>Thumbnail image should be relevant to content</li>
+                <li>All submissions are subject to review</li>
+              </ul>
             </CardContent>
           </Card>
         </div>

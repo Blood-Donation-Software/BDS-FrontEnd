@@ -239,6 +239,7 @@ export default function ProfilePage() {
         gender: data.gender || null,
         dateOfBirth: data.dateOfBirth || null,
         personalId: data.personalId || null,
+        status: "AVAILABLE",
       };
 
       // Remove empty strings and convert to null for optional fields
