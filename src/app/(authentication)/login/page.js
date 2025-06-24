@@ -29,7 +29,7 @@ export default function LoginPage() {
   }
 
   const handleLoginGoogle = async () => {
-    await loginGoogle();
+    loginGoogle();
   }
 
   useEffect(() => {
