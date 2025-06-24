@@ -39,7 +39,7 @@ export default function EventDetailPage() {
       try {
         setLoading(true)
         const eventId = params?.id || selectedEvent?.id
-        
+
         if (!eventId) {
           toast.error('No event ID provided')
           router.push('/blood-donation-events')
@@ -47,7 +47,7 @@ export default function EventDetailPage() {
         }
 
         let eventData = selectedEvent
-        
+
         // If we don't have the selected event, fetch it from API
         if (!eventData) {
           try {
@@ -58,7 +58,7 @@ export default function EventDetailPage() {
             eventData = mockEvent
           }
         }
-        
+
         setEvent(eventData)
 
         // Fetch organizer details
@@ -66,7 +66,8 @@ export default function EventDetailPage() {
           // First check if we already have the organizer in context
           if (organizers[eventData.organizerId]) {
             setOrganizer(organizers[eventData.organizerId])
-          } else {            try {
+          } else {
+            try {
               const organizerData = await getOrganizerById(eventData.organizerId)
               setOrganizer(organizerData)
             } catch (error) {
@@ -74,7 +75,8 @@ export default function EventDetailPage() {
               // Don't set mock data, leave organizer as null
             }
           }
-        }      } catch (error) {
+        }
+      } catch (error) {
         console.error('Failed to fetch event:', error)
         toast.error('Không thể tải thông tin sự kiện')
       } finally {
@@ -128,13 +130,28 @@ export default function EventDetailPage() {
 
   const fullAddress = `${event.address}, ${event.ward}, ${event.district}, ${event.city}`
 
+  const donationType = () => {
+    if(`{event.donationType === "Whole Blood"}`){
+      return "Tất cả";
+    }
+    if(`{event.donationType === "Plasma"}`){
+      return "Huyết tương";
+    }
+    if(`{event.donationType === "Platelets"}`){
+      return "Tiểu cầu";
+    }
+    if(`{event.donationType === "Red Blood Cells"}`){
+      return "Hồng cầu";
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">{event.name}</h1>
         <CardFooter className="flex justify-end gap-4 mt-6">
-          <Button variant="outline" onClick={() => router.push('/blood-donation-events')}>
-            Back to Events
+          <Button variant="outline" onClick={() => router.push('/donation-events')}>
+            Quay về trang Sự kiện
           </Button>
         </CardFooter>
       </div>
@@ -146,21 +163,21 @@ export default function EventDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Droplet className="h-5 w-5 text-red-500" />
-                <span>Event Details</span>
+                <span>Chi tiết sự kiện</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-4">
                 <MapPin className="h-5 w-5 mt-1 text-muted-foreground" />
                 <div>
-                  <h3 className="font-medium">Location</h3>
+                  <h3 className="font-medium">Địa điểm</h3>
                   <p className="text-muted-foreground">{event.location}</p>
                   <p className="text-muted-foreground text-sm">{fullAddress}</p>
                 </div>
               </div>              <div className="flex items-start gap-4">
                 <CalendarDays className="h-5 w-5 mt-1 text-muted-foreground" />
                 <div>
-                  <h3 className="font-medium">Date</h3>
+                  <h3 className="font-medium">Ngày</h3>
                   <p className="text-muted-foreground">{formattedDate}</p>
                 </div>
               </div>
@@ -168,45 +185,46 @@ export default function EventDetailPage() {
               <div className="flex items-start gap-4">
                 <Droplet className="h-5 w-5 mt-1 text-muted-foreground" />
                 <div>
-                  <h3 className="font-medium">Donation Type</h3>
+                  <h3 className="font-medium">Hình thức hiến máu</h3>
                   <p className="text-muted-foreground">
-                    {donationTypeMap[event.donationType] || event.donationType}
+                    {/* {donationTypeMap[event.donationType] || event.donationType} */}
+                    {donationType()}
                   </p>
                 </div>
               </div>              {/* Organizer - Only show if organizer data exists */}
-              {(organizer?.organizationName || 
-                event.organizer?.organizationName || 
+              {(organizer?.organizationName ||
+                event.organizer?.organizationName ||
                 event.organizationName) && (
-                <div className="flex items-start gap-4">
-                  <Building2 className="h-5 w-5 mt-1 text-muted-foreground" />
-                  <div>
-                    <h3 className="font-medium">Organizer</h3>
-                    <p className="text-muted-foreground">
-                      {organizer?.organizationName || 
-                       event.organizer?.organizationName || 
-                       event.organizationName}
-                    </p>
-                    {(organizer?.contactNumber || 
-                      event.organizer?.contactNumber || 
-                      event.organizerContact) && (
-                      <p className="text-muted-foreground text-sm">
-                        Contact: {organizer?.contactNumber || 
-                                  event.organizer?.contactNumber || 
-                                  event.organizerContact}
+                  <div className="flex items-start gap-4">
+                    <Building2 className="h-5 w-5 mt-1 text-muted-foreground" />
+                    <div>
+                      <h3 className="font-medium">Organizer</h3>
+                      <p className="text-muted-foreground">
+                        {organizer?.organizationName ||
+                          event.organizer?.organizationName ||
+                          event.organizationName}
                       </p>
-                    )}
-                    {(organizer?.email || 
-                      event.organizer?.email || 
-                      event.organizerEmail) && (
-                      <p className="text-muted-foreground text-sm">
-                        Email: {organizer?.email || 
-                                event.organizer?.email || 
-                                event.organizerEmail}
-                      </p>
-                    )}
+                      {(organizer?.contactNumber ||
+                        event.organizer?.contactNumber ||
+                        event.organizerContact) && (
+                          <p className="text-muted-foreground text-sm">
+                            Contact: {organizer?.contactNumber ||
+                              event.organizer?.contactNumber ||
+                              event.organizerContact}
+                          </p>
+                        )}
+                      {(organizer?.email ||
+                        event.organizer?.email ||
+                        event.organizerEmail) && (
+                          <p className="text-muted-foreground text-sm">
+                            Email: {organizer?.email ||
+                              event.organizer?.email ||
+                              event.organizerEmail}
+                          </p>
+                        )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </CardContent>
           </Card>
 
@@ -215,18 +233,17 @@ export default function EventDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5 text-muted-foreground" />
-                <span>Time Slots</span>
+                <span>Các khoảng thời gian</span>
               </CardTitle>
             </CardHeader>            <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {event.timeSlotDtos?.map((slot, index) => (
-                  <div 
-                    key={index} 
-                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                      selectedTimeSlot === index 
-                        ? 'border-red-500 bg-red-50 shadow-md' 
+                  <div
+                    key={index}
+                    className={`border rounded-lg p-4 cursor-pointer transition-all ${selectedTimeSlot === index
+                        ? 'border-red-500 bg-red-50 shadow-md'
                         : 'hover:border-gray-300 hover:shadow-sm'
-                    }`}
+                      }`}
                     onClick={() => selectTimeSlot(index)}
                   >
                     <div className="flex justify-between items-center mb-2">
@@ -239,28 +256,28 @@ export default function EventDetailPage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">
-                        Click to select
+                        Ấn để chọn
                       </span>
                       {selectedTimeSlot === index && (
                         <Badge variant="default" className="text-xs bg-red-500">
-                          Selected
+                          Đã chọn
                         </Badge>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               {selectedTimeSlot !== null && (
                 <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h4 className="font-medium text-red-800">Selected Time Slot</h4>
+                      <h4 className="font-medium text-red-800">Khoảng thời gian đã chọn</h4>
                       <p className="text-sm text-red-600">
                         {event.timeSlotDtos[selectedTimeSlot].startTime} - {event.timeSlotDtos[selectedTimeSlot].endTime}
                       </p>
                     </div>
-                    <Button 
+                    <Button
                       onClick={handleRegister}
                       disabled={registering}
                       className="ml-4 bg-red-500 hover:bg-red-600"
@@ -278,28 +295,28 @@ export default function EventDetailPage() {
         <div className="space-y-6">          {/* Stats */}
           <Card>
             <CardHeader>
-              <CardTitle>Event Statistics</CardTitle>
+              <CardTitle>Thống kê sự kiện</CardTitle>
             </CardHeader>            <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Registered:</span>
+                  <span className="text-muted-foreground">Số người đã đăng ký:</span>
                   <span className="font-medium">
                     <span className="text-red-600">{event.registeredMemberCount || 0}</span>
                     <span className="text-muted-foreground">/{event.totalMemberCount}</span>
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Total Capacity:</span>
+                  <span className="text-muted-foreground">Sức chứa:</span>
                   <span className="font-medium">{event.totalMemberCount}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Time Slots:</span>
+                  <span className="text-muted-foreground">Số ca:</span>
                   <span className="font-medium">{event.timeSlotDtos?.length || 0}</span>
                 </div>
                 {event.registeredMemberCount >= event.totalMemberCount && (
                   <div className="p-2 bg-red-50 rounded-lg border border-red-200">
                     <p className="text-xs text-red-700 font-medium text-center">
-                      Event is fully booked
+                      Sự kiện đã đầy
                     </p>
                   </div>
                 )}
@@ -310,34 +327,34 @@ export default function EventDetailPage() {
           {/* Registration Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Registration Guide</CardTitle>
+              <CardTitle>Hướng dẫn đăng ký</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-sm text-muted-foreground">
                 {selectedTimeSlot !== null ? (
                   <div className="p-3 bg-green-50 rounded-lg">
-                    <p className="font-medium text-green-800">Time slot selected!</p>
+                    <p className="font-medium text-green-800">Đã chọn khoảng thời gian!</p>
                     <p className="text-xs mt-1 text-green-600">
-                      Click &quot;Register for This Slot&quot; to confirm your registration.
+                      Nhấn  &quot;Đăng ký khung giờ này&quot; để xác nhận đăng ký của bạn.
                     </p>
                   </div>
                 ) : (
                   <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="font-medium text-blue-800">How to register:</p>
+                    <p className="font-medium text-blue-800">Làm sao để đăng ký:</p>
                     <ol className="text-xs mt-2 text-blue-600 space-y-1">
-                      <li>1. Select a time slot from the available options</li>
-                      <li>2. Click the &quot;Register for This Slot&quot; button</li>
-                      <li>3. You&apos;ll receive a confirmation email</li>
+                      <li>1. Chọn một khung giờ trong các tùy chọn có sẵn</li>
+                      <li>2. Nhấn nút &quot;Đăng ký khung giờ này&quot;</li>
+                      <li>3. Bạn sẽ nhận được email xác nhận</li>
                     </ol>
                   </div>
                 )}
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full"
-                onClick={() => router.push('/blood-donation-events')}
+                onClick={() => router.push('/donation-events')}
               >
-                Back to Events
+                Quay về trang Sự kiện
               </Button>
             </CardContent>
           </Card>
