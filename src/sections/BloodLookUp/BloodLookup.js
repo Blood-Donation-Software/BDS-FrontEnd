@@ -10,6 +10,7 @@ export default function BloodLookUp() {
   const [selectedComponent, setSelectedComponent] = useState()
   const [selectedType, setselectedType] = useState()
   const [active, setActive] = useState(false)
+  const [tab, setTab] = useState('donate'); // 'donate' hoặc 'receive'
   // Blood component data
   const bloodComponents = [
     { id: 1, name: "Whole Blood", icon: <Droplet className="h-6 w-6" /> },
@@ -20,14 +21,54 @@ export default function BloodLookUp() {
 
   // Blood types data
   const bloodTypes = [
-    { id: 1, type: "A+", canReceiveFrom: ["A+", "A-", "O+", "O-"] },
-    { id: 2, type: "A-", canReceiveFrom: ["A-", "O-"] },
-    { id: 3, type: "B+", canReceiveFrom: ["B+", "B-", "O+", "O-"] },
-    { id: 4, type: "B-", canReceiveFrom: ["B-", "O-"] },
-    { id: 5, type: "AB+", canReceiveFrom: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] },
-    { id: 6, type: "AB-", canReceiveFrom: ["A-", "B-", "AB-", "O-"] },
-    { id: 7, type: "O+", canReceiveFrom: ["O+", "O-"] },
-    { id: 8, type: "O-", canReceiveFrom: ["O-"] },
+    {
+      id: 1,
+      type: "A+",
+      canReceiveFrom: ["A+", "A-", "O+", "O-"],
+      canDonateTo: ["A+", "AB+"],
+    },
+    {
+      id: 2,
+      type: "A-",
+      canReceiveFrom: ["A-", "O-"],
+      canDonateTo: ["A+", "A-", "AB+", "AB-"],
+    },
+    {
+      id: 3,
+      type: "B+",
+      canReceiveFrom: ["B+", "B-", "O+", "O-"],
+      canDonateTo: ["B+", "AB+"],
+    },
+    {
+      id: 4,
+      type: "B-",
+      canDonateTo: ["B+", "B-", "AB+", "AB-"],
+      canReceiveFrom: ["B-", "O-"]
+    },
+    {
+      id: 5,
+      type: "AB+",
+      canDonateTo: ["AB+"],
+      canReceiveFrom: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+    },
+    {
+      id: 6,
+      type: "AB-",
+      canDonateTo: ["AB+", "AB-"],
+      canReceiveFrom: ["A-", "B-", "AB-", "O-"]
+    },
+    {
+      id: 7,
+      type: "O+",
+      canDonateTo: ["A+", "B+", "AB+", "O+"],
+      canReceiveFrom: ["O+", "O-"]
+    },
+    {
+      id: 8,
+      type: "O-",
+      canDonateTo: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      canReceiveFrom: ["O-"]
+    },
   ];
 
   // Blood component information
@@ -118,8 +159,8 @@ export default function BloodLookUp() {
                         key={component.id}
                         onClick={() => handleComponent(component)}
                         variant="outline"
-                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:"Inter-Medium",Helvetica] font-medium 
-                          ${selectedComponent && selectedComponent.id === component.id ? "bg-red-50 border-l-4 border-red-500 text-red-700" : "text-gray-700"}`}
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium 
+                          ${selectedComponent && selectedComponent.id === component.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {component.name}
                       </Button>
@@ -129,11 +170,8 @@ export default function BloodLookUp() {
                         key={component.id}
                         variant="outline"
                         onClick={() => handleComponent(component)}
-                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:"Inter-Medium",Helvetica] font-medium 
-                          ${selectedComponent && selectedComponent.id === component.id
-                            ? "bg-red-50 border-l-4 border-red-500 text-red-700"
-                            : "text-gray-700"
-                          }`}
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium 
+                          ${selectedComponent && selectedComponent.id === component.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {component.name}
                       </Button>
@@ -152,10 +190,7 @@ export default function BloodLookUp() {
                         variant="outline"
                         onClick={() => handleType(bloodType)}
                         className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium
-                          ${selectedType && selectedType.id === bloodType.id
-                            ? "bg-red-50 border-l-4 border-red-500 text-red-700"
-                            : "text-gray-700"
-                          }`}
+                          ${selectedType && selectedType.id === bloodType.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {bloodType.type}
                       </Button>
@@ -166,10 +201,7 @@ export default function BloodLookUp() {
                         variant="outline"
                         onClick={() => handleType(bloodType)}
                         className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium
-                          ${selectedType && selectedType.id === bloodType.id
-                            ? "bg-red-50 border-l-4 border-red-500 text-red-700"
-                            : "text-gray-700"
-                          }`}
+                          ${selectedType && selectedType.id === bloodType.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {bloodType.type}
                       </Button>
@@ -180,28 +212,61 @@ export default function BloodLookUp() {
             </CardContent>
           </Card>
 
-          {active ?
+          {/*Selected two*/}
+          {active ? (
             <Card className="w-full mb-12 shadow-[0px_4px_24px_#0000000d]">
-            <CardHeader>
-              <CardTitle><h1 className="font-bold text-2xl text-slate-800 text-center tracking-[0] leading-[72px] [font-family:'Inter-Bold',Helvetica]">Các nhóm máu tương thích</h1></CardTitle>
-            </CardHeader>
-            <CardContent>
-              <h2>
-                Nhóm máu có thể nhận: {selectedType ? selectedType.canReceiveFrom.join(", ") : <div></div>}
-              </h2>
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-2">Key Facts:</h3>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• O- is the universal donor (can donate to all blood types)</li>
-                  <li>• AB+ is the universal recipient (can receive from all blood types)</li>
-                  <li>• Rh-negative can donate to Rh-positive, but not vice versa</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-            :
+              <CardContent className="p-8">
+                <div className="flex mb-6">
+                  <button
+                    className={`flex-1 py-3 rounded-l-xl font-semibold text-lg transition-all ${tab === 'donate'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 text-gray-700'
+                      }`}
+                    onClick={() => setTab('donate')}
+                  >
+                    Có thể hiến cho
+                  </button>
+                  <button
+                    className={`flex-1 py-3 rounded-r-xl font-semibold text-lg transition-all ${tab === 'receive'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 text-gray-700'
+                      }`}
+                    onClick={() => setTab('receive')}
+                  >
+                    Có thể nhận từ
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-6 justify-center min-h-[120px]">
+                  {selectedType ? (
+                    (tab === 'donate'
+                      ? selectedType.canDonateTo
+                      : selectedType.canReceiveFrom
+                    ).map((type) => (
+                      <div
+                        key={type}
+                        className="bg-white rounded-xl shadow-md px-10 py-6 flex flex-col items-center min-w-[120px] border border-red-100"
+                      >
+                        <span className="text-3xl font-bold text-red-500 mb-2">{type}</span>
+                        <span className="text-gray-500 font-medium">Tương thích</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-gray-400 text-lg py-8">Vui lòng chọn nhóm máu để xem kết quả</span>
+                  )}
+                </div>
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <h3 className="font-semibold text-blue-800 mb-2">Thông tin quan trọng:</h3>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• O- là nhóm máu cho (có thể hiến cho tất cả các nhóm máu)</li>
+                    <li>• AB+ là nhóm máu nhận (có thể nhận từ tất cả các nhóm máu)</li>
+                    <li>• Rh âm có thể hiến cho Rh dương, nhưng ngược lại thì không</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
             <span></span>
-          }
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="shadow-[0px_4px_24px_#0000000d]">

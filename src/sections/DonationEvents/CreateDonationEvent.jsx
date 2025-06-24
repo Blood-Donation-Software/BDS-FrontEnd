@@ -266,6 +266,7 @@ export default function CreateDonationEventPage() {
     eventForm.setValue("totalMemberCount", totalCapacity);
   }, [
     eventForm,
+    watchedTimeSlots,
     ...(watchedTimeSlots?.map(slot => slot.maxCapacity) || [])
   ]);
   const handleAddTimeSlot = () => {
