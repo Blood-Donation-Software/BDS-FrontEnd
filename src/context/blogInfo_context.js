@@ -19,7 +19,20 @@ export default function BlogInfoProvider({ children }) {
             console.log("Fetching blog");
             const res = await getAllBlogs();
 
-            setBlogs(res.data || res);
+            let eventsData = [];
+            if (Array.isArray(res)) {
+                eventsData = res;
+            } else if (res && Array.isArray(res.data)) {
+                eventsData = res.data;
+            } else if (res && res.content && Array.isArray(res.content)) {
+                eventsData = res.content;
+            } else if (res && res.events && Array.isArray(res.events)) {
+                eventsData = res.events;
+            } else {
+                eventsData = [];
+            }
+
+            setBlogs(eventsData);
             console.log("hello", res.data);
         } catch (error) {
             console.error("Fetch blog error:", error);
