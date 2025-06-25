@@ -1,17 +1,20 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useBlogs } from '@/context/blogInfo_context';
+import { useRouter } from 'next/navigation';
 
 export default function BlogList() {
   const [posts, setPosts] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
   const postsPerPage = 6;
 
-  const { blogs, loading, error, selectedBlog, selectedBlogById, setLoading, setError } = useBlogs();
+  const { blogs, selectedBlog, selectedBlogById } = useBlogs();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -29,6 +32,12 @@ export default function BlogList() {
     setCurrentPage(1);
   }, [searchTerm]);
 
+  const handleClick = (post) => {
+    selectedBlogById(post.id);
+    router.push(`/blog/${post.id}`);
+  };
+
+
   // Logic tìm kiếm theo ký tự trong tiêu đề
   const filteredPosts = blogs.filter(post => {
 
@@ -45,12 +54,27 @@ export default function BlogList() {
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
+  const getThumbnailValue = (thumbnail) => {
+    if (!thumbnail) return '/default-thumbnail.jpg'; // fallback image
+    // Replace all backslashes with forward slashes
+    const normalized = thumbnail.replace(/\\/g, '/');
+    // If it's already an absolute URL (http/https), return as is
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) return normalized;
+    // If it starts with '/', return as is, else prepend '/'
+    return normalized.startsWith('/') ? normalized : `/${normalized}`;
+  }
+
   const BlogCard = ({ post }) => (
-    <Link href={`/blog/${post.id}`} className="h-full block">
+    <div
+      className="h-full block cursor-pointer"
+      onClick={() => handleClick(post)}
+      role="button"
+      tabIndex={0}
+    >
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
         <div className="relative h-48 w-full shrink-0">
           <Image
-            src={post.thumbnail || '/default-thumbnail.jpg'}
+            src={getThumbnailValue(post.thumbnail)}
             alt={post.title}
             fill
             className="object-cover"
@@ -78,7 +102,7 @@ export default function BlogList() {
             </div> */}
             <div>
               <p className="font-semibold text-sm">
-                {post.author?.profile.name || 'Tác giả'}
+                {post.author_id?.profile.name || 'Tác giả'}
               </p>
               {/* If you have a role field, display it here */}
               <p className="text-gray-500 text-xs">{post.author?.role}</p>
@@ -86,7 +110,7 @@ export default function BlogList() {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 
   const Pagination = () => (

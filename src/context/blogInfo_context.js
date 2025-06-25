@@ -51,7 +51,6 @@ export default function BlogInfoProvider({ children }) {
         const blog = blogs.find(e => e.id === parseInt(blogId));
         if (blog) {
             setSelectedBlog(blog);
-            console.log("Blog selected:", blog.title);
         }
         return blog;
     }, [blogs]);

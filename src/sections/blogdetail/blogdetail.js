@@ -3,10 +3,13 @@ import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useBlogs } from '@/context/blogInfo_context';
 
 export default function BlogDetail({ postId }) {
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
+
+  const { blogs, selectedBlog, selectedBlogById } = useBlogs();
 
   const categoryColors = {
     'Sức Khỏe': 'bg-green-600',
