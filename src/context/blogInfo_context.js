@@ -1,18 +1,18 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import {getAllBlogs} from "@/apis/blog"
+import { getAllBlogs } from "@/apis/blog"
 
 export const BlogInformationContext = createContext(null);
 
-export default function BlogInfoProvider({children}) { 
+export default function BlogInfoProvider({ children }) {
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchBlogs = useCallback(async () => {
-        try{
+        try {
             setLoading(true);
             setError(null);
 
@@ -20,6 +20,7 @@ export default function BlogInfoProvider({children}) {
             const res = await getAllBlogs();
 
             setBlogs(res.data || res);
+            console.log("hello", res.data);
         } catch (error) {
             console.error("Fetch blog error:", error);
             setError(error.message || 'Không thể tải');
@@ -31,7 +32,7 @@ export default function BlogInfoProvider({children}) {
 
     useEffect(() => {
         fetchBlogs();
-    }, [fetchBlogs]);
+    }, []);
 
     const selectedBlogById = useCallback((blogId) => {
         const blog = blogs.find(e => e.id === parseInt(blogId));
@@ -45,7 +46,7 @@ export default function BlogInfoProvider({children}) {
     const clearSelection = useCallback(() => {
         setSelectedBlog(null);
         console.log("Selection cleared");
-    }, []);   
+    }, []);
 
     const contextValue = {
         selectedBlog,
@@ -57,7 +58,7 @@ export default function BlogInfoProvider({children}) {
         selectedBlogById,
         fetchBlogs,
         clearSelection,
-        
+
 
 
         setSelectedBlog,
@@ -66,7 +67,7 @@ export default function BlogInfoProvider({children}) {
     }
 
     return (
-        <BlogInformationContext.Provider value = {contextValue}>
+        <BlogInformationContext.Provider value={contextValue}>
             {children}
         </BlogInformationContext.Provider>
     )
