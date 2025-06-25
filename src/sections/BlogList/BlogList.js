@@ -6,17 +6,8 @@ import Image from 'next/image';
 export default function BlogList() {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Tất Cả');
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
-
-  const categoryColors = {
-    'Sức Khỏe': 'bg-green-600',
-    'Công Nghệ': 'bg-blue-600',
-    'Cộng Đồng': 'bg-red-600',
-    'Hướng Dẫn': 'bg-yellow-600',
-    'default': 'bg-gray-600'
-  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -24,7 +15,6 @@ export default function BlogList() {
         {
           id: 1,
           title: "Nhận Thức Về Sức Khỏe Tâm Thần",
-          category: "Sức Khỏe",
           date: "6 Tháng 6, 2025",
           image: "/mentala.png",
           description: "Tìm hiểu và giải quyết các thách thức về sức khỏe tâm thần...",
@@ -37,7 +27,6 @@ export default function BlogList() {
         {
           id: 2,
           title: "Tương Lai Của Y Tế",
-          category: "Công Nghệ",
           date: "5 Tháng 6, 2025",
           image: "/healthcare-tech.jpg",
           description: "Khám phá những công nghệ đổi mới trong y tế...",
@@ -47,32 +36,6 @@ export default function BlogList() {
             role: "Chuyên gia công nghệ y tế"
           }
         },
-        {
-          id: 3,
-          title: "Hướng Dẫn Hiến Máu An Toàn",
-          category: "Hướng Dẫn",
-          date: "4 Tháng 6, 2025",
-          image: "/guide.jpg",
-          description: "Các bước chuẩn bị và quy trình hiến máu nhân đạo...",
-          author: {
-            name: "Bác sĩ Lê C",
-            avatar: "/doctor-c.jpg",
-            role: "Bác sĩ huyết học"
-          }
-        },
-        {
-          id: 4,
-          title: "Cộng Đồng Hiến Máu",
-          category: "Cộng Đồng",
-          date: "3 Tháng 6, 2025",
-          image: "/community.jpg",
-          description: "Kết nối những tấm lòng nhân ái trong cộng đồng...",
-          author: {
-            name: "ThS. Phạm D",
-            avatar: "/master-e.jpg",
-            role: "Điều phối viên cộng đồng"
-          }
-        }
       ];
       setPosts(blogPosts);
     };
@@ -83,21 +46,18 @@ export default function BlogList() {
   // Reset page when filtering or searching
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm]);
 
   // Logic tìm kiếm theo ký tự trong tiêu đề
   const filteredPosts = posts.filter(post => {
-    if (!searchTerm.trim()) {
-      return selectedCategory === 'Tất Cả' || post.category === selectedCategory;
-    }
+
     
     const searchLower = searchTerm.toLowerCase().trim();
     const titleLower = post.title.toLowerCase();
     
     const matchesSearch = titleLower.includes(searchLower);
-    const matchesCategory = selectedCategory === 'Tất Cả' || post.category === selectedCategory;
     
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   // Pagination 
@@ -141,36 +101,6 @@ export default function BlogList() {
     </div>
   );
 
-  const CategoryFilter = () => (
-    <div className="flex flex-wrap gap-3 mb-8">
-      <button
-        onClick={() => setSelectedCategory('Tất Cả')}
-        className={`px-4 py-2 rounded-lg transition-colors ${
-          selectedCategory === 'Tất Cả' 
-            ? 'bg-red-600 text-white' 
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
-      >
-        Tất Cả
-      </button>
-      {Object.keys(categoryColors).map(category => (
-        category !== 'default' && (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              selectedCategory === category
-                ? `${categoryColors[category]} text-white`
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {category}
-          </button>
-        )
-      ))}
-    </div>
-  );
-
   const BlogCard = ({ post }) => (
     <Link href={`/blog/${post.id}`} className="h-full block">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
@@ -185,9 +115,6 @@ export default function BlogList() {
         </div>
         <div className="p-4 flex flex-col flex-grow">
           <div className="flex items-center justify-between mb-2">
-            <span className={`${categoryColors[post.category]} text-white text-xs font-semibold px-2 py-1 rounded`}>
-              {post.category}
-            </span>
             <span className="text-gray-500 text-sm">{post.date}</span>
           </div>
           <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
@@ -258,7 +185,6 @@ export default function BlogList() {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <SearchBar />
-      <CategoryFilter />
 
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Bài Viết Mới Nhất</h1>
