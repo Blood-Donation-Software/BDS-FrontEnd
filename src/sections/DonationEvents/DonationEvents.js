@@ -139,10 +139,11 @@ function DonationEvents() {
         }
 
         return true
-    }    // Filter events based on search query and date range, excluding cancelled events
+    }    // Filter events based on search query and date range, excluding cancelled and completed events
     // const filteredEvents = events.filter(event =>
     const filteredEvents = (events || []).filter(event =>
         event.status !== 'CANCELLED' && // Exclude cancelled events
+        event.status !== 'COMPLETED' && // Exclude completed events
         (event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
             event.address.toLowerCase().includes(searchQuery.toLowerCase()) ||

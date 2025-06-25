@@ -35,13 +35,15 @@ export const endpoint = {
     login: `${BASE_URL}/api/auth/login`,
     register: `${BASE_URL}/api/auth/register`,
     verify: `${BASE_URL}/api/auth/verify`,
-    loginGoogle: `${BASE_URL}/oauth2/authorization/google`
-  },    user: {
+    loginGoogle: `${BASE_URL}/oauth2/authorization/google`,
+    forgotPassword: `${BASE_URL}/api/auth/forgot-password`,
+  },
+  user: {
     updateProfile: `${BASE_URL}/api/user/profile/update`,
     getProfile: `${BASE_URL}/api/user/profile`,
     getAllProfile: `${BASE_URL}/api/user/profile/list-profile`,
     getAllAccount: `${BASE_URL}/api/user/account/list-account`,
-    genAvatar: (name,rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
+    genAvatar: (name, rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
     getDonationHistory: `${BASE_URL}/api/user/profile/history`,
@@ -49,6 +51,7 @@ export const endpoint = {
     enableAccount: (accountId) => `${BASE_URL}/api/user/account/${accountId}/enable`,
     disableAccount: (accountId) => `${BASE_URL}/api/user/account/${accountId}/disable`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
+    updatePassword: `${BASE_URL}/api/user/account/update-password`,
   },
   bloodRequest: {
     getAll: `${BASE_URL}/blood-request/request-list`,
@@ -63,7 +66,8 @@ export const endpoint = {
     getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
     addStock: `${BASE_URL}/api/medical-facility-stock/add-blood-into-stock`,
     deleteStock: (id) => `${BASE_URL}/api/medical-facility-stock/${id}`,
-  },          bloodDonation: {
+  },
+  bloodDonation: {
     createEvent: `${BASE_URL}/api/donation-event-request/create`,
     listEvent: `${BASE_URL}/api/donation-event/list-donation`,
     approveEvent: (eventId) => `${BASE_URL}/api/donation-event/list-donation`,
@@ -73,11 +77,13 @@ export const endpoint = {
     updateEventRequest: (eventId) => `${BASE_URL}/api/donation-event-request/update/${eventId}`,
     deleteEventRequest: (eventId) => `${BASE_URL}/api/donation-event-request/delete/${eventId}`,
     recordDonation: (eventId) => `${BASE_URL}/api/donation-event/list-donation/${eventId}/record-donations`,
-  },eventRegistration: {
+  },
+  eventRegistration: {
     register: (eventId, timeSlotId) => `${BASE_URL}/api/event-registration/${eventId}/${timeSlotId}/register`,
     registerOffline: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/registerOffline`,
     cancel: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/cancel`,
-  },  checkin: {
+  },
+  checkin: {
     getToken: (eventId) => `${BASE_URL}/api/checkin/${eventId}/checkin-token`,
     getInfo: (eventId) => `${BASE_URL}/api/checkin/info/${eventId}`,
     checkIn: (eventId) => `${BASE_URL}/api/checkin/action/${eventId}`,
@@ -96,6 +102,20 @@ export const endpoint = {
     checkEmail: `${BASE_URL}/api/organizers/check-email`,
     getTotalCount: `${BASE_URL}/api/organizers/stats/count`,
     getActiveCount: `${BASE_URL}/api/organizers/stats/active-count`,
+  },
+  blog: {
+    listBlogs: `${BASE_URL}/api/blog/list-blogs`,
+    getBlogById: (blogId) => `${BASE_URL}/api/blog/list-blogs/${blogId}`,
+    getMyBlogs: `${BASE_URL}/api/blog/my-blogs`,
+    getMyBlogById: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}`,
+    updateBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/update`,
+    deleteBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/delete`,
+    createBlogRequest: `${BASE_URL}/api/blog-request/create`,
+    getPendingRequests: `${BASE_URL}/api/blog-request/pending`,
+    getBlogRequestById: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}`,
+    verifyBlogRequest: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}/verify`,
+    getMyBlogRequests: `${BASE_URL}/api/blog-request/my-requests`,
+    getMyBlogRequestById: (requestId) => `${BASE_URL}/api/blog-request/my-requests/${requestId}`,
   }
 }
 

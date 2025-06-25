@@ -74,3 +74,10 @@ export const updateRole = (accountId, role) => {
     return axiosInstance.put(endpoint.user.updateRole(accountId), { role })
         .then(res => res.data);
 }
+export const updatePassword = (oldPassword, newPassword) => {
+    return axiosInstance.put(endpoint.user.updatePassword, {
+        oldPassword,
+        newPassword
+    }).then(res => res.data);
+}
+

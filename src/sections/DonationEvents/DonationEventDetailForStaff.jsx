@@ -557,7 +557,7 @@ export default function StaffEventDetailPage() {
               View Donor List
             </Button>
 
-            {event.status === 'APPROVED' && (event.registeredMemberCount || 0) > 0 && (
+            {event.status === 'AVAILABLE' && (event.registeredMemberCount || 0) > 0 && (
               <Button 
                 className="w-full bg-green-600 hover:bg-green-700" 
                 onClick={handleReportFinishedEvent}

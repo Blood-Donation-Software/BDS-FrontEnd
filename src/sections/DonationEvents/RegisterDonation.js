@@ -225,7 +225,7 @@ function RegisterDonation() {
                 JSON.stringify(formData)
             );            console.log('Registration response:', response);
 
-            toast.success('Đăng ký thành công! Bạn sẽ nhận được email xác nhận sớm.');
+            toast.success('Đăng ký thành công!');
             
             // Save registration data to context/localStorage
             saveRegistration(formData);

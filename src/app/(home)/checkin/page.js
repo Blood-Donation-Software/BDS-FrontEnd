@@ -207,15 +207,11 @@ function CheckinPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <p className="font-medium text-gray-700">Họ và tên</p>
-                                        <p className="text-gray-900">{profile.firstName} {profile.lastName}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-gray-700">Email</p>
-                                        <p className="text-gray-900">{profile.email}</p>
+                                        <p className="text-gray-900">{profile.name}</p>
                                     </div>
                                     <div>
                                         <p className="font-medium text-gray-700">Số điện thoại</p>
-                                        <p className="text-gray-900">{profile.phoneNumber}</p>
+                                        <p className="text-gray-900">{profile.phone}</p>
                                     </div>
                                 </div>
                                 <div className="space-y-4">
