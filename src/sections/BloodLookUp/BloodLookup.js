@@ -1,9 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Activity, Droplet, Heart, Zap } from "lucide-react";
-import React from "react";
+"use client"
 
-export default function BloodCompatibility() {
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Activity, Droplet, Heart, Table, Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+
+export default function BloodLookUp() {
+  const [selectedComponent, setSelectedComponent] = useState()
+  const [selectedType, setselectedType] = useState()
+  const [active, setActive] = useState(false)
+  const [tab, setTab] = useState('donate'); // 'donate' hoặc 'receive'
   // Blood component data
   const bloodComponents = [
     { id: 1, name: "Whole Blood", icon: <Droplet className="h-6 w-6" /> },
@@ -14,14 +21,54 @@ export default function BloodCompatibility() {
 
   // Blood types data
   const bloodTypes = [
-    { id: 1, type: "A+" },
-    { id: 2, type: "A-" },
-    { id: 3, type: "B+" },
-    { id: 4, type: "B-" },
-    { id: 5, type: "AB+" },
-    { id: 6, type: "AB-" },
-    { id: 7, type: "O+" },
-    { id: 8, type: "O-" },
+    {
+      id: 1,
+      type: "A+",
+      canReceiveFrom: ["A+", "A-", "O+", "O-"],
+      canDonateTo: ["A+", "AB+"],
+    },
+    {
+      id: 2,
+      type: "A-",
+      canReceiveFrom: ["A-", "O-"],
+      canDonateTo: ["A+", "A-", "AB+", "AB-"],
+    },
+    {
+      id: 3,
+      type: "B+",
+      canReceiveFrom: ["B+", "B-", "O+", "O-"],
+      canDonateTo: ["B+", "AB+"],
+    },
+    {
+      id: 4,
+      type: "B-",
+      canDonateTo: ["B+", "B-", "AB+", "AB-"],
+      canReceiveFrom: ["B-", "O-"]
+    },
+    {
+      id: 5,
+      type: "AB+",
+      canDonateTo: ["AB+"],
+      canReceiveFrom: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+    },
+    {
+      id: 6,
+      type: "AB-",
+      canDonateTo: ["AB+", "AB-"],
+      canReceiveFrom: ["A-", "B-", "AB-", "O-"]
+    },
+    {
+      id: 7,
+      type: "O+",
+      canDonateTo: ["A+", "B+", "AB+", "O+"],
+      canReceiveFrom: ["O+", "O-"]
+    },
+    {
+      id: 8,
+      type: "O-",
+      canDonateTo: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      canReceiveFrom: ["O-"]
+    },
   ];
 
   // Blood component information
@@ -56,6 +103,36 @@ export default function BloodCompatibility() {
     },
   ];
 
+  const handleComponent = (component) => {
+    if (selectedComponent && component.id === selectedComponent.id) {
+      setSelectedComponent(null);
+    }
+    else {
+      setSelectedComponent(component);
+    }
+    console.log(component.id)
+    console.log(selectedComponent)
+  }
+
+  const handleType = (type) => {
+    if (selectedType && type.id === selectedType.id) {
+      setselectedType(null);
+    }
+    else {
+      setselectedType(type);
+    }
+
+  }
+
+  useEffect(() => {
+    if (selectedType && selectedComponent) {
+      setActive(true);
+    } else {
+      setActive(false);
+    }
+
+  }, [selectedComponent, selectedType])
+
   return (
     <div className=" flex flex-row justify-center bg-gray-100 w-full">
       <div className="w-full max-w-[1271px]">
@@ -80,8 +157,10 @@ export default function BloodCompatibility() {
                     {bloodComponents.slice(0, 2).map((component) => (
                       <Button
                         key={component.id}
+                        onClick={() => handleComponent(component)}
                         variant="outline"
-                        className="h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium"
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium 
+                          ${selectedComponent && selectedComponent.id === component.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {component.name}
                       </Button>
@@ -90,7 +169,9 @@ export default function BloodCompatibility() {
                       <Button
                         key={component.id}
                         variant="outline"
-                        className="h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium"
+                        onClick={() => handleComponent(component)}
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium 
+                          ${selectedComponent && selectedComponent.id === component.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {component.name}
                       </Button>
@@ -107,7 +188,9 @@ export default function BloodCompatibility() {
                       <Button
                         key={bloodType.id}
                         variant="outline"
-                        className="h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium"
+                        onClick={() => handleType(bloodType)}
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium
+                          ${selectedType && selectedType.id === bloodType.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {bloodType.type}
                       </Button>
@@ -116,7 +199,9 @@ export default function BloodCompatibility() {
                       <Button
                         key={bloodType.id}
                         variant="outline"
-                        className="h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium"
+                        onClick={() => handleType(bloodType)}
+                        className={`h-[58px] justify-center items-center rounded-xl border border-slate-200 shadow-[0px_2px_8px_#0000000d] [font-family:'Inter-Medium',Helvetica] font-medium
+                          ${selectedType && selectedType.id === bloodType.id ? "bg-red-500 text-white border-0" : "text-gray-700"}`}
                       >
                         {bloodType.type}
                       </Button>
@@ -126,6 +211,62 @@ export default function BloodCompatibility() {
               </div>
             </CardContent>
           </Card>
+
+          {/*Selected two*/}
+          {active ? (
+            <Card className="w-full mb-12 shadow-[0px_4px_24px_#0000000d]">
+              <CardContent className="p-8">
+                <div className="flex mb-6">
+                  <button
+                    className={`flex-1 py-3 rounded-l-xl font-semibold text-lg transition-all ${tab === 'donate'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 text-gray-700'
+                      }`}
+                    onClick={() => setTab('donate')}
+                  >
+                    Có thể hiến cho
+                  </button>
+                  <button
+                    className={`flex-1 py-3 rounded-r-xl font-semibold text-lg transition-all ${tab === 'receive'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 text-gray-700'
+                      }`}
+                    onClick={() => setTab('receive')}
+                  >
+                    Có thể nhận từ
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-6 justify-center min-h-[120px]">
+                  {selectedType ? (
+                    (tab === 'donate'
+                      ? selectedType.canDonateTo
+                      : selectedType.canReceiveFrom
+                    ).map((type) => (
+                      <div
+                        key={type}
+                        className="bg-white rounded-xl shadow-md px-10 py-6 flex flex-col items-center min-w-[120px] border border-red-100"
+                      >
+                        <span className="text-3xl font-bold text-red-500 mb-2">{type}</span>
+                        <span className="text-gray-500 font-medium">Tương thích</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-gray-400 text-lg py-8">Vui lòng chọn nhóm máu để xem kết quả</span>
+                  )}
+                </div>
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <h3 className="font-semibold text-blue-800 mb-2">Thông tin quan trọng:</h3>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• O- là nhóm máu cho (có thể hiến cho tất cả các nhóm máu)</li>
+                    <li>• AB+ là nhóm máu nhận (có thể nhận từ tất cả các nhóm máu)</li>
+                    <li>• Rh âm có thể hiến cho Rh dương, nhưng ngược lại thì không</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <span></span>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="shadow-[0px_4px_24px_#0000000d]">
