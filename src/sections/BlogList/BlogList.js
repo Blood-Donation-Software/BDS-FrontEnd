@@ -16,17 +16,6 @@ export default function BlogList() {
 
   const { blogs, selectedBlog, selectedBlogById } = useBlogs();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const blogPosts = [
-
-      ];
-      setPosts(blogPosts);
-    };
-
-    fetchPosts();
-  }, []);
-
   // Reset page when filtering or searching
   useEffect(() => {
     setCurrentPage(1);
