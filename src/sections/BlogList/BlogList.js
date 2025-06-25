@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 export default function BlogList() {
   const [posts, setPosts] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
@@ -51,13 +52,11 @@ export default function BlogList() {
   // Logic tìm kiếm theo ký tự trong tiêu đề
   const filteredPosts = posts.filter(post => {
 
-    
+
     const searchLower = searchTerm.toLowerCase().trim();
     const titleLower = post.title.toLowerCase();
-    
-    const matchesSearch = titleLower.includes(searchLower);
-    
-    return matchesSearch;
+
+    return titleLower.includes(searchLower);
   });
 
   // Pagination 
@@ -75,22 +74,22 @@ export default function BlogList() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <svg 
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" 
+      <svg
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
         width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
         />
       </svg>
-      
+
       {searchTerm && (
         <button
           onClick={() => setSearchTerm('')}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
           aria-label="Xóa tìm kiếm"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" 
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
           >
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -145,24 +144,22 @@ export default function BlogList() {
       <button
         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
         disabled={currentPage === 1}
-        className={`px-4 py-2 rounded-lg ${
-          currentPage === 1 
+        className={`px-4 py-2 rounded-lg ${currentPage === 1
             ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
+          }`}
       >
         Trước
       </button>
-      
+
       {[...Array(totalPages)].map((_, index) => (
         <button
           key={index + 1}
           onClick={() => setCurrentPage(index + 1)}
-          className={`px-4 py-2 rounded-lg ${
-            currentPage === index + 1
+          className={`px-4 py-2 rounded-lg ${currentPage === index + 1
               ? 'bg-red-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+            }`}
         >
           {index + 1}
         </button>
@@ -171,11 +168,10 @@ export default function BlogList() {
       <button
         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className={`px-4 py-2 rounded-lg ${
-          currentPage === totalPages
+        className={`px-4 py-2 rounded-lg ${currentPage === totalPages
             ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
+          }`}
       >
         Sau
       </button>
@@ -198,7 +194,7 @@ export default function BlogList() {
           <BlogCard key={post.id} post={post} />
         ))}
       </div>
-  <Pagination />
+      <Pagination />
       {filteredPosts.length > postsPerPage && <Pagination />}
 
       {filteredPosts.length === 0 && (

@@ -2,19 +2,20 @@
 import { useParams } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import BlogDetail from '@/sections/blogdetail/blogdetail';
-import Header from '@/sections/header/Header';
-import Footer from '@/sections/Footer/Footer';
+import { useBlogs } from "@/context/blogInfo_context";
 
 export default function BlogDetailPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { blogs, loading, error, selectedBlog, selectedBlogById, setLoading, setError } = useBlogs();
+  const { id } = useParams();
+  
 const params = useParams();
   useEffect(() => {
     if (params?.id) {
-      setIsLoading(false);
+      setLoading(false);
     }
   }, [params]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <>
         
