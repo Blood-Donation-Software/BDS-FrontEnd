@@ -13,11 +13,14 @@ export default function AuthenticationLayout({children}) {
                 </p>
                 </div>
             </div>
+            
 
             {/* Phần form đăng ký bên phải */}
             <div className="flex-1 flex items-center justify-center p-8 w-1/2">
                 {children}
             </div>
+            
         </div>
+        
     );
 }

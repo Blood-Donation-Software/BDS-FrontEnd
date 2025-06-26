@@ -19,6 +19,7 @@ import Link from "next/link"
 import { useUserProfile } from "@/context/user_context"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { logout } from "@/apis/auth"
 
 export default function AppSidebar({ items }) {
     const pathname = usePathname();
@@ -28,15 +29,38 @@ export default function AppSidebar({ items }) {
 
     const handleLogout = async () => {
         try {
+            // Call the logout API
             await logout();
+
+            // Clear user data from context
             setProfile(null);
             setAccount(null);
             setLoggedIn(false);
+
+            // Clear any stored tokens or session data
+            if (typeof window !== 'undefined') {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+
+            // Redirect to login page
             router.push('/login');
-            toast.success("Đăng xuất thanh công!");
+
+            toast.success("Đăng xuất thành công!");
         } catch (error) {
-            toast.error("Đăng xuất thất bại, vui lòng thử lại sau!");
-            toast.error(error?.response?.data?.message || "Lỗi không xác định");
+            console.error("Logout error:", error);
+
+            // Even if API call fails, clear local data and redirect
+            setProfile(null);
+            setAccount(null);
+            setLoggedIn(false);
+
+            if (typeof window !== 'undefined') {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+
+            router.push('/login');
         }
     }
 
@@ -101,8 +125,8 @@ export default function AppSidebar({ items }) {
                                         <SquareUserRound />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="font-semibold">Username</span>
-                                        <span className="text-gray-500">Staff</span>
+                                        <span className="font-semibold">{profile?.name || account?.email || "User"}</span>
+                                        <span className="text-gray-500">{account?.role || "Staff"}</span>
                                     </div>
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>

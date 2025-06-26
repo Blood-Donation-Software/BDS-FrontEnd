@@ -12,15 +12,26 @@ export default function ProfileManagement() {
     const [activeSection, setActiveSection] = useState('profile');
     const { profile, loggedIn, account } = useContext(UserContext);
 
+    // Helper function to format blood type display
+    const formatBloodType = (bloodType) => {
+        if (!bloodType) return '';
+
+        const bloodTypeMap = {
+            'A_POSITIVE': 'A+',
+            'A_NEGATIVE': 'A-',
+            'B_POSITIVE': 'B+',
+            'B_NEGATIVE': 'B-',
+            'AB_POSITIVE': 'AB+',
+            'AB_NEGATIVE': 'AB-',
+            'O_POSITIVE': 'O+',
+            'O_NEGATIVE': 'O-'
+        };
+
+        return bloodTypeMap[bloodType] || bloodType;
+    };
+
     const handleChange = (section) => {
         setActiveSection(section);
-    }
-
-    const bloodType = () => {
-        switch (profile.bloodType) {
-            case '':
-                return 'O+'
-        }
     }
 
     return (
@@ -52,7 +63,7 @@ export default function ProfileManagement() {
                             </div>
                             <div className="mt-4 text-center">
                                 <div className="font-semibold text-lg">{profile.name}</div>
-                                <div className="text-gray-500 text-sm">Blood Type O+</div>
+                                <div className="text-gray-500 text-sm">Blood Type {formatBloodType(profile.bloodType)}</div>
                             </div>
                             {/* Navigation */}
                             <div className="mt-8 w-full flex flex-col gap-2">
