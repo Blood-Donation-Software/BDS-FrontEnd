@@ -1,11 +1,12 @@
 'use client'
 import { register } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { genAvatar } from '@/apis/user';
+import {useUserProfile} from "@/context/user_context"
 
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();

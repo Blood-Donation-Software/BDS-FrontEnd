@@ -13,11 +13,36 @@
   pointer-events: none;
 }
 
+/* Enhanced image styles */
 .ProseMirror img {
   max-width: 100%;
   height: auto;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.ProseMirror img:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transform: scale(1.02);
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Image upload feedback */
+.image-uploading {
+  opacity: 0.6;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.image-upload-error {
+  border: 2px solid #ef4444;
+  background-color: #fecaca;
 }
 
 .ProseMirror blockquote {
@@ -121,4 +146,21 @@
 /* Selection styles */
 .ProseMirror ::selection {
   background-color: #dbeafe;
+}
+
+/* Drag and drop styles */
+.ProseMirror.drag-over {
+  background-color: #eff6ff;
+  border: 2px dashed #3b82f6;
+}
+
+/* Loading animation for images */
+@keyframes imageLoading {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+.image-loading {
+  animation: imageLoading 1.5s ease-in-out infinite;
 }

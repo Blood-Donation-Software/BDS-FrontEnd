@@ -1,47 +1,68 @@
 "use client"
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { enableAccount, disableAccount } from "@/apis/user";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-
+import { getAllAccount } from "@/apis/user";
+import { updateStatus } from "@/apis/user";
 export default function AccountManagement() {
     const [accounts, setAccounts] = useState([
-        { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'Donor', status: 'Active', lastLogin: '2 hours ago' },
-        { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Staff', status: 'Active', lastLogin: 'Yesterday' },
-        { id: 3, name: 'Mike Wilson', email: 'mike.w@example.com', role: 'Donor', status: 'Inactive', lastLogin: '3 weeks ago' },
-        { id: 4, name: 'Lisa Brown', email: 'lisa.brown@example.com', role: 'Staff', status: 'Active', lastLogin: '1 day ago' },
-        { id: 5, name: 'David Lee', email: 'david.lee@example.com', role: 'Admin', status: 'Active', lastLogin: '5 hours ago' },
+        // { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'Donor', status: 'Active', lastLogin: '2 hours ago' },
+        // { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Staff', status: 'Active', lastLogin: 'Yesterday' },
+        // { id: 3, name: 'Mike Wilson', email: 'mike.w@example.com', role: 'Donor', status: 'Inactive', lastLogin: '3 weeks ago' },
+        // { id: 4, name: 'Lisa Brown', email: 'lisa.brown@example.com', role: 'Staff', status: 'Active', lastLogin: '1 day ago' },
+        // { id: 5, name: 'David Lee', email: 'david.lee@example.com', role: 'Admin', status: 'Active', lastLogin: '5 hours ago' },
     ]);
     const [loadingId, setLoadingId] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
-    const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Donor', status: 'Active', lastLogin: 'Chưa đăng nhập' });
-
-    const getStatusBadge = (status) => {
+    const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Staff', tatus: 'Active', lastLogin: 'Chưa đăng nhập' });
+useEffect(() => {
+    const fetchAccounts = async () => {
+        try {
+            const data = await getAllAccount();
+            // Nếu API trả về { content: [...] }
+            setAccounts(
+                Array.isArray(data.content)
+                    ? data.content.map(acc => ({
+                        ...acc,
+                        name: acc.name || acc.email, // fallback nếu không có name
+                        lastLogin: acc.lastLogin || "Chưa đăng nhập"
+                    }))
+                    : []
+            );
+        } catch (e) {
+            alert("Không thể tải danh sách tài khoản!");
+            setAccounts([]);
+        }
+    };
+    fetchAccounts();
+}, []);
+    const getStatusBadge = (Status) => {
         const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
-        if (status === 'Active') {
+        if (Status === 'ENABLE') {
             return `${baseClasses} bg-green-100 text-green-800` ;
-        } else if (status === 'Inactive') {
+        } else if (Status === 'DISABLE') {
             return `${baseClasses} bg-gray-100 text-gray-800`;
         }
         return baseClasses;
     };
 
-    const handleEnableDisable = async (account) => {
-        setLoadingId(account.id);
-        try {
-            if (account.status === 'Active') {
-                await disableAccount(account.id);
-                setAccounts(prev => prev.map(a => a.id === account.id ? { ...a, status: 'Inactive' } : a));
-            } else {
-                await enableAccount(account.id);
-                setAccounts(prev => prev.map(a => a.id === account.id ? { ...a, status: 'Active' } : a));
-            }
-        } catch (e) {
-            alert('Có lỗi xảy ra!');
-        } finally {
-            setLoadingId(null); 
-        }
-    };
+const handleStatus = async (account) => {
+    setLoadingId(account.id);
+    try {
+        // Đổi sang enum đúng với backend, ví dụ: "ENABLED"/"DISABLED"
+        const newStatus = account.status === 'ENABLE' ? 'DISABLE' : 'ENABLE';
+        await updateStatus(account.id, newStatus);
+        setAccounts(prev =>
+            prev.map(a =>
+                a.id === account.id ? { ...a, status: newStatus } : a
+            )
+        );
+    } catch (e) {
+        alert('Có lỗi xảy ra!');
+    } finally {
+        setLoadingId(null);
+    }
+};
 
     return(
         <div className="p-5">
@@ -62,15 +83,14 @@ export default function AccountManagement() {
                 <div className="flex items-center space-x-2">
                     <select className="py-2 px-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
                         <option value="">All Roles</option>
-                        <option value="donor">Donor</option>
-                        <option value="staff">Staff</option>
+                        <option value="member">Member</option>
                         <option value="admin">Admin</option>
                     </select>
 
                     <select className="py-2 px-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500">
                         <option value="">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="ENABLE">Active</option>
+                        <option value="DISABLE">Inactive</option>
                     </select>
 
                     <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
@@ -131,8 +151,8 @@ export default function AccountManagement() {
           value={newUser.status}
           onChange={(e) => setNewUser({...newUser, status: e.target.value})}
         >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
+          <option value="ENABLE">Active</option>
+          <option value="DISABLE">Inactive</option>
         </select>
       </div>
     </div>
@@ -156,7 +176,7 @@ export default function AccountManagement() {
             ...prev,
           ]);
           setShowAddForm(false);
-          setNewUser({name: '', email: '', role: 'Donor', status: 'Active', lastLogin: 'Never'});
+          setNewUser({name: '', email: '', role: 'Donor', status: 'ENABLE', lastLogin: 'Never'});
         }}
       >
         Save User
@@ -219,15 +239,11 @@ export default function AccountManagement() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
-                                    <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                    {account.status === 'Active' ? (
+                                    
+                                    {account.status === 'ENABLE' ? (
                                         <button
                                             className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-xs font-medium"
-                                            onClick={() => handleEnableDisable(account)}
+                                            onClick={() => handleStatus(account)}
                                             disabled={loadingId === account.id}
                                         >
                                             Disable
@@ -235,7 +251,7 @@ export default function AccountManagement() {
                                     ) : (
                                         <button
                                             className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors text-xs font-medium"
-                                            onClick={() => handleEnableDisable(account)}
+                                            onClick={() => handleStatus(account)}
                                             disabled={loadingId === account.id}
                                         >
                                             Enable
