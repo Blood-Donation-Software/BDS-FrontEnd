@@ -9,26 +9,40 @@ export const login = ({ email, password }) => {
 };
 
 export const loginGoogle = () => {
-    window.location.href = `${endpoint.auth.loginGoogle}`;
+  window.location.href = `${endpoint.auth.loginGoogle}`;
 };
 
-export const register = (account) => {
-    return axiosInstance.post(endpoint.auth.register, account)
-    .then(res => res.data);
+export const register = (account, name) => {
+  return axiosInstance.post(
+    endpoint.auth.register,
+    account,
+    { params: { name } }
+  ).then(res => res.data);
 };
 
 export const verifyOtp = (otp) => {
-    return axiosInstance.post(endpoint.auth.verify,null, {
-        params: {
-            "verificationCode": otp,
-        }
-    }).then(res => res.data);
+  return axiosInstance.post(endpoint.auth.verify, null, {
+    params: {
+      "verificationCode": otp,
+    }
+  }).then(res => res.data);
 }
 
-export const resendOtp = () => {
-
+export const resendOtp = (email) => {
+  return axiosInstance.post(
+    endpoint.auth.resendVerification,
+    null,
+    { params: { email } }
+  ).then(res => res.data);
 }
 
 export const logout = () => {
   return axiosInstance.get('/api/auth/logout');
+}
+export const forgotPassword = (email) => {
+  return axiosInstance.post(
+    '/api/auth/forgot-password',
+    null,
+    { params: { email } }
+  ).then(res => res.data);
 }

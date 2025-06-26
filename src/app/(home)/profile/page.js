@@ -58,6 +58,14 @@ const profileSchema = z.object({
   district: z.string().optional(),
   ward: z.string().optional(),
 });
+const handleUpdateProfile = async (profileData) => {
+    try {
+        await updateProfile(profileData); // profileData là object chứa thông tin mới
+        // Hiển thị thông báo thành công, cập nhật UI nếu cần
+    } catch (error) {
+        // Hiển thị thông báo lỗi
+    }
+};
 
 export default function ProfilePage() {
   const { profile, account, fetchUserProfile, isLoading, userRole } = useUserProfile();
@@ -803,6 +811,7 @@ export default function ProfilePage() {
                       )}
                     </form>
                   </Form>
+                  {/* Thêm form đổi mật khẩu */}
                 </CardContent>
               </Card>
             </div>

@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { RoleProtection, ROLES } from "@/components/auth";
-
+import { updatePassword } from "@/apis/user";
 export default function SettingsPage() {
   const { account, profile } = useUserProfile();
   const [settings, setSettings] = useState({
@@ -21,7 +21,7 @@ export default function SettingsPage() {
     timezone: 'Asia/Ho_Chi_Minh'
   });
   const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
+    oldPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
@@ -61,12 +61,11 @@ export default function SettingsPage() {
 
     setSaving(true);
     try {
-      // TODO: Implement API call to change password
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      await updatePassword(passwordForm.oldPassword, passwordForm.newPassword);
       toast.success("Mật khẩu đã được thay đổi thành công!");
-      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi thay đổi mật khẩu!");
+      toast.error(error?.response?.data?.message || "Có lỗi xảy ra khi thay đổi mật khẩu!");
     }
     setSaving(false);
   };
@@ -204,12 +203,12 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current-password">Mật khẩu hiện tại</Label>
+                    <Label htmlFor="old-password">Mật khẩu hiện tại</Label>
                     <Input
-                      id="current-password"
-                      name="currentPassword"
+                      id="old-password"
+                      name="oldPassword"
                       type="password"
-                      value={passwordForm.currentPassword}
+                      value={passwordForm.oldPassword}
                       onChange={handlePasswordChange}
                       placeholder="Nhập mật khẩu hiện tại"
                     />
@@ -241,7 +240,7 @@ export default function SettingsPage() {
                   
                   <Button 
                     onClick={changePassword} 
-                    disabled={saving || !passwordForm.currentPassword || !passwordForm.newPassword}
+                    disabled={saving || !passwordForm.oldPassword || !passwordForm.newPassword}
                     className="w-full"
                   >
                     {saving ? "Đang thay đổi..." : "Đổi mật khẩu"}
