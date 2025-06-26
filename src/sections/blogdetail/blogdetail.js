@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function BlogDetail({ postId }) {
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
- 
+
   const categoryColors = {
     'Sức Khỏe': 'bg-green-600',
     'Công Nghệ': 'bg-blue-600',
@@ -96,7 +96,7 @@ export default function BlogDetail({ postId }) {
       ];
 
       const currentPost = posts.find(p => p.id === postId);
-      
+
       if (currentPost) {
         setPost(currentPost);
         const related = posts
@@ -120,16 +120,13 @@ export default function BlogDetail({ postId }) {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
-          <Link 
-            href="/blog" 
+          <Link
+            href="/blog"
             className="text-gray-600 hover:text-gray-800"
           >
             ← Quay lại
           </Link>
-          <span className={`${categoryColors[post.category]} text-white text-sm px-3 py-1 rounded-md`}>
-            {post.category}
-          </span>
-          <span className="text-gray-500">{post.date}</span>
+          <span className="text-gray-500 ml-auto">{post.date}</span>
         </div>
         <h1 className="text-4xl font-bold mb-6">{post.title}</h1>
 
@@ -162,7 +159,7 @@ export default function BlogDetail({ postId }) {
       </div>
 
       {/* Content */}
-      <div 
+      <div
         className="prose prose-lg max-w-none mb-12"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
@@ -172,8 +169,8 @@ export default function BlogDetail({ postId }) {
         <h2 className="text-2xl font-bold mb-6">Bài viết liên quan</h2>
         <div className="grid gap-6 md:grid-cols-2">
           {relatedPosts.map((related) => (
-            <Link 
-              href={`/blog/${related.id}`} 
+            <Link
+              href={`/blog/${related.id}`}
               key={related.id}
               className="group"
             >
