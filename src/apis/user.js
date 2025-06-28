@@ -66,3 +66,23 @@ export const updateStatus = (accountId, status) => {
         { status }
     ).then(res => res.data);
 }
+export const enableAccount = (accountId) => {
+    return axiosInstance.put(endpoint.user.enableAccount(accountId))
+        .then(res => res.data);
+}
+
+export const disableAccount = (accountId) => {
+    return axiosInstance.put(endpoint.user.disableAccount(accountId))
+        .then(res => res.data);
+}
+
+export const updateRole = (accountId, role) => {
+    return axiosInstance.put(endpoint.user.updateRole(accountId), { role })
+        .then(res => res.data);
+}
+export const updatePassword = (oldPassword, newPassword) => {
+    return axiosInstance.put(endpoint.user.updatePassword, {
+        oldPassword,
+        newPassword
+    }).then(res => res.data);
+}
