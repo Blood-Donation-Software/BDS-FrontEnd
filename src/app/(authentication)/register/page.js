@@ -6,14 +6,9 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { genAvatar } from '@/apis/user';
-<<<<<<< Feature/ChangePasswordAPI
 import { useUserProfile } from '@/context/user_context';
-import { useEffect } from 'react';
 import { resendOtp } from '@/apis/auth';
-=======
-import {useUserProfile} from "@/context/user_context"
 
->>>>>>> Features/Issues
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();
   const [loading, setLoading] = useState(false);

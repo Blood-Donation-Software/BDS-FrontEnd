@@ -2,7 +2,7 @@
 
 import axiosInstance, { endpoint } from "@/utils/axios";
 import { createContext, useState, useEffect, useContext } from "react";
-import { getProfile, getAccount } from '@/apis/user';
+import { getProfile, getAccount, updateProfile, uploadAvatar } from '@/apis/user';
 
 export const UserContext = createContext(null);
 
