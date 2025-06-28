@@ -9,7 +9,6 @@ import { useParams } from 'next/navigation';
 export default function BlogDetail() {
   const { id } = useParams();
   const [relatedPosts, setRelatedPosts] = useState([]);
-
   const { blogs, selectedBlog, selectedBlogById } = useBlogs();
 
   const blog = selectedBlog || blogs.find(b => String(b.id) === String(id));
