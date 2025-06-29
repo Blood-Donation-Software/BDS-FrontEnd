@@ -182,10 +182,6 @@ function PersonalInfo() {
     }
   };
 
-  const handleSubmitFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
   return (
     <div className="flex-1">
       <div className="bg-white rounded-2xl shadow-md p-8 relative">
