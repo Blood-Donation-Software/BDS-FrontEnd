@@ -4,6 +4,8 @@ import Footer from "@/sections/Footer/Footer";
 import { Toaster } from "sonner";
 import { PublicEnvScript } from "next-runtime-env";
 import UserProvider from "@/context/user_context";
+import LanguageProvider, { useLanguage } from "@/context/language_context";
+import LanguageSwitcher from "@/data/locales/LanguageSwitcher";
 
 
 export const metadata = {
@@ -12,16 +14,23 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
-    <html lang="en">
+    <html >
       <head>
         <PublicEnvScript />
       </head>
+
       <body>
-        <UserProvider>
-          {children}
-        </UserProvider>
-          <Toaster position="top-center" richColors/>
+        
+          <UserProvider>
+          <LanguageProvider>
+            <LanguageSwitcher/>
+            {children}
+            </LanguageProvider>
+          </UserProvider>
+          <Toaster position="top-center" richColors />
+        
       </body>
     </html>
   );

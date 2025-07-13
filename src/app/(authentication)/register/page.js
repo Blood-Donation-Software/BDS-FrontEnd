@@ -6,14 +6,10 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { genAvatar } from '@/apis/user';
-<<<<<<< Feature/ChangePasswordAPI
 import { useUserProfile } from '@/context/user_context';
-import { useEffect } from 'react';
 import { resendOtp } from '@/apis/auth';
-=======
-import {useUserProfile} from "@/context/user_context"
+import { useLanguage } from '@/context/language_context';
 
->>>>>>> Features/Issues
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();
   const [loading, setLoading] = useState(false);
@@ -21,20 +17,21 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const {dictionary} = useLanguage();
   const router = useRouter();
 
   const handleResendOtp = async () => {
-  try {
-    if (!email) {
-      toast.warning("Vui lòng nhập email trước khi gửi lại OTP!");
-      return;
+    try {
+      if (!email) {
+        toast.warning("Vui lòng nhập email trước khi gửi lại OTP!");
+        return;
+      }
+      const result = await resendOtp(email);
+      toast.success(result?.message || "Đã gửi lại OTP thành công!");
+    } catch (error) {
+      toast.error(error?.message || "Gửi lại OTP thất bại!");
     }
-    const result = await resendOtp(email);
-    toast.success(result?.message || "Đã gửi lại OTP thành công!");
-  } catch (error) {
-    toast.error(error?.message || "Gửi lại OTP thất bại!");
-  }
-};
+  };
 
 
   // Helper to get avatar as base64 string
@@ -91,13 +88,13 @@ export default function RegisterPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Đăng Ký</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">{dictionary?.auth?.register}</h1>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Họ và Tên</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.fullName}</label>
           <input
             type="text"
-            placeholder="VD: Nguyễn Văn A"
+            placeholder={dictionary?.example?.nameExample}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -105,10 +102,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.email}</label>
           <input
             type="email"
-            placeholder="Vui lòng nhập email"
+            placeholder={dictionary?.example?.enterEmail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -116,10 +113,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Mật Khẩu</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.password}</label>
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder= {dictionary?.example?.enterPassword}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -127,10 +124,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Xác nhận mật khẩu</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.confirmPassword}</label>
           <input
             type="password"
-            placeholder="Nhập lại mật khẩu"
+            placeholder={dictionary?.example?.confirmPasswordExample}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -145,25 +142,20 @@ export default function RegisterPage() {
           {loading ? (
             <Loader2 className="animate-spin w-5 h-5" />
           ) : (
-            'Tạo tài khoản'
+            dictionary?.auth?.register
           )}
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
           <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
-            <span>Đăng ký qua Google</span>
-          </button>
-
-          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
-            <Image src="https://www.svgrepo.com/show/512317/github-142.svg" width={10} height={10} alt="GitHub" className="w-5 h-5" />
-            <span>Đăng ký qua Github</span>
+            <span>{dictionary?.auth?.registerWithGoogle}</span>
           </button>
         </div>
 
         <p className="text-sm text-center">
-          Đã có tài khoản?{' '}
-          <a href="/login" className="text-blue-600 hover:underline">Đăng nhập ngay</a>
+          {dictionary?.auth?.alreadyhadAccount}{' '}
+          <a href="/login" className="text-blue-600 hover:underline">{dictionary?.auth?.loginNow}</a>
         </p>
       </div>
     </div>

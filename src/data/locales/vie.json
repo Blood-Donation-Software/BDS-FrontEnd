@@ -1,0 +1,153 @@
+{
+  "app": {
+    "name": "Hiến Máu"
+  },
+  "auth": {
+    "register": "Đăng ký",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "forgot_password": "Quên mật khẩu",
+    "reset_password": "Đặt lại mật khẩu",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "registerWithGoogle": "Đăng ký với Google",
+    "loginWithGitHub": "Đăng nhập với GitHub",
+    "No_account_yet": "Chưa có tài khoản?",
+    "alreadyhadAccount": "Đã có tài khoản?",
+    "registerNow": " Đăng ký ngay",
+    "loginNow": "Đăng nhập ngay",
+    "fullName": "Họ và Tên",
+    "confirmPassword": "Xác nhận mật khẩu"
+    
+  },
+  "user": {
+    "profile": "Hồ sơ",
+    "blood_type": "Nhóm máu",
+    "location": "Địa điểm",
+    "contact": "Liên hệ",
+    "update_profile": "Cập nhật hồ sơ",
+    "change_avatar": "Đổi ảnh đại diện",
+    "role": "Vai trò",
+    "status": "Trạng thái",
+    "enable_account": "Kích hoạt tài khoản",
+    "disable_account": "Vô hiệu hóa tài khoản"
+  },
+  "navbar": {
+    "donate_blood": "Hiến máu",
+    "find_donor": "Tìm người hiến máu",
+    "profile": "Hồ sơ",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
+    "language": "Ngôn ngữ",
+    "change_language": "Đổi ngôn ngữ"
+  },
+  "greeting": {
+    "hello": "Xin chào",
+    "welcome": "Chào mừng đến với hệ thống Hiến Máu!",
+    "slogan": " Giọt máu nghĩa tình - Kết nối trái tim",
+    "explain": "HopeWell là cầu nối giữa người hiến máu và những bệnh nhân đang cần giúp đỡ. Mỗi hành động của bạn có thể cứu sống một người khác."
+  },
+  "form": {
+    "search": "Tìm kiếm",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "reset": "Đặt lại",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "confirm": "Xác nhận"
+  },
+  "bloodRequest": {
+    "title": "Yêu cầu máu",
+    "create_request": "Tạo yêu cầu máu",
+    "request_list": "Danh sách yêu cầu máu",
+    "request_detail": "Chi tiết yêu cầu máu",
+    "my_requests": "Yêu cầu của tôi",
+    "status": "Trạng thái",
+    "created_at": "Ngày tạo",
+    "updated_at": "Ngày cập nhật"
+  },
+  "bloodStock": {
+    "title": "Kho máu",
+    "facility": "Cơ sở y tế",
+    "stock_list": "Danh sách kho máu",
+    "blood_group": "Nhóm máu",
+    "quantity": "Số lượng"
+  },
+  "bloodDonation": {
+    "title": "Sự kiện hiến máu",
+    "list_event": "Danh sách sự kiện hiến máu",
+    "event_detail": "Chi tiết sự kiện",
+    "register_event": "Đăng ký tham gia",
+    "my_registrations": "Đăng ký của tôi",
+    "date": "Ngày",
+    "location": "Địa điểm",
+    "organizer": "Đơn vị tổ chức"
+  },
+  "eventRegistration": {
+    "title": "Đăng ký sự kiện",
+    "register": "Đăng ký",
+    "cancel_registration": "Hủy đăng ký",
+    "registration_list": "Danh sách đăng ký",
+    "status": "Trạng thái"
+  },
+  "checkin": {
+    "title": "Điểm danh",
+    "checkin_now": "Điểm danh ngay",
+    "checkin_history": "Lịch sử điểm danh",
+    "status": "Trạng thái"
+  },
+  "organizer": {
+    "title": "Đơn vị tổ chức",
+    "organizer_list": "Danh sách đơn vị tổ chức",
+    "add_organizer": "Thêm đơn vị tổ chức",
+    "edit_organizer": "Chỉnh sửa đơn vị tổ chức",
+    "delete_organizer": "Xóa đơn vị tổ chức"
+  },
+  "blog": {
+    "title": "Bài viết",
+    "blog_list": "Danh sách bài viết",
+    "blog_detail": "Chi tiết bài viết",
+    "create_blog": "Tạo bài viết",
+    "edit_blog": "Chỉnh sửa bài viết",
+    "delete_blog": "Xóa bài viết"
+  },
+  "notification": {
+    "title": "Thông báo",
+    "no_notification": "Không có thông báo nào",
+    "mark_all_as_read": "Đánh dấu tất cả đã đọc"
+  },
+  "error": {
+    "not_found": "Không tìm thấy",
+    "unauthorized": "Chưa xác thực",
+    "forbidden": "Không có quyền truy cập",
+    "internal_server_error": "Lỗi máy chủ",
+    "network_error": "Lỗi mạng",
+    "required": "Trường này là bắt buộc",
+    "invalid_email": "Email không hợp lệ",
+    "password_mismatch": "Mật khẩu không khớp"
+  },
+  "validation": {
+    "required": "Bắt buộc",
+    "invalid_email": "Email không hợp lệ",
+    "min_length": "Độ dài tối thiểu là {{min}}",
+    "max_length": "Độ dài tối đa là {{max}}"
+  },
+  "common": {
+    "yes": "Có",
+    "no": "Không",
+    "ok": "OK",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "previous": "Trước",
+    "save": "Lưu"
+  },
+  "example":{
+    "nameExample": "Nguyễn Văn A",
+    "enterEmail": "Nhập email của bạn", 
+    "enterPassword": "Nhập mật khẩu của bạn",
+    "confirmPasswordExample": "Nhập lại mật khẩu của bạn"
+  }
+}

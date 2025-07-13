@@ -5,12 +5,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useLanguage } from '@/context/language_context'; 
+import { getDictionary } from '@/utils/utils';
+
 
 export default function LoginPage() {
   const { fetchUserProfile, loggedIn, account } = useUserProfile();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { dictionary} = useLanguage();
   const handleLoginEmail = async () => {
     try {
       const myAccount = await login({ email, password });
@@ -45,12 +49,13 @@ export default function LoginPage() {
   }, [loggedIn, router, account]);
 
   return (
+    
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Đăng Nhập</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">{dictionary?.auth?.login }</h1>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.email }</label>
           <input
             type="email"
             placeholder="Vui lòng nhập email"
@@ -61,7 +66,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.password}</label>
           <input
             type="password"
             placeholder="Nhập mật khẩu"
@@ -74,7 +79,7 @@ export default function LoginPage() {
         <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 mb-6"
           onClick={handleLoginEmail}
         >
-          Đăng nhập
+          {dictionary?.auth?.login }
         </button>
 
         <div className="flex items-center justify-between mb-4">
@@ -88,21 +93,18 @@ export default function LoginPage() {
             onClick={handleLoginGoogle}
           >
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
-            <span>Đăng nhập qua Google</span>
+            <span>{dictionary?.auth?.loginWithGoogle}</span>
           </button>
 
-          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
-            <Image src="https://www.svgrepo.com/show/512317/github-142.svg" width={10} height={10} alt="GitHub" className="w-5 h-5" />
-            <span>Đăng nhập qua Github</span>
-          </button> 
+          
         </div>
         <p className="text-sm text-center mb-2">
-          <a href="/forgot-password" className="text-blue-600 hover:underline">Quên mật khẩu?</a>
+          <a href="/forgot-password" className="text-blue-600 hover:underline">{dictionary?.auth?.forgotPassword}</a>
         </p>
 
         <p className="text-sm text-center">
-          Chưa có tài khoản?{' '}
-          <a href="/register" className="text-blue-600 hover:underline">Đăng ký ngay</a>
+          {dictionary?.auth?.No_account_yet} {' '}
+          <a href="/register" className="text-blue-600 hover:underline">{dictionary?.auth?.registerNow}</a>
         </p>
       </div>
     </div>

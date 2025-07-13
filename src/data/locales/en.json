@@ -1,0 +1,154 @@
+{
+  "app": {
+    "name": "Blood Donation"
+  },
+  "auth": {
+    "register": "Register",
+    "login": "Login",
+    "logout": "Logout",
+    "forgot_password": "Forgot Password",
+    "reset_password": "Reset Password",
+    "email": "Email",
+    "password": "Password",
+    "loginWithGoogle": "Login with Google",
+    "registerWithGoogle": "Register with Google",
+    "loginWithGitHub": "Login with GitHub",
+    "No_account_yet": "No account yet?",
+    "alreadyhadAccount": "Already have an account?",
+    "registerNow": "Register Now",
+    "loginNow": "Login Now",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password"
+
+  },
+  "user": {
+    "profile": "Profile",
+    "blood_type": "Blood Type",
+    "location": "Location",
+    "contact": "Contact",
+    "update_profile": "Update Profile",
+    "change_avatar": "Change Avatar",
+    "role": "Role",
+    "status": "Status",
+    "enable_account": "Enable Account",
+    "disable_account": "Disable Account"
+  },
+  "navbar": {
+    "donate_blood": "Donate Blood",
+    "find_donor": "Find Donor",
+    "profile": "Profile",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "language": "Language",
+    "change_language": "Change language"
+  },
+  "greeting": {
+    "hello": "Hello",
+    "welcome": "Welcome to Blood Donation!",
+    "slogan": "Blood binds, love connects",
+    "explain": "HopeWell connects blood donors to those fighting for survival. Every donation you make becomes someone's second chance."
+  },
+  "form": {
+    "search": "Search",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "bloodRequest": {
+    "title": "Blood Request",
+    "create_request": "Create Blood Request",
+    "request_list": "Blood Request List",
+    "request_detail": "Blood Request Detail",
+    "my_requests": "My Requests",
+    "status": "Status",
+    "created_at": "Created At",
+    "updated_at": "Updated At"
+  },
+  "bloodStock": {
+    "title": "Blood Stock",
+    "facility": "Medical Facility",
+    "stock_list": "Blood Stock List",
+    "blood_group": "Blood Group",
+    "quantity": "Quantity"
+  },
+  "bloodDonation": {
+    "title": "Blood Donation Event",
+    "list_event": "List Donation Events",
+    "event_detail": "Event Detail",
+    "register_event": "Register for Event",
+    "my_registrations": "My Registrations",
+    "date": "Date",
+    "location": "Location",
+    "organizer": "Organizer"
+  },
+  "eventRegistration": {
+    "title": "Event Registration",
+    "register": "Register",
+    "cancel_registration": "Cancel Registration",
+    "registration_list": "Registration List",
+    "status": "Status"
+  },
+  "checkin": {
+    "title": "Check-in",
+    "checkin_now": "Check-in Now",
+    "checkin_history": "Check-in History",
+    "status": "Status"
+  },
+  "organizer": {
+    "title": "Organizer",
+    "organizer_list": "Organizer List",
+    "add_organizer": "Add Organizer",
+    "edit_organizer": "Edit Organizer",
+    "delete_organizer": "Delete Organizer"
+  },
+  "blog": {
+    "title": "Blog",
+    "blog_list": "Blog List",
+    "blog_detail": "Blog Detail",
+    "create_blog": "Create Blog",
+    "edit_blog": "Edit Blog",
+    "delete_blog": "Delete Blog"
+  },
+  "notification": {
+    "title": "Notification",
+    "no_notification": "No notifications",
+    "mark_all_as_read": "Mark all as read"
+  },
+  "error": {
+    "not_found": "Not Found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "internal_server_error": "Internal Server Error",
+    "network_error": "Network Error",
+    "required": "This field is required",
+    "invalid_email": "Invalid email address",
+    "password_mismatch": "Passwords do not match"
+  },
+  "validation": {
+    "required": "Required",
+    "invalid_email": "Invalid email",
+    "min_length": "Minimum length is {{min}}",
+    "max_length": "Maximum length is {{max}}"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save"
+  },
+  "example": {
+    "nameExample": "John Doe",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "confirmPasswordExample": "Re-enter your password"
+  }
+
+}
