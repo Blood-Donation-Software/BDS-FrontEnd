@@ -307,7 +307,8 @@ export default function BlogRequest() {
             </div>
           </div>
 
-          <Table>            <TableHeader>
+          <Table>            
+            <TableHeader>
               <TableRow>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('blog.title')}>

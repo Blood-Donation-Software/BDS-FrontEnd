@@ -2,7 +2,7 @@
 
 import { getRequestById } from '@/apis/bloodrequest';
 import { deleteStock } from '@/apis/bloodStock';
-import { getAllAccount, getProfile, updateProfile } from '@/apis/user';
+import { getAllAccount, getDonationHistory, getProfile, updateProfile } from '@/apis/user';
 import { AVATAR_URL, BASE_URL } from '@/global-config';
 import axios from 'axios';
 import { add } from 'lodash';
@@ -48,11 +48,12 @@ export const endpoint = {
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
     getDonationHistory: `${BASE_URL}/api/user/profile/history`,
     profile: `${BASE_URL}/user/info`,
-     updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
+    updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
     updatePassword: `${BASE_URL}/api/user/account/update-password`,
 
-    getProfileByPersonalId: (personalId) => `${BASE_URL}/api/user/profile/${personalId}`, 
+    getDonationHistoryById: (profileId) => `${BASE_URL}/api/user/profile/list-profile/profileId/${profileId}/history`,
+    create: `${BASE_URL}/api/user/profile/create`,
   },
   bloodRequest: {
     getAll: `${BASE_URL}/blood-request/request-list`,

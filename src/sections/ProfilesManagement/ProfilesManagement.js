@@ -1,8 +1,6 @@
-
-
 "use client"
 
-import React, { use, useEffect, useState } from 'react';
+import React, { use, useEffect, useState, useCallback, useMemo } from 'react';
 import { Search, Plus, Eye } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { getAllProfile, updateProfile } from '@/apis/user';
+import { getAllProfile, updateProfile, createProfile, getDonationHistoryById } from '@/apis/user';
 import {
     Dialog,
     DialogClose,
@@ -29,6 +27,235 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import vietnamProvinces from '@/data/vietnam-provinces.json';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { set } from 'lodash';
+
+// DialogForm component for both create and update
+const DialogForm = React.memo(({
+    profile,
+    formData,
+    onSubmit,
+    onChange,
+    onSelectChange,
+    loading,
+    availableDistricts,
+    availableWards,
+    vietnamProvinces
+}) => {
+    const isUpdate = profile !== null;
+
+    return (
+        <DialogContent className="sm:max-w-[425px] lg:max-w-[700px] max-h-[90vh]">
+            <form onSubmit={onSubmit}>
+                <DialogHeader>
+                    <DialogTitle>{isUpdate ? 'Edit Profile' : 'Create Profile'}</DialogTitle>
+                    <DialogDescription>
+                        {isUpdate ? 'Update the profile information below.' : 'Create the profile with information below.'}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="max-h-[60vh] overflow-y-auto pr-2">
+                    {isUpdate && (
+                        <>
+                            <input type='hidden' name="id" value={profile?.id || ''} />
+                            <input type='hidden' name="accountId" value={profile?.accountId || ''} />
+                        </>
+                    )}
+                    <div className="grid grid-cols-1 gap-6">
+                        <div>
+                            <label className="block text-gray-600 mb-1">Full Name</label>
+                            <input
+                                name="name"
+                                required
+                                value={formData?.name || ''}
+                                className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                onChange={onChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Phone Number</label>
+                            <input
+                                name="phone"
+                                required
+                                value={formData?.phone || ''}
+                                pattern="^(03|05|07|08|09)\d{8}$"
+                                title="Please enter a valid Vietnamese phone number (e.g., 0912345678)"
+                                className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                onChange={onChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Personal ID</label>
+                            <input
+                                name="personalId"
+                                required
+                                value={formData?.personalId || ''}
+                                className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                onChange={onChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Date of Birth</label>
+                            <input
+                                name="dob"
+                                type="date"
+                                required
+                                value={formData?.dob || ''}
+                                className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                onChange={onChange}
+                            />
+                        </div>
+                        {isUpdate && (
+                            <div>
+                                <label className="block text-gray-600 mb-1">Last Donation Date</label>
+                                <input
+                                    name="lastDonationDate"
+                                    type="date"
+                                    value={formData?.lastDonationDate || ''}
+                                    className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                    onChange={onChange}
+                                />
+                            </div>
+                        )}
+                        <div>
+                            <label className="block text-gray-600 mb-1">Blood Type</label>
+                            <Select
+                                value={formData?.blood_type || ''}
+                                onValueChange={(value) => onSelectChange('blood_type', value)}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select blood type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="A_POSITIVE">A+</SelectItem>
+                                    <SelectItem value="A_NEGATIVE">A-</SelectItem>
+                                    <SelectItem value="B_POSITIVE">B+</SelectItem>
+                                    <SelectItem value="B_NEGATIVE">B-</SelectItem>
+                                    <SelectItem value="AB_POSITIVE">AB+</SelectItem>
+                                    <SelectItem value="AB_NEGATIVE">AB-</SelectItem>
+                                    <SelectItem value="O_POSITIVE">O+</SelectItem>
+                                    <SelectItem value="O_NEGATIVE">O-</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Gender</label>
+                            <Select
+                                value={formData?.gender || ''}
+                                onValueChange={(value) => onSelectChange('gender', value)}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="MALE">Male</SelectItem>
+                                    <SelectItem value="FEMALE">Female</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">City/Province</label>
+                            <Select
+                                value={formData?.city || ''}
+                                onValueChange={(value) => onSelectChange('city', value)}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select city/province" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {vietnamProvinces.map((province, index) => (
+                                        <SelectItem key={index} value={province.name}>
+                                            {province.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">District</label>
+                            <Select
+                                value={formData?.district || ''}
+                                onValueChange={(value) => onSelectChange('district', value)}
+                                disabled={availableDistricts.length === 0}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select district" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableDistricts.map((district, index) => (
+                                        <SelectItem key={index} value={district.name}>
+                                            {district.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Ward</label>
+                            <Select
+                                value={formData?.ward || ''}
+                                onValueChange={(value) => onSelectChange('ward', value)}
+                                disabled={availableWards.length === 0}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select ward" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableWards.map((ward, index) => (
+                                        <SelectItem key={index} value={ward.name}>
+                                            {ward.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Address</label>
+                            <input
+                                name="address"
+                                required
+                                value={formData?.address || ''}
+                                className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
+                                onChange={onChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-gray-600 mb-1">Status</label>
+                            <Select
+                                value={formData?.status || ''}
+                                onValueChange={(value) => onSelectChange('status', value)}
+                            >
+                                <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="AVAILABLE">Available</SelectItem>
+                                    <SelectItem value="UNAVAILABLE">Unavailable</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <button
+                            type="button"
+                            disabled={loading}
+                            className="border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:bg-gray-400 disabled:cursor-not-allowed text-gray-700 font-semibold px-8 py-3 rounded-lg transition-all duration-200"
+                        >
+                            Cancel
+                        </button>
+                    </DialogClose>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-lg transition"
+                    >
+                        {loading ? (isUpdate ? "Updating..." : "Creating...") : (isUpdate ? "Save Changes" : "Create Profile")}
+                    </button>
+                </DialogFooter>
+            </form>
+        </DialogContent>
+    );
+});
 
 // Sample data matching ProfileDto structure
 
@@ -39,7 +266,13 @@ export default function ProfilesManagement() {
     const [selectedProfile, setSelectedProfile] = useState(null);
     const [availableDistricts, setAvailableDistricts] = useState([]);
     const [availableWards, setAvailableWards] = useState([]);
+    const [createAvailableDistricts, setCreateAvailableDistricts] = useState([]);
+    const [createAvailableWards, setCreateAvailableWards] = useState([]);
     const [form, setForm] = useState();
+    const [createForm, setCreateForm] = useState();
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+    const [selectedHistory, setSelectedHistory] = useState(null);
 
     const convertDateFormat = (dateString) => {
         if (!dateString) return '';
@@ -71,23 +304,25 @@ export default function ProfilesManagement() {
     };
 
     useEffect(() => {
-        const data = ({
-            id: selectedProfile?.id || '',
-            accountId: selectedProfile?.accountId || '',
-            name: selectedProfile?.name || '',
-            phone: selectedProfile?.phone || '',
-            personalId: selectedProfile?.personalId || '',
-            address: selectedProfile?.address || '',
-            blood_type: selectedProfile?.bloodType || '',
-            ward: selectedProfile?.ward || '',
-            gender: selectedProfile?.gender || '',
-            district: selectedProfile?.district || '',
-            dob: convertDateFormat(selectedProfile?.dateOfBirth) || '',
-            lastDonationDate: convertDateFormat(selectedProfile?.lastDonationDate) || '',
-            city: selectedProfile?.city || '',
-            status: selectedProfile?.status || ''
-        });
-        setForm(data);
+        if (selectedProfile) {
+            const data = {
+                id: selectedProfile.id || '',
+                accountId: selectedProfile.accountId || '',
+                name: selectedProfile.name || '',
+                phone: selectedProfile.phone || '',
+                personalId: selectedProfile.personalId || '',
+                address: selectedProfile.address || '',
+                blood_type: selectedProfile.bloodType || '',
+                ward: selectedProfile.ward || '',
+                gender: selectedProfile.gender || '',
+                district: selectedProfile.district || '',
+                dob: convertDateFormat(selectedProfile.dateOfBirth) || '',
+                lastDonationDate: convertDateFormat(selectedProfile.lastDonationDate) || '',
+                city: selectedProfile.city || '',
+                status: selectedProfile.status || ''
+            };
+            setForm(data);
+        }
     }, [selectedProfile]);
 
     // Update districts when city changes
@@ -172,17 +407,171 @@ export default function ProfilesManagement() {
         (profile.bloodType?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
 
-    const handleAddNewProfile = () => {
-        // TODO: Implement add new profile functionality
-        console.log('Add new profile clicked');
+    // Update districts when city changes for createForm
+    useEffect(() => {
+        if (createForm?.city) {
+            const selectedProvince = vietnamProvinces.find(province => province.name === createForm.city);
+            if (selectedProvince) {
+                setCreateAvailableDistricts(selectedProvince.districts);
+                // Reset district and ward when city changes
+                if (createForm.district && !selectedProvince.districts.find(d => d.name === createForm.district)) {
+                    setCreateForm(prev => ({ ...prev, district: '', ward: '' }));
+                    setCreateAvailableWards([]);
+                }
+            } else {
+                setCreateAvailableDistricts([]);
+                setCreateAvailableWards([]);
+            }
+        } else {
+            setCreateAvailableDistricts([]);
+            setCreateAvailableWards([]);
+        }
+    }, [createForm?.city]);
+
+    // Update wards when district changes for createForm
+    useEffect(() => {
+        if (createForm?.district && createAvailableDistricts.length > 0) {
+            const selectedDistrict = createAvailableDistricts.find(district => district.name === createForm.district);
+            if (selectedDistrict) {
+                setCreateAvailableWards(selectedDistrict.wards);
+                // Reset ward when district changes
+                if (createForm.ward && !selectedDistrict.wards.find(w => w.name === createForm.ward)) {
+                    setCreateForm(prev => ({ ...prev, ward: '' }));
+                }
+            } else {
+                setCreateAvailableWards([]);
+            }
+        } else {
+            setCreateAvailableWards([]);
+        }
+    }, [createForm?.district, createAvailableDistricts]);
+
+    // Initialize districts and wards for createForm when it changes
+    useEffect(() => {
+        if (createForm?.city) {
+            const selectedProvince = vietnamProvinces.find(province => province.name === createForm.city);
+            if (selectedProvince) {
+                setCreateAvailableDistricts(selectedProvince.districts);
+
+                if (createForm.district) {
+                    const selectedDistrict = selectedProvince.districts.find(district => district.name === createForm.district);
+                    if (selectedDistrict) {
+                        setCreateAvailableWards(selectedDistrict.wards);
+                    }
+                }
+            }
+        }
+    }, [createForm?.city, createForm?.district]);
+
+    // Initialize createForm when dialog opens
+    const handleOpenCreateDialog = () => {
+        setCreateForm({
+            name: '',
+            phone: '',
+            personalId: '',
+            address: '',
+            blood_type: '',
+            ward: '',
+            gender: '',
+            district: '',
+            dob: '',
+            lastDonationDate: '',
+            city: '',
+            status: 'AVAILABLE'
+        });
+        setCreateAvailableDistricts([]);
+        setCreateAvailableWards([]);
+        setCreateDialogOpen(true);
+    };
+
+    // Reset createForm when dialog is closed
+    const handleCloseCreateDialog = () => {
+        setCreateForm(null);
+        setCreateAvailableDistricts([]);
+        setCreateAvailableWards([]);
+        setCreateDialogOpen(false);
+    };
+
+    // Handle opening update dialog
+    const handleOpenUpdateDialog = (profile) => {
+        setSelectedProfile(profile);
+        setUpdateDialogOpen(true);
+    };
+
+    // Handle closing update dialog
+    const handleCloseUpdateDialog = () => {
+        setSelectedProfile(null);
+        setForm(null);
+        setAvailableDistricts([]);
+        setAvailableWards([]);
+        setUpdateDialogOpen(false);
+    };
+
+    // Handle opening history dialog
+    const handleViewHistoryDialog = async (profileId) => {
+        try {
+            const response = await getDonationHistoryById(profileId);
+            setSelectedHistory(response.content);
+            console.log('Donation history:', response.content);
+        }
+        catch (error) {
+            console.error('Error fetching donation history:', error);
+            alert('Failed to fetch donation history. Please try again.');
+        }
+    };
+
+    // Handle adding a new profile
+    const handleAddNewProfile = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            // Prepare the data for submission
+            const formData = {
+                id: createForm.id,
+                accountId: createForm.accountId,
+                name: createForm.name,
+                phone: createForm.phone,
+                personalId: createForm.personalId,
+                address: createForm.address,
+                bloodType: createForm.blood_type,
+                ward: createForm.ward,
+                gender: createForm.gender,
+                district: createForm.district,
+                dateOfBirth: convertDateForServer(createForm.dob),
+                lastDonationDate: convertDateForServer(createForm.lastDonationDate),
+                city: createForm.city,
+                status: createForm.status
+            };
+
+            console.log('Submitting profile data:', formData);
+            const response = await createProfile(formData);
+            console.log('Create response:', response);
+
+            // Refresh the profiles list
+            const updatedProfiles = await getAllProfile();
+            setProfiles(updatedProfiles.content);
+
+            // Close dialog and reset form state
+            handleCloseCreateDialog();
+
+            alert('Profile created successfully!');
+        } catch (error) {
+            console.error('Error creating profile:', error);
+            alert('Failed to create profile. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleViewDetails = (profile) => {
-        // TODO: Implement view details functionality
-        setSelectedProfile(profile);
+        // Only set selectedProfile if it's different from current
+        if (!selectedProfile || selectedProfile.id !== profile.id) {
+            setSelectedProfile(profile);
+        }
     };
 
-    const handleSubmit = async (e) => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
         setLoading(true);
 
@@ -213,9 +602,8 @@ export default function ProfilesManagement() {
             const updatedProfiles = await getAllProfile();
             setProfiles(updatedProfiles.content);
 
-            // Reset form state
-            setSelectedProfile(null);
-            setForm(null);
+            // Close dialog and reset form state
+            handleCloseUpdateDialog();
 
             alert('Profile updated successfully!');
         } catch (error) {
@@ -235,14 +623,58 @@ export default function ProfilesManagement() {
             );
         }
 
-        return (
-            <Badge
-                variant={status === 'AVAILABLE' ? 'default' : 'secondary'}
-                className={status === 'AVAILABLE' ? 'bg-green-200 hover:bg-green-300 text-green-900 font-bold' : 'bg-red-200 hover:bg-red-300 text-red-900 font-bold'}
-            >
-                {status}
-            </Badge>
-        );
+        // Handle different status types with appropriate colors
+        switch (status.toLowerCase()) {
+            case 'available':
+                return (
+                    <Badge variant="default" className="bg-green-200 hover:bg-green-300 text-green-900 font-bold">
+                        AVAILABLE
+                    </Badge>
+                );
+            case 'unavailable':
+                return (
+                    <Badge variant="secondary" className="bg-red-200 hover:bg-red-300 text-red-900 font-bold">
+                        UNAVAILABLE
+                    </Badge>
+                );
+            case 'pending':
+                return (
+                    <Badge variant="secondary" className="bg-yellow-200 hover:bg-yellow-300 text-yellow-900 font-bold">
+                        PENDING
+                    </Badge>
+                );
+            case 'cancelled':
+                return (
+                    <Badge variant="secondary" className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold">
+                        CANCELLED
+                    </Badge>
+                );
+            case 'completed':
+                return (
+                    <Badge variant="default" className="bg-blue-200 hover:bg-blue-300 text-blue-900 font-bold">
+                        COMPLETED
+                    </Badge>
+                );
+            case 'rejected':
+                return (
+                    <Badge variant="secondary" className="bg-red-200 hover:bg-red-300 text-red-900 font-bold">
+                        REJECTED
+                    </Badge>
+                );
+            case 'checked_in':
+            case 'checked in':
+                return (
+                    <Badge variant="default" className="bg-purple-200 hover:bg-purple-300 text-purple-900 font-bold">
+                        CHECKED IN
+                    </Badge>
+                );
+            default:
+                return (
+                    <Badge variant="secondary" className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold">
+                        {status.toUpperCase()}
+                    </Badge>
+                );
+        }
     };
 
     const formatBloodType = (bloodType) => {
@@ -260,14 +692,35 @@ export default function ProfilesManagement() {
         return dateString;
     };
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
+        setForm((prev) => {
+            if (prev?.[name] === value) return prev; // Prevent unnecessary updates
+            return { ...prev, [name]: value };
+        });
+    }, []);
 
-    const handleSelectChange = (name, value) => {
-        setForm((prev) => ({ ...prev, [name]: value }));
-    };
+    const handleSelectChange = useCallback((name, value) => {
+        setForm((prev) => {
+            if (prev?.[name] === value) return prev; // Prevent unnecessary updates
+            return { ...prev, [name]: value };
+        });
+    }, []);
+
+    const handleCreateChange = useCallback((e) => {
+        const { name, value } = e.target;
+        setCreateForm((prev) => {
+            if (prev?.[name] === value) return prev; // Prevent unnecessary updates
+            return { ...prev, [name]: value };
+        });
+    }, []);
+
+    const handleCreateSelectChange = useCallback((name, value) => {
+        setCreateForm((prev) => {
+            if (prev?.[name] === value) return prev; // Prevent unnecessary updates
+            return { ...prev, [name]: value };
+        });
+    }, []);
 
     return (
         <>
@@ -291,14 +744,34 @@ export default function ProfilesManagement() {
                         </div>
 
                         {/* Add New Profile Button */}
-                        <Button
-                            onClick={handleAddNewProfile}
-                            className="bg-red-600 text-white hover:bg-red-700 shadow-md"
-                            size="default"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add new Profile
-                        </Button>
+                        <Dialog onOpenChange={(open) => {
+                            if (open) {
+                                handleOpenCreateDialog();
+                            } else {
+                                handleCloseCreateDialog();
+                            }
+                        }}>
+                            <DialogTrigger asChild>
+                                <Button
+                                    className="bg-red-600 text-white hover:bg-red-700 shadow-md"
+                                    size="default"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add new Profile
+                                </Button>
+                            </DialogTrigger>
+                            <DialogForm
+                                profile={null}
+                                formData={createForm}
+                                onSubmit={handleAddNewProfile}
+                                onChange={handleCreateChange}
+                                onSelectChange={handleCreateSelectChange}
+                                loading={loading}
+                                availableDistricts={createAvailableDistricts}
+                                availableWards={createAvailableWards}
+                                vietnamProvinces={vietnamProvinces}
+                            />
+                        </Dialog>
                     </div>
 
                     {/* Results count */}
@@ -317,7 +790,7 @@ export default function ProfilesManagement() {
                                 <TableHead>BLOOD TYPE</TableHead>
                                 <TableHead>CONTACT</TableHead>
                                 <TableHead>STATUS</TableHead>
-                                <TableHead>LAST DONATE</TableHead>
+                                <TableHead className="text-center">DONATION HISTORY</TableHead>
                                 <TableHead className="text-right">DETAILS</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -358,207 +831,88 @@ export default function ProfilesManagement() {
                                         <TableCell>
                                             {getStatusBadge(profile.status)}
                                         </TableCell>
-                                        <TableCell>
-                                            <div className="text-sm text-gray-900">
-                                                {formatDate(profile.lastDonationDate) || 'Never donated'}
-                                            </div>
+                                        <TableCell className="text-center">
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" onClick={() => handleViewHistoryDialog(profile.id)}>
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                    </button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[425px] lg:max-w-[900px] max-h-[90vh]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Donation history</DialogTitle>
+                                                        <DialogDescription>
+                                                            View member's donation history here.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead className="w-[150px]">Donation Name</TableHead>
+                                                                <TableHead className="w-[200px]">Location</TableHead>
+                                                                <TableHead className="w-[100px]">Type</TableHead>
+                                                                <TableHead className="w-[100px]">Status</TableHead>
+                                                                <TableHead className="text-right w-[120px]">Donation Date</TableHead>
+                                                                <TableHead className="text-right w-[120px]">Registration Date</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {selectedHistory?.map((history) => (
+                                                                <TableRow key={history?.registrationId}>
+                                                                    <TableCell className="font-medium">{history?.donationName}</TableCell>
+                                                                    <TableCell className="w-[200px]">
+                                                                        <div className="whitespace-normal break-words text-sm leading-relaxed">
+                                                                            {history?.donationLocation}
+                                                                        </div>
+                                                                    </TableCell>
+                                                                    <TableCell>{history?.donationType}</TableCell>
+                                                                    <TableCell>{getStatusBadge(history?.registrationDonationRegistrationStatus)}</TableCell>
+                                                                    <TableCell className="text-right">{history?.donationDate}</TableCell>
+                                                                    <TableCell className="text-right">{history?.registrationDate}</TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">Close</Button>
+                                                        </DialogClose>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+
                                         </TableCell>
                                         <TableCell className="text-right">
-
-                                            <Dialog>
+                                            {/* View history button */}
+                                            <Dialog onOpenChange={(open) => {
+                                                if (open) {
+                                                    handleViewDetails(profile);
+                                                } else {
+                                                    handleCloseUpdateDialog();
+                                                }
+                                            }}>
                                                 <DialogTrigger asChild>
                                                     <Button variant="outline"
                                                         size="sm"
-                                                        onClick={() => handleViewDetails(profile)}
                                                         className="text-blue-600 border-blue-200 hover:bg-blue-50">
                                                         <Eye className="h-4 w-4 mr-1" />
                                                         View Details
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="sm:max-w-[425px] lg:max-w-[700px] max-h-[90vh]">
-                                                    <form onSubmit={handleSubmit}>
-                                                        <DialogHeader>
-                                                            <DialogTitle>Edit Profile</DialogTitle>
-                                                            <DialogDescription>
-                                                                Update the profile information below.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="max-h-[60vh] overflow-y-auto pr-2">
-                                                            <input type='hidden' name="id" value={profile.id} />
-                                                            <input type='hidden' name="accountId" value={profile.accountId} />
-                                                            <div className="grid grid-cols-1 gap-6">
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Full Name</label>
-                                                                    <input name="name"
-                                                                        required
-                                                                        className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
-                                                                        value={form?.name || ''}
-                                                                        onChange={handleChange} />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Phone Number</label>
-                                                                    <input
-                                                                        name="phone"
-                                                                        required
-                                                                        pattern="^(03|05|07|08|09)\d{8}$"
-                                                                        title="Please enter a valid Vietnamese phone number (e.g., 0912345678)"
-                                                                        className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
-                                                                        value={form?.phone || ''}
-                                                                        onChange={handleChange}
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Personal ID</label>
-                                                                    <input
-                                                                        name="personalId"
-                                                                        required
-                                                                        className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
-                                                                        value={form?.personalId || ''}
-                                                                        onChange={handleChange} />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Date of Birth</label>
-                                                                    <input name="dob" type="date" required className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4" value={form?.dob || ''} onChange={handleChange} />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Last Donation Date</label>
-                                                                    <input name="lastDonationDate" type="date" className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4" value={form?.lastDonationDate || ''} onChange={handleChange} />
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Blood Type</label>
-                                                                    <Select
-                                                                        value={form?.blood_type || ''}
-                                                                        onValueChange={(value) => handleSelectChange('blood_type', value)}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select blood type" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="A_POSITIVE">A+</SelectItem>
-                                                                            <SelectItem value="A_NEGATIVE">A-</SelectItem>
-                                                                            <SelectItem value="B_POSITIVE">B+</SelectItem>
-                                                                            <SelectItem value="B_NEGATIVE">B-</SelectItem>
-                                                                            <SelectItem value="AB_POSITIVE">AB+</SelectItem>
-                                                                            <SelectItem value="AB_NEGATIVE">AB-</SelectItem>
-                                                                            <SelectItem value="O_POSITIVE">O+</SelectItem>
-                                                                            <SelectItem value="O_NEGATIVE">O-</SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Gender</label>
-                                                                    <Select
-                                                                        value={form?.gender || ''}
-                                                                        onValueChange={(value) => handleSelectChange('gender', value)}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select gender" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="MALE">Male</SelectItem>
-                                                                            <SelectItem value="FEMALE">Female</SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">City/Province</label>
-                                                                    <Select
-                                                                        value={form?.city || ''}
-                                                                        onValueChange={(value) => handleSelectChange('city', value)}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select city/province" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {vietnamProvinces.map((province, index) => (
-                                                                                <SelectItem key={index} value={province.name}>
-                                                                                    {province.name}
-                                                                                </SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">District</label>
-                                                                    <Select
-                                                                        value={form?.district || ''}
-                                                                        onValueChange={(value) => handleSelectChange('district', value)}
-                                                                        disabled={availableDistricts.length === 0}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select district" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {availableDistricts.map((district, index) => (
-                                                                                <SelectItem key={index} value={district.name}>
-                                                                                    {district.name}
-                                                                                </SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Ward</label>
-                                                                    <Select
-                                                                        value={form?.ward || ''}
-                                                                        onValueChange={(value) => handleSelectChange('ward', value)}
-                                                                        disabled={availableWards.length === 0}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select ward" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {availableWards.map((ward, index) => (
-                                                                                <SelectItem key={index} value={ward.name}>
-                                                                                    {ward.name}
-                                                                                </SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Address</label>
-                                                                    <input name="address" required className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4" value={form?.address || ''} onChange={handleChange} />
-                                                                </div>
-
-                                                                <div>
-                                                                    <label className="block text-gray-600 mb-1">Status</label>
-                                                                    <Select
-                                                                        value={form?.status || ''}
-                                                                        onValueChange={(value) => handleSelectChange('status', value)}
-                                                                    >
-                                                                        <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                                                            <SelectValue placeholder="Select status" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectItem value="AVAILABLE">Available</SelectItem>
-                                                                            <SelectItem value="UNAVAILABLE">Unavailable</SelectItem>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <DialogFooter>
-                                                            <DialogClose asChild>
-                                                                <button
-                                                                    type="button"
-                                                                    disabled={loading}
-                                                                    className="border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:bg-gray-400 disabled:cursor-not-allowed text-gray-700 font-semibold px-8 py-3 rounded-lg transition-all duration-200"
-                                                                >
-                                                                    Cancel
-                                                                </button>
-                                                            </DialogClose>
-                                                            <button
-                                                                type="submit"
-                                                                disabled={loading}
-                                                                className="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-lg transition"
-                                                            >
-                                                                {loading ? "Updating..." : "Save Changes"}
-                                                            </button>
-                                                        </DialogFooter>
-                                                    </form>
-                                                </DialogContent>
+                                                <DialogForm
+                                                    profile={profile}
+                                                    formData={form}
+                                                    onSubmit={handleUpdate}
+                                                    onChange={handleChange}
+                                                    onSelectChange={handleSelectChange}
+                                                    loading={loading}
+                                                    availableDistricts={availableDistricts}
+                                                    availableWards={availableWards}
+                                                    vietnamProvinces={vietnamProvinces}
+                                                />
                                             </Dialog>
 
                                         </TableCell>

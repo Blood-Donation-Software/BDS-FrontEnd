@@ -12,8 +12,13 @@ export const getAllProfile = (page = 0, size = 10) => {
     .then(res => res.data);
 }
 
-export const getProfileByPersonalId = (personalId) => {
-    return axiosInstance.get(endpoint.user.getProfileByPersonalId(personalId))
+export const getDonationHistoryById = (profileId) => {
+    return axiosInstance.get(endpoint.user.getDonationHistoryById(profileId))
+        .then(res => res.data);
+}
+
+export const createProfile = (profileData) => {
+    return axiosInstance.post(endpoint.user.create, profileData)
         .then(res => res.data);
 }
 
