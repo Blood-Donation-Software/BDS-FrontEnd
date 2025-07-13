@@ -14,13 +14,14 @@ export default function BlogList() {
   const router = useRouter();
   const postsPerPage = 6;
 
+
   const { blogs, selectedBlog, selectedBlogById } = useBlogs();
 
   // Reset page when filtering or searching
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
-
+  
   const handleClick = (post) => {
     selectedBlogById(post.id);
     router.push(`/blog/${post.id}`);

@@ -13,6 +13,7 @@ import { useLanguage } from '@/context/language_context';
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();
   const [loading, setLoading] = useState(false);
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
