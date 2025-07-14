@@ -641,36 +641,36 @@ export default function CreateBlog() {
     return Object.keys(newErrors).length === 0
   }
   // Save as draft
-  const saveDraft = async () => {
-    if (!validateForm()) {
-      toast.error('Please fill in all required fields')
-      return
-    }
+  // const saveDraft = async () => {
+  //   if (!validateForm()) {
+  //     toast.error('Please fill in all required fields')
+  //     return
+  //   }
 
-    setIsLoading(true)
-    try {
-      const blogData = {
-        title: formData.title,
-        content: editor.getHTML(),
-        status: 'INACTIVE' // Draft status
-      }
+  //   setIsLoading(true)
+  //   try {
+  //     const blogData = {
+  //       title: formData.title,
+  //       content: editor.getHTML(),
+  //       status: 'INACTIVE' // Draft status
+  //     }
 
-      const result = await createBlogRequest(blogData, thumbnail)
-      toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
+  //     const result = await createBlogRequest(blogData, thumbnail)
+  //     toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
       
-      // Redirect to blog list or dashboard
-      router.push('/blog')
-    } catch (error) {
-      console.error('Error saving draft:', error)
-      if (error.response?.data) {
-        toast.error(`Failed to save draft: ${error.response.data}`)
-      } else {
-        toast.error('Failed to save draft. Please try again.')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //     // Redirect to blog list or dashboard
+  //     router.push('/blog')
+  //   } catch (error) {
+  //     console.error('Error saving draft:', error)
+  //     if (error.response?.data) {
+  //       toast.error(`Failed to save draft: ${error.response.data}`)
+  //     } else {
+  //       toast.error('Failed to save draft. Please try again.')
+  //     }
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   // Submit for publication
   const submitForPublication = async () => {
@@ -691,7 +691,7 @@ export default function CreateBlog() {
       toast.success('Blog submitted for publication! It will be reviewed by administrators.')
       
       // Redirect to blog list or dashboard
-      router.push('/blog')
+      router.push('/staffs/blog/list')
     } catch (error) {
       console.error('Error submitting blog:', error)
       if (error.response?.data) {
@@ -726,18 +726,18 @@ export default function CreateBlog() {
           <h1 className="text-3xl font-bold">Create New Blog Post</h1>
         </div>
           <div className="flex gap-2">
-          <Button variant="outline" onClick={previewBlog}>
+          {/* <Button variant="outline" onClick={previewBlog}>
             <Eye className="h-4 w-4 mr-2" />
             Preview
-          </Button>
-          <Button 
+          </Button> */}
+          {/* <Button 
             variant="outline" 
             onClick={saveDraft}
             disabled={isLoading}
           >
             <Save className="h-4 w-4 mr-2" />
             Save as Draft
-          </Button>
+          </Button> */}
           <Button 
             onClick={submitForPublication}
             disabled={isLoading}
@@ -826,7 +826,8 @@ export default function CreateBlog() {
             </CardContent>
           </Card>
 
-          {/* Editor */}          <Card>
+          {/* Editor */}          
+          <Card>
             <CardHeader>
               <CardTitle>Content *</CardTitle>
               <CardDescription>

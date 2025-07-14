@@ -583,18 +583,19 @@ export default function EventRequest() {
 
       {/* View Request Details Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">          <DialogHeader>
-          <DialogTitle>
-            {selectedRequest?.crudType === 'CREATE' && 'New Event Request Details'}
-            {selectedRequest?.crudType === 'UPDATE' && 'Event Update Request Details'}
-            {selectedRequest?.crudType === 'DELETE' && 'Event Deletion Request Details'}
-          </DialogTitle>
-          <DialogDescription>
-            {selectedRequest?.crudType === 'CREATE' && 'Review the details of this new donation event request'}
-            {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to the existing event'}
-            {selectedRequest?.crudType === 'DELETE' && 'Review the event that is requested to be deleted'}
-          </DialogDescription>
-        </DialogHeader>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedRequest?.crudType === 'CREATE' && 'New Event Request Details'}
+              {selectedRequest?.crudType === 'UPDATE' && 'Event Update Request Details'}
+              {selectedRequest?.crudType === 'DELETE' && 'Event Deletion Request Details'}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedRequest?.crudType === 'CREATE' && 'Review the details of this new donation event request'}
+              {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to the existing event'}
+              {selectedRequest?.crudType === 'DELETE' && 'Review the event that is requested to be deleted'}
+            </DialogDescription>
+          </DialogHeader>
 
           {selectedRequest && (() => {
             const displayData = getDisplayData(selectedRequest)
@@ -623,7 +624,8 @@ export default function EventRequest() {
                       </div>                      {(selectedRequest.crudType === 'UPDATE' || selectedRequest.crudType === 'DELETE') && selectedRequest.eventId && (
                         <div><strong>Original Event ID:</strong> #{selectedRequest.eventId}</div>
                       )}
-                    </div>                </div>
+                    </div>
+                  </div>
 
                   <div>
                     <h4 className="font-semibold mb-2">Location</h4>

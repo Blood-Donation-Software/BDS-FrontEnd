@@ -185,7 +185,7 @@ export default function StaffEventDetailPage() {
       toast.success('Delete request has been submitted successfully!')
       setDeleteDialog(false)
       // Navigate back to events list
-      router.push('/staffs/donation-event')
+      router.push('/staffs/donation-event/list')
     } catch (error) {
       console.error('Error deleting event:', error)
       toast.error('Failed to submit delete request. Please try again.')
@@ -373,7 +373,7 @@ export default function StaffEventDetailPage() {
         <Button
           variant="outline"
           className="mt-4"
-          onClick={() => router.push('/staffs/donation-event')}
+          onClick={() => router.push('/staffs/donation-event/list')}
         >
           Back to Events
         </Button>
@@ -463,7 +463,7 @@ export default function StaffEventDetailPage() {
           </Badge>
           <Button
             variant="outline"
-            onClick={() => router.push('/staffs/donation-event')}
+            onClick={() => router.push('/staffs/donation-event/list')}
           >
             Back to Events
           </Button>
@@ -502,7 +502,8 @@ export default function StaffEventDetailPage() {
                 <h3 className="font-medium">Donation Type</h3>
                 <p>{donationTypeMap[event.donationType] || event.donationType}</p>
               </div>
-            </div>            <div className="flex items-start gap-4">
+            </div>            
+            <div className="flex items-start gap-4">
               <User className="h-5 w-5 mt-1 text-muted-foreground" />
               <div>
                 <h3 className="font-medium">Registration Status</h3>

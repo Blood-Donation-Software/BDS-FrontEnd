@@ -193,7 +193,8 @@ function RegisterDonation() {
         if (currentStep > 1) {
             setCurrentStep(prev => prev - 1);
         }
-    };    const handleSubmit = async () => {
+    };    
+    const handleSubmit = async () => {
         if (!validateStep2()) return;
 
         try {
@@ -280,7 +281,7 @@ function RegisterDonation() {
                 </div>
             </div>            {/* Event Info */}
             <div className="container mx-auto px-4 py-6">
-                <Card className="mb-6 border-red-200">
+                {/* <Card className="mb-6 border-red-200">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-lg text-red-700">Thông tin sự kiện</CardTitle>
                     </CardHeader>
@@ -311,7 +312,7 @@ function RegisterDonation() {
                             </div>
                         </div>
                     </CardContent>
-                </Card>
+                </Card> */}
 
                 {/* Form Steps */}
                 <div className="max-w-4xl mx-auto">
