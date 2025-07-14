@@ -47,18 +47,31 @@ export const endpoint = {
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
     getDonationHistory: `${BASE_URL}/api/user/profile/history`,
+    profile: `${BASE_URL}/api/user/info`,
     profile: `${BASE_URL}/user/info`,
     updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
     updatePassword: `${BASE_URL}/api/user/account/update-password`,
-
     getDonationHistoryById: (profileId) => `${BASE_URL}/api/user/profile/list-profile/profileId/${profileId}/history`,
     create: `${BASE_URL}/api/user/profile/create`,
   },
+  profileDistance: {
+    getDistance: (profileId) => `${BASE_URL}/api/profile-distances/${profileId}`,
+    calculateDistance: (profileId) => `${BASE_URL}/api/profile-distances/calculate/${profileId}`,
+    recalculateDistance: (profileId) => `${BASE_URL}/api/profile-distances/recalculate/${profileId}`,
+    getWithinDistance: `${BASE_URL}/api/profile-distances/within-distance`,
+    getAllOrdered: `${BASE_URL}/api/profile-distances/all-ordered`,
+    getProfilesWithinDistance: `${BASE_URL}/api/profile-distances/profiles/within-distance`,
+    getProfilesAllOrdered: `${BASE_URL}/api/profile-distances/profiles/all-ordered`,
+    calculateMissing: `${BASE_URL}/api/profile-distances/calculate-missing`,
+    deleteDistance: (profileId) => `${BASE_URL}/api/profile-distances/${profileId}`,
+  },
   bloodRequest: {
-    getAll: `${BASE_URL}/blood-request/request-list`,
-    create: `${BASE_URL}/blood-request/create-request`,
-    getById: `${BASE_URL}/blood-request`
+    getAll: `${BASE_URL}/api/blood-request/request-list`,
+    create: `${BASE_URL}/api/blood-request/create-request`,
+    getById: `${BASE_URL}/api/blood-request`,
+    addDonor: `${BASE_URL}/api/blood-request/add-donor`,
+    fulfillRequest: `${BASE_URL}/api/blood-request/fulfill-request`
   },
   bloodStock: {
     checkStock: `${BASE_URL}/api/medical-facility-stock/check-stock`,
@@ -72,6 +85,7 @@ export const endpoint = {
   bloodDonation: {
     createEvent: `${BASE_URL}/api/donation-event-request/create`,
     listEvent: `${BASE_URL}/api/donation-event/list-donation`,
+    ongoingEvents: `${BASE_URL}/api/donation-event/list-donation/on-going`,
     approveEvent: (eventId) => `${BASE_URL}/api/donation-event/list-donation`,
     getMyRequests: `${BASE_URL}/api/donation-event-request/my-requests`,
     getPendingRequests: `${BASE_URL}/api/donation-event-request/pending`,

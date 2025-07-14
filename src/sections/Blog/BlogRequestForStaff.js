@@ -1,17 +1,16 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { ArrowUpDown, Search, Calendar, User, FileText, Eye, Check, X, BookOpen } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { ArrowUpDown, Search, FileText, Eye, BookOpen, RefreshCw } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
-import { getPendingBlogRequests, approveBlogRequest, rejectBlogRequest } from '@/apis/blog'
+import { getMyBlogRequests, getMyBlogRequestById } from '@/apis/blog'
 import { BASE_URL } from '@/global-config'
 
 const statusOptions = [
@@ -58,7 +57,7 @@ const formatCrudType = (crudType) => {
   return types[crudType] || crudType
 }
 
-export default function BlogRequest() {
+export default function BlogRequestForStaff() {
   const [requests, setRequests] = useState([])
   const [filteredRequests, setFilteredRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -80,15 +79,14 @@ export default function BlogRequest() {
   })
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
-  const [actionLoading, setActionLoading] = useState(false)
 
-  // Fetch pending blog requests from API
+  // Fetch my blog requests from API
   const fetchRequests = async (page = 0, size = 10) => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await getPendingBlogRequests(page, size, sortConfig.key, sortConfig.direction === 'asc')
+      const response = await getMyBlogRequests(page, size, sortConfig.key, sortConfig.direction === 'asc')
 
       if (response.content) {
         setRequests(response.content)
@@ -117,6 +115,7 @@ export default function BlogRequest() {
   useEffect(() => {
     fetchRequests(pagination.page, pagination.size)
   }, [sortConfig])
+
   useEffect(() => {
     let result = [...requests]
 
@@ -169,35 +168,9 @@ export default function BlogRequest() {
     fetchRequests(pagination.page, pagination.size)
   }
 
-  // Handle blog request approval/rejection
-  const handleVerifyRequest = async (requestId, action) => {
-    try {
-      setActionLoading(true)
-
-      if (action === 'APPROVE') {
-        await approveBlogRequest(requestId)
-        toast.success('Blog request approved successfully!')
-      } else if (action === 'REJECT') {
-        await rejectBlogRequest(requestId)
-        toast.success('Blog request rejected successfully!')
-      }
-
-      // Refresh the list
-      await fetchRequests(pagination.page, pagination.size)
-    } catch (error) {
-      console.error('Error verifying blog request:', error)
-      const errorMessage = error.response?.data?.message || error.message
-      toast.error(`Failed to ${action.toLowerCase()} blog request: ${errorMessage}`)
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
   // Handle view blog request details
   const handleViewRequest = async (request) => {
     try {
-      // For now, use the request data directly
-      // In the future, you might want to fetch full details with getBlogRequestById
       setSelectedRequest(request)
       setViewDialogOpen(true)
     } catch (error) {
@@ -205,6 +178,7 @@ export default function BlogRequest() {
       toast.error('Failed to load blog request details')
     }
   }
+
   // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return 'Unknown'
@@ -227,13 +201,14 @@ export default function BlogRequest() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5" />
-                Blog Requests
+                My Blog Requests
               </CardTitle>
               <CardDescription>
-                Review and manage blog post submissions ({pagination.totalElements} total)
+                View and track your blog post submissions ({pagination.totalElements} total)
               </CardDescription>
             </div>
             <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
+              <RefreshCw className="h-4 w-4 mr-2" />
               {loading ? 'Loading...' : 'Refresh'}
             </Button>
           </div>
@@ -317,11 +292,6 @@ export default function BlogRequest() {
                 </Button>
               </TableHead>
               <TableHead>
-                <Button variant="ghost" onClick={() => handleSort('blog.authorId')}>
-                  Author <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
                 <Button variant="ghost" onClick={() => handleSort('status')}>
                   Status <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -338,7 +308,7 @@ export default function BlogRequest() {
           <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                       <span className="ml-2">Loading requests...</span>
@@ -347,7 +317,7 @@ export default function BlogRequest() {
                 </TableRow>
               ) : filteredRequests.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={5} className="text-center py-8">
                     <div className="text-muted-foreground">
                       {requests.length === 0 ? 'No blog requests found' : 'No requests match your filters'}
                     </div>
@@ -360,9 +330,6 @@ export default function BlogRequest() {
                         <div className="text-sm text-muted-foreground">
                           Request ID: #{request.id}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <span>AuthorId: {request.accountId}</span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={getStatusBadge(request.status)}>
@@ -390,60 +357,8 @@ export default function BlogRequest() {
                             onClick={() => handleViewRequest(request)}
                           >
                             <Eye className="h-4 w-4" />
-                          </Button>
-                          {request.status === 'PENDING' && (
-                            <>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="ghost" className="text-green-600" disabled={actionLoading}>
-                                    <Check className="h-4 w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Approve Blog Request</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Are you sure you want to approve this blog request? This will publish the blog post.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleVerifyRequest(request.id, 'APPROVE')}
-                                      className="bg-green-600 hover:bg-green-700"
-                                    >
-                                      Approve
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="ghost" className="text-red-600" disabled={actionLoading}>
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Reject Blog Request</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Are you sure you want to reject this blog request? This action cannot be undone.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleVerifyRequest(request.id, 'REJECT')}
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      Reject
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </>
-                          )}                      
-                          </div>
+                          </Button>                       
+                        </div>
                       </TableCell>
                     </TableRow>
                   )
@@ -511,7 +426,7 @@ export default function BlogRequest() {
 
       {/* View Blog Request Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="min-w-4xl  max-h-[80vh] overflow-auto">          
+        <DialogContent className="min-w-4xl max-h-[80vh] overflow-auto">          
           <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
@@ -521,10 +436,10 @@ export default function BlogRequest() {
             {!selectedRequest?.crudType && 'Blog Request Details'}
           </DialogTitle>
           <DialogDescription>
-            {selectedRequest?.crudType === 'CREATE' && 'Review the details of this new blog submission request'}
-            {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to the existing blog'}
-            {selectedRequest?.crudType === 'DELETE' && 'Review the blog that is requested to be deleted'}
-            {!selectedRequest?.crudType && 'Review the complete blog post submission'}
+            {selectedRequest?.crudType === 'CREATE' && 'Review the details of your new blog submission request'}
+            {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to your existing blog'}
+            {selectedRequest?.crudType === 'DELETE' && 'Review the blog that you requested to be deleted'}
+            {!selectedRequest?.crudType && 'Review your complete blog post submission'}
           </DialogDescription>
         </DialogHeader>
 
@@ -534,10 +449,6 @@ export default function BlogRequest() {
                 <div>
                   <label className="text-sm font-medium text-gray-500">Title</label>
                   <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog?.title || 'Untitled'}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Author ID</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog.accountId || 'Unknown'}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Request Status</label>
@@ -594,64 +505,6 @@ export default function BlogRequest() {
             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
               Close
             </Button>
-            {selectedRequest?.status === 'PENDING' && (
-              <div className="flex gap-2">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">
-                      Reject
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Reject Blog Request</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to reject this blog request? This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          handleVerifyRequest(selectedRequest.id, 'REJECT')
-                          setViewDialogOpen(false)
-                        }}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Reject
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      Approve
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Approve Blog Request</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to approve this blog request? This will publish the blog post.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          handleVerifyRequest(selectedRequest.id, 'APPROVE')
-                          setViewDialogOpen(false)
-                        }}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Approve
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>              
-                </div>
-            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

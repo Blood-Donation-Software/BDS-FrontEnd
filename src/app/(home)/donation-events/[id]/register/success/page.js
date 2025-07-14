@@ -73,9 +73,8 @@ function RegistrationSuccess() {
                 throw new Error('Invalid token received from server');
             }
             
-            const checkinUrl = `${window.location.origin}/checkin?token=${token}&eventId=${params.id}`;
-            
-            const qrCodeDataUrl = await QRCode.toDataURL(checkinUrl, {
+            // Generate QR code with only the token
+            const qrCodeDataUrl = await QRCode.toDataURL(token, {
                 width: 300,
                 margin: 2,
                 color: {

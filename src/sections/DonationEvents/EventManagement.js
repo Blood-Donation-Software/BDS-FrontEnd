@@ -15,9 +15,9 @@ import { getAllEvents, getEventsByDateRange, getEventDonors } from '@/apis/blood
 
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'APPROVED', label: 'Approved' },
-  { value: 'REJECTED', label: 'Rejected' }
+  { value: 'AVAILABLE', label: 'Available' },
+  { value: 'COMPLETED', label: 'Completed' },
+  { value: 'CANCELLED', label: 'Cancelled' },
 ]
 
 const donationTypeOptions = [
@@ -32,6 +32,9 @@ const getStatusBadge = (status) => {
   const styles = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     APPROVED: 'bg-green-100 text-green-800 border-green-200',
+    ONGOING: 'bg-blue-100 text-blue-800 border-blue-200', 
+    COMPLETED: 'bg-gray-100 text-gray-800 border-gray-200',
+    CANCELLED: 'bg-red-100 text-red-800 border-red-200',
     REJECTED: 'bg-red-100 text-red-800 border-red-200'
   }
   return styles[status] || 'bg-gray-100 text-gray-800 border-gray-200'
@@ -63,6 +66,45 @@ export default function EventManagement() {
     key: 'donationDate',
     direction: 'asc'
   })
+
+  // Parse date string from DD-MM-YYYY format to Date object
+  const parseDate = (dateString) => {
+    if (!dateString) return null
+    try {
+      if (dateString.includes('-') && dateString.length === 10 && dateString.includes('/') === false) {
+        const [day, month, year] = dateString.split('-')
+        return new Date(year, month - 1, day)
+      }
+      return parseISO(dateString)
+    } catch (error) {
+      return null
+    }
+  }
+
+  // Helper function to check if an event should be displayed based on its status and date
+  const shouldDisplayEvent = (event) => {
+    const eventDate = parseDate(event.donationDate)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Reset time to start of day for comparison
+    
+    if (!eventDate) return true // Show if date can't be parsed
+    
+    eventDate.setHours(0, 0, 0, 0) // Reset time to start of day for comparison
+    const isToday = eventDate.getTime() === today.getTime()
+    
+    switch (event.status) {
+      case 'CANCELLED':
+      case 'COMPLETED':
+      case 'APPROVED':
+      case 'PENDING':
+      case 'REJECTED':
+        return true // Always show these statuses
+      case 'ONGOING':
+        return isToday // Only show ongoing events if they are today
+      default:
+        return true // Show unknown statuses by default
+    }
+  }
 
   // Fetch events from API
   const fetchEvents = async (page = 0, size = 10) => {
@@ -98,6 +140,9 @@ export default function EventManagement() {
 
   useEffect(() => {
     let result = [...events]
+
+    // Apply status-based display filtering first
+    result = result.filter(ev => shouldDisplayEvent(ev))
 
     // Search filter
     if (filters.search) {
@@ -183,7 +228,7 @@ export default function EventManagement() {
           )}
 
           <div className="flex flex-row mb-4 space-x-4">
-            <div className="relative w-2xl">
+            <div className="relative w-2xl flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search events..."
