@@ -1,6 +1,6 @@
 import axiosInstance, { endpoint } from "@/utils/axios"
 
-export const getAllProfile = (page,size) => {
+export const getAllProfile = (page = 0, size = 10) => {
     return axiosInstance.get(endpoint.user.getAllProfile,
         {
             params : {
@@ -10,6 +10,16 @@ export const getAllProfile = (page,size) => {
         }
     )
     .then(res => res.data);
+}
+
+export const getDonationHistoryById = (profileId) => {
+    return axiosInstance.get(endpoint.user.getDonationHistoryById(profileId))
+        .then(res => res.data);
+}
+
+export const createProfile = (profileData) => {
+    return axiosInstance.post(endpoint.user.create, profileData)
+        .then(res => res.data);
 }
 
 export const getAllAccount = () => {
@@ -57,5 +67,32 @@ export const getDonationHistory = (page = 0, size = 10, sortBy = 'id', ascending
             sortBy,
             ascending
         }
+    }).then(res => res.data);
+}
+
+export const updateStatus = (accountId, status) => {
+    return axiosInstance.put(
+        endpoint.user.updateStatus(accountId),
+        { status }
+    ).then(res => res.data);
+}
+export const enableAccount = (accountId) => {
+    return axiosInstance.put(endpoint.user.enableAccount(accountId))
+        .then(res => res.data);
+}
+
+export const disableAccount = (accountId) => {
+    return axiosInstance.put(endpoint.user.disableAccount(accountId))
+        .then(res => res.data);
+}
+
+export const updateRole = (accountId, role) => {
+    return axiosInstance.put(endpoint.user.updateRole(accountId), { role })
+        .then(res => res.data);
+}
+export const updatePassword = (oldPassword, newPassword) => {
+    return axiosInstance.put(endpoint.user.updatePassword, {
+        oldPassword,
+        newPassword
     }).then(res => res.data);
 }

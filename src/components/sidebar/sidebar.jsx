@@ -17,6 +17,10 @@ import { ChevronUp, SquareUserRound, ChevronDown, ChevronRight } from "lucide-re
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { useUserProfile } from "@/context/user_context"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { logout } from "@/apis/auth"
 
 export default function AppSidebar({ items }) {
     const pathname = usePathname()
