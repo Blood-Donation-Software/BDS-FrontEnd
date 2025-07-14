@@ -59,7 +59,6 @@ function PersonalInfo() {
     district: profile.district || '',
     dob: convertDateFormat(profile.dateOfBirth) || '',
     city: profile.city || '',
-    emergencyContact: profile.emergencyContact || '',
     medicalConditions: profile.medicalConditions || '',
   });
 
@@ -153,7 +152,6 @@ function PersonalInfo() {
         district: form.district,
         dateOfBirth: convertDateForServer(form.dob), // Convert back to DD-MM-YYYY
         city: form.city,
-        emergencyContact: form.emergencyContact,
         medicalConditions: form.medicalConditions,
       };
 
@@ -327,12 +325,6 @@ function PersonalInfo() {
             <div>
               <label className="block text-gray-600 mb-1">Address</label>
               <input name="address" required className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4" value={form.address} onChange={handleChange} />
-            </div>
-
-
-            <div>
-              <label className="block text-gray-600 mb-1">Emergency Contact</label>
-              <input name="emergencyContact" className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4" value={form.emergencyContact} onChange={handleChange} />
             </div>
           </div>
           <div className="flex justify-end">

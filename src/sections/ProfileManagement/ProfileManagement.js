@@ -39,12 +39,6 @@ export default function ProfileManagement() {
             <div className="mx-0 justify-center w-full">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-15">
-                    <Link
-                        href="/staffs/dashboard"
-                        className="text-gray-600 hover:text-gray-800 ml-10 border border-gray-300 rounded px-3 py-1 hover:bg-gray-300 transition"
-                    >
-                        ← Quay lại
-                    </Link>
                     <h1 className="flex-1 text-4xl font-extrabold mb-2 text-center">Personal Profile Management</h1>
                 </div>
 

@@ -59,7 +59,7 @@ export default function AppSidebar({ items }) {
                             const hasChildren = item.children && item.children.length > 0;
                             const isChildActive = hasChildren && item.children.some(child => pathname === child.url);
                             const isActive = pathname === item.url || (hasChildren && isChildActive);
-                            
+
                             return (
                                 <SidebarMenu key={item.title}>
                                     <Collapsible defaultOpen={isActive}>
@@ -69,8 +69,8 @@ export default function AppSidebar({ items }) {
                                                 : 'text-gray-700 hover:text-gray-900'
                                                 }`}>
                                                 <div className="flex items-center space-x-3">
-                                                    <div className={`p-1.5 rounded-md transition-colors ${isActive 
-                                                        ? 'bg-red-100 text-red-600' 
+                                                    <div className={`p-1.5 rounded-md transition-colors ${isActive
+                                                        ? 'bg-red-100 text-red-600'
                                                         : 'text-gray-500 group-hover:text-gray-700'
                                                         }`}>
                                                         <item.icon className="w-4 h-4" />
@@ -97,8 +97,8 @@ export default function AppSidebar({ items }) {
                                                                     }`}>
                                                                     <Link href={child.url}>
                                                                         <div className="flex items-center space-x-3">
-                                                                            <div className={`p-1 rounded transition-colors ${isChildActive 
-                                                                                ? 'bg-red-100 text-red-600' 
+                                                                            <div className={`p-1 rounded transition-colors ${isChildActive
+                                                                                ? 'bg-red-100 text-red-600'
                                                                                 : 'text-gray-400 group-hover:text-gray-600'
                                                                                 }`}>
                                                                                 <child.icon className="w-3.5 h-3.5" />
@@ -143,9 +143,11 @@ export default function AppSidebar({ items }) {
                                 align="start"
                                 className="w-[240px] shadow-lg border border-gray-200"
                             >
-                                <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
-                                    <span className="font-medium">Account Settings</span>
-                                </DropdownMenuItem>
+                                <Link href={pathname.includes('/staffs') ? '/staffs/profile-manage' : '/admins/profile-manage'}>
+                                    <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
+                                        <span className="font-medium">Account Settings</span>
+                                    </DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
                                     <span className="font-medium">Preferences</span>
                                 </DropdownMenuItem>
