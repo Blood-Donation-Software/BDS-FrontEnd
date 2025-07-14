@@ -1,6 +1,6 @@
 import axiosInstance, { endpoint } from "@/utils/axios"
 
-export const getAllProfile = (page,size) => {
+export const getAllProfile = (page = 0, size = 10) => {
     return axiosInstance.get(endpoint.user.getAllProfile,
         {
             params : {
@@ -10,6 +10,16 @@ export const getAllProfile = (page,size) => {
         }
     )
     .then(res => res.data);
+}
+
+export const getDonationHistoryById = (profileId) => {
+    return axiosInstance.get(endpoint.user.getDonationHistoryById(profileId))
+        .then(res => res.data);
+}
+
+export const createProfile = (profileData) => {
+    return axiosInstance.post(endpoint.user.create, profileData)
+        .then(res => res.data);
 }
 
 export const getAllAccount = () => {

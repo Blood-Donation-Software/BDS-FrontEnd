@@ -6,7 +6,8 @@ import { getOrganizerById } from "@/apis/organizer";
 
 export const DonationEventContext = createContext(null);
 
-export default function DonationEventProvider({ children }) {    const [selectedEvent, setSelectedEvent] = useState(null);
+export default function DonationEventProvider({ children }) {    
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
     const [events, setEvents] = useState([]);
     const [organizers, setOrganizers] = useState({});
