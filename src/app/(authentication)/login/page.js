@@ -90,11 +90,7 @@ export default function LoginPage() {
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
             <span>Đăng nhập qua Google</span>
           </button>
-
-          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
-            <Image src="https://www.svgrepo.com/show/512317/github-142.svg" width={10} height={10} alt="GitHub" className="w-5 h-5" />
-            <span>Đăng nhập qua Github</span>
-          </button> 
+          
         </div>
         <p className="text-sm text-center mb-2">
           <a href="/forgot-password" className="text-blue-600 hover:underline">Quên mật khẩu?</a>

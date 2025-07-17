@@ -42,7 +42,7 @@ const DialogForm = React.memo(({
     vietnamProvinces
 }) => {
     const isUpdate = profile !== null;
-
+    DialogForm.displayName = 'DialogForm';
     return (
         <DialogContent className="sm:max-w-[425px] lg:max-w-[700px] max-h-[90vh]">
             <form onSubmit={onSubmit}>
@@ -845,7 +845,7 @@ export default function ProfilesManagement() {
                                                     <DialogHeader>
                                                         <DialogTitle>Donation history</DialogTitle>
                                                         <DialogDescription>
-                                                            View member's donation history here.
+                                                            View members donation history here.
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Table>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useParams } from 'next/navigation';
+import { BASE_URL } from '@/global-config';
 
 export default function BlogDetail() {
   const { id } = useParams();
@@ -75,12 +76,10 @@ export default function BlogDetail() {
 
       {/* Main image */}
       <div className="relative w-full h-96 mb-8 rounded-lg overflow-hidden">
-        <Image
-          src={getThumbnailValue(blog.thumbnail)}
-          alt={blog.title}
-          fill
-          className="object-cover"
-          priority
+        <img
+          src={`${BASE_URL}/${blog.thumbnail}`}
+          alt="Blog thumbnail"
+          className="w-full object-cover rounded-lg border"
         />
       </div>
 
@@ -102,11 +101,10 @@ export default function BlogDetail() {
             >
               <div className="bg-white rounded-lg shadow-md overflow-hidden max-w-xs w-full mx-auto">
                 <div className="relative h-32 w-full">
-                  <Image
-                    src={getThumbnailValue(related.thumbnail)}
-                    alt={related.title}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
+                  <img
+                    src={`${BASE_URL}/${blog.thumbnail}`}
+                    alt="Blog thumbnail"
+                    className="object-cover rounded-lg border"
                   />
                 </div>
                 <div className="p-4">

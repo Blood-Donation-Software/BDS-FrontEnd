@@ -40,12 +40,11 @@ function RegistrationSuccess() {
     const [loadingQR, setLoadingQR] = useState(false);
     const [qrError, setQrError] = useState(null);
 
-    // If no event is selected but we have params, try to select the event
     useEffect(() => {
         if (params?.id && !selectedEvent) {
             selectEventById(params.id);
         }
-    }, [params?.id, selectedEvent, selectEventById]);    // Fetch QR code when component mounts
+    }, [params?.id, selectedEvent, selectEventById]);   
     useEffect(() => {
         if (params?.id) {
             fetchQRCode();
@@ -225,7 +224,7 @@ function RegistrationSuccess() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                                     <div>
                                                         <p className="text-sm font-medium text-gray-700">Số điện thoại</p>
-                                                        <p className="text-gray-900">{profile.phoneNumber || 'Chưa cập nhật'}</p>
+                                                        <p className="text-gray-900">{profile.phone || 'Chưa cập nhật'}</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-sm font-medium text-gray-700">Ngày sinh</p>
@@ -495,14 +494,6 @@ function RegistrationSuccess() {
                 {/* Action Buttons */}
                 <div className="max-w-4xl mx-auto">
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button
-                            onClick={handleViewEventDetails}
-                            variant="outline"
-                            className="flex items-center gap-2"
-                        >
-                            <Heart className="h-4 w-4" />
-                            Xem chi tiết sự kiện
-                        </Button>
                         <Button
                             onClick={handleBackToEvents}
                             className="flex items-center gap-2 bg-red-500 hover:bg-red-600"

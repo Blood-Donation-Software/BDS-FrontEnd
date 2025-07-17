@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { convertDonationRegistrationStatus } from '@/utils/utils';
 
 // Status mapping for Vietnamese
 const statusMap = {
@@ -256,34 +257,34 @@ function Dashboard() {
                                                         </div>
                                                         
                                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-600">
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center">
                                                                 <Calendar className="h-4 w-4" />
                                                                 <span>Đăng ký: {formatDate(donation.registrationDate)}</span>
                                                             </div>
                                                             
                                                             {donation.donationDate && (
-                                                                <div className="flex items-center gap-2">
+                                                                <div className="flex items-center">
                                                                     <Clock className="h-4 w-4" />
                                                                     <span>Hiến máu: {formatDate(donation.donationDate)}</span>
                                                                 </div>
                                                             )}
                                                             
+                                                            {donation.donationDate && (
+                                                                <div className="flex items-center">
+                                                                    <Clock className="h-4 w-4" />
+                                                                    <span>Trạng thái: {convertDonationRegistrationStatus(donation.registrationDonationRegistrationStatus)}</span>
+                                                                </div>
+                                                            )}
+
                                                             {donation.donationLocation && (
-                                                                <div className="flex items-center gap-2">
+                                                                <div className="flex items-center">
                                                                     <MapPin className="h-4 w-4" />
                                                                     <span className="truncate">{donation.donationLocation}</span>
                                                                 </div>
                                                             )}
                                                             
-                                                            {donation.donationType && (
-                                                                <div className="flex items-center gap-2">
-                                                                    <Droplets className="h-4 w-4" />
-                                                                    <span>{donationTypeMap[donation.donationType] || donation.donationType}</span>
-                                                                </div>
-                                                            )}
-                                                            
                                                             {donation.donationVolume && (
-                                                                <div className="flex items-center gap-2">
+                                                                <div className="flex items-center">
                                                                     <TrendingUp className="h-4 w-4" />
                                                                     <span>{donation.donationVolume} ml</span>
                                                                 </div>

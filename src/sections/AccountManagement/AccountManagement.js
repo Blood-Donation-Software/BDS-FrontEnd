@@ -58,7 +58,7 @@ const handleStatus = async (account) => {
             )
         );
     } catch (e) {
-        alert('Có lỗi xảy ra!');
+        alert(e);
     } finally {
         setLoadingId(null);
     }

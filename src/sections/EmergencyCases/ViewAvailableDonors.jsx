@@ -8,7 +8,7 @@ import PaginationControls from '@/components/paginationControl';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, PlusCircle } from 'lucide-react';
 import { getAllProfile } from '@/apis/user';
-import { getAllProfilesOrderedByDistance, getProfilesWithinDistance, getProfilesWithinDistanceAsProfileDto } from '@/apis/profileDistance';
+import { getAllProfilesOrderedByDistance, getProfilesWithinDistance } from '@/apis/profileDistance';
 import { useBloodRequests } from '@/context/bloodRequest_context';
 import { Button } from '@/components/ui/button';
 import { addBloodRequestDonor, fulfillBloodRequest } from '@/apis/bloodrequest';
@@ -17,19 +17,7 @@ import { toast } from 'sonner';
 export default function DonorListPage() {
   const router = useRouter();
   const { bloodRequest, setBloodRequest } = useBloodRequests();
-  const [donor, setDonor] = useState({
-    id: null,
-    name: '',
-    personalId: '',
-    phone: '',
-    bloodType: 'A_POSITIVE',
-    gender: 'MALE',
-    address: '',
-    ward: '',
-    district: '',
-    city: '',
-    dateOfBirth: '',
-  }); 
+  const [donor, setDonor] = useState(); 
   const [donors, setDonors] = useState([]);
   const [filteredDonors, setFilteredDonors] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,38 +48,17 @@ export default function DonorListPage() {
     return 1;
   }
 
-  // Helper function to convert backend date format (yyyy-MM-dd) to frontend format (dd-MM-yyyy)
-  const convertBackendDateToFrontend = (dateString) => {
-    if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
-  };
-
   const handleAddDonor = async () => {  
-    // Convert date format from dd-MM-yyyy to yyyy-MM-dd for backend
-    const convertDateFormat = (dateString) => {
-      if (!dateString) return null;
-      const [day, month, year] = dateString.split('-');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    };
-
-    // Prepare donor data with proper date format
-    const donorData = {
-      ...donor,
-      dateOfBirth: convertDateFormat(donor.dateOfBirth),
-      lastDonationDate: donor.lastDonationDate ? convertDateFormat(donor.lastDonationDate) : null,
-      nextEligibleDonationDate: donor.nextEligibleDonationDate ? convertDateFormat(donor.nextEligibleDonationDate) : null,
-    };
 
     const bloodUnit = {
       "volume": volume,
       "bloodType": bloodRequest.bloodType,
       "componentType": "WHOLE_BLOOD",
       "status": "COMPLETED",
-      "profileId": donorData.id ? donorData.id : null,
+      "profileId": donor.id ? donor.id : null,
     }
 
-    const updated = await addBloodRequestDonor(bloodRequest, bloodUnit, donorData);
+    const updated = await addBloodRequestDonor(bloodRequest, bloodUnit, donor);
     setBloodRequest({ ...updated }); // shallow clone to force state change
 
 
@@ -103,9 +70,6 @@ export default function DonorListPage() {
       bloodType: 'A_POSITIVE',
       gender: 'MALE',
       address: '',
-      ward: '',
-      district: '',
-      city: '',
       dateOfBirth: '',
     });
     
@@ -140,22 +104,8 @@ const hasEnoughBlood = () => {
   const fetchDonors = async (page = 0) => {
     try {
       const response = await getAllProfile(page, donorsPerPage);
-      
-      // Ensure address fields are properly formatted
-      const donorProfiles = response.content.map(profile => ({
-        ...profile,
-        address: profile.address || '',
-        ward: profile.ward || '',
-        district: profile.district || '',
-        city: profile.city || '',
-        // Convert date format if needed (backend sends yyyy-MM-dd, frontend expects dd-MM-yyyy)
-        dateOfBirth: profile.dateOfBirth ? convertBackendDateToFrontend(profile.dateOfBirth) : '',
-        lastDonationDate: profile.lastDonationDate ? convertBackendDateToFrontend(profile.lastDonationDate) : '',
-        nextEligibleDonationDate: profile.nextEligibleDonationDate ? convertBackendDateToFrontend(profile.nextEligibleDonationDate) : '',
-      }));
-      
-      setDonors(donorProfiles);
-      setFilteredDonors(donorProfiles);
+      setDonors(response.content);
+      setFilteredDonors(response.content);
       setTotalPages(response.totalPages);
       setTotalElements(response.totalElements);
     } catch (error) {
@@ -163,35 +113,34 @@ const hasEnoughBlood = () => {
     }
   };
 
-  // Fetch donors by distance with pagination
-  const fetchDonorsByDistance = async (maxDistance, page = 0) => {
+  // Fetch donors by distance
+  const fetchDonorsByDistance = async (maxDistance) => {
     try {
       setLoadingDistance(true);
-      const response = await getProfilesWithinDistanceAsProfileDto(maxDistance, page, donorsPerPage);
+      const profiles = await getProfilesWithinDistance(maxDistance);
+      setDistanceProfiles(profiles);
       
-      // The response now contains ProfileDto objects with distance information
-      const donorProfiles = response.content.map(profile => ({
-        ...profile,
-        // Ensure address fields are properly formatted
-        address: profile.address || '',
-        ward: profile.ward || '',
-        district: profile.district || '',
-        city: profile.city || '',
-        // Add distance fields
-        distance: profile.distanceInKilometers,
-        distanceText: profile.distanceText,
-        durationText: profile.durationText,
-        // Convert date format if needed (backend sends yyyy-MM-dd, frontend expects dd-MM-yyyy)
-        dateOfBirth: profile.dateOfBirth ? convertBackendDateToFrontend(profile.dateOfBirth) : '',
-        lastDonationDate: profile.lastDonationDate ? convertBackendDateToFrontend(profile.lastDonationDate) : '',
-        nextEligibleDonationDate: profile.nextEligibleDonationDate ? convertBackendDateToFrontend(profile.nextEligibleDonationDate) : '',
+      // Convert ProfileDistance objects to Profile objects for compatibility
+      const donorProfiles = profiles.map(distanceProfile => ({
+        id: distanceProfile.profileId,
+        name: distanceProfile.profileName,
+        personalId: distanceProfile.profileId, // You might need to adjust this mapping
+        phone: '', // These fields might not be available in distance response
+        bloodType: '', // You'll need to fetch full profile data or include in distance response
+        gender: '',
+        address: distanceProfile.profileAddress,
+        dateOfBirth: '',
+        nextEligibleDonationDate: '',
+        lastDonationDate: '',
+        distance: distanceProfile.distanceInKilometers,
+        distanceText: distanceProfile.distanceText,
+        durationText: distanceProfile.durationText
       }));
       
       setDonors(donorProfiles);
       setFilteredDonors(donorProfiles);
-      setTotalElements(response.totalElements);
-      setTotalPages(response.totalPages);
-      setCurrentPage(response.number);
+      setTotalElements(donorProfiles.length);
+      setTotalPages(Math.ceil(donorProfiles.length / donorsPerPage));
     } catch (error) {
       console.error('Failed to fetch donors by distance:', error);
       toast.error('Failed to load donors by distance');
@@ -203,7 +152,7 @@ const hasEnoughBlood = () => {
   // Enhanced fetch function that handles both regular and distance-based fetching
   const fetchDonorsWithFilters = async (page = 0) => {
     if (distanceEnabled) {
-      await fetchDonorsByDistance(filters.maxDistance, page);
+      await fetchDonorsByDistance(filters.maxDistance);
     } else {
       await fetchDonors(page);
     }
@@ -211,59 +160,38 @@ const hasEnoughBlood = () => {
 
   useEffect(() => {
     fetchDonorsWithFilters(currentPage);
-  }, [currentPage]); // Removed distanceEnabled from dependency array
-
-  // Initial data loading
-  useEffect(() => {
-    fetchDonorsWithFilters(0);
-  }, []); // Run once on component mount
-
-  useEffect(() => {
-    // Only fetch when distanceEnabled changes, not on every render
-    if (distanceEnabled) {
-      setCurrentPage(0); // Reset to first page when distance changes
-      fetchDonorsByDistance(filters.maxDistance, 0);
-    } else {
-      // Fetch regular donors when distance is disabled
-      fetchDonors(0);
-      setCurrentPage(0);
-    }
-  }, [distanceEnabled]); // Only depend on distanceEnabled
+  }, [currentPage, distanceEnabled]);
 
   // Handle distance filter changes
   useEffect(() => {
     if (distanceEnabled) {
-      setCurrentPage(0); // Reset to first page when distance changes
-      fetchDonorsByDistance(filters.maxDistance, 0);
+      fetchDonorsByDistance(filters.maxDistance);
     }
-  }, [filters.maxDistance]); // Only depend on maxDistance, not distanceEnabled
+  }, [filters.maxDistance, distanceEnabled]);
 
   useEffect(() => {
-    if (bloodRequest && bloodRequest.bloodType !== filters.bloodType) {
+    if (bloodRequest) {
       setFilters(prev => ({
         ...prev,
         bloodType: bloodRequest.bloodType
       }));
     }
-  }, [bloodRequest?.bloodType]); // Only depend on bloodType, not the entire bloodRequest object
+  }, [bloodRequest]);
 
   const handleConfirmRequest = async () => {
     await fulfillBloodRequest(bloodRequest);
-    toast.success('Yêu cầu hiến máu đã được xác nhận!');
-    router.push("/staffs/emergency-request");
+    router.push("/staffs/emergency-request/list");
   }
   // Filter and sort donors (client-side for the current page)
   useEffect(() => {
-    if (donors.length === 0) return; // Don't filter if no donors
-    
     let result = [...donors];
     
     // Apply search filter
     if (searchTerm) {
       result = result.filter(donor => 
-        donor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        donor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         donor.personalId?.includes(searchTerm) ||
-        donor.phone?.includes(searchTerm)
+        donor.phone.includes(searchTerm)
       );
     }
     
@@ -281,7 +209,6 @@ const hasEnoughBlood = () => {
     if (filters.availability !== '*') {
       const today = new Date();
       result = result.filter(donor => {
-        if (!donor.nextEligibleDonationDate) return filters.availability === 'available';
         const eligibleDate = new Date(donor.nextEligibleDonationDate);
         return filters.availability === 'available' 
           ? eligibleDate <= today 
@@ -292,13 +219,10 @@ const hasEnoughBlood = () => {
     // Apply sorting
     if (sortConfig.key) {
       result.sort((a, b) => {
-        const aValue = a[sortConfig.key] || '';
-        const bValue = b[sortConfig.key] || '';
-        
-        if (aValue < bValue) {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
-        if (aValue > bValue) {
+        if (a[sortConfig.key] > b[sortConfig.key]) {
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;
@@ -306,7 +230,7 @@ const hasEnoughBlood = () => {
     }
     
     setFilteredDonors(result);
-  }, [donors, searchTerm, filters.bloodType, filters.gender, filters.availability, sortConfig.key, sortConfig.direction]);
+  }, [donors, searchTerm, filters, sortConfig]);
 
   const handleSort = (key) => {
     let direction = 'desc';
@@ -322,7 +246,7 @@ const hasEnoughBlood = () => {
   };
 
   return (
-    <div className="w-full px-6 py-6">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Danh Sách Người Hiến Máu</h1>
         <p className="text-gray-600">{totalElements} người hiến phù hợp</p>

@@ -97,14 +97,7 @@ export default function DonorTable({ donors, handleSort, setActiveTab, setDonor,
                   <TableCell>
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 mr-1 text-gray-500" />
-                      <div className="flex flex-col">
-                        {donor.address && (
-                          <span className="text-sm">{donor.address}</span>
-                        )}
-                        <span className="text-xs text-gray-500">
-                          {[donor.ward, donor.district, donor.city].filter(Boolean).join(', ')}
-                        </span>
-                      </div>
+                      {donor.address}
                     </div>
                   </TableCell>
                   {distanceEnabled && (

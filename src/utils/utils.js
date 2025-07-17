@@ -14,3 +14,18 @@ export const convertBloodType = (bloodType) => {
   }
   return `${type}${rhSign}`;
 }
+
+export const convertDonationRegistrationStatus = (status) => {
+  switch (status) {
+    case 'PENDING':
+      return 'Chưa tới ngày hiến';
+    case 'REJECTED':
+      return 'Từ chối checkin';
+    case 'CANCELED':
+      return 'Đã hủy';
+    case 'CHECKED_IN':
+      return 'Đã checkin';
+    default:
+      return status;
+  }
+}

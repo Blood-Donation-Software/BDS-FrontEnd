@@ -413,7 +413,7 @@ export default function CreateBloodRequest() {
     try {
       await createRequest(pendingRequestData);
       toast.success("Blood request created successfully!");
-      router.push("/staffs/emergency-request/list");
+      router.push("/staffs/emergency-request");
     } catch (error) {
       console.error(error);
       toast.error("Submission failed. Please try again.");

@@ -31,19 +31,6 @@ export const getAllProfilesOrderedByDistance = () => {
         .then(res => res.data);
 };
 
-// New APIs that return ProfileDto with distance information for frontend pagination
-export const getProfilesWithinDistanceAsProfileDto = (maxDistanceKm, page = 0, size = 10) => {
-    return axiosInstance.get(endpoint.profileDistance.getProfilesWithinDistance, {
-        params: { maxDistanceKm, page, size }
-    }).then(res => res.data);
-};
-
-export const getAllProfilesOrderedByDistanceAsProfileDto = (page = 0, size = 10) => {
-    return axiosInstance.get(endpoint.profileDistance.getProfilesAllOrdered, {
-        params: { page, size }
-    }).then(res => res.data);
-};
-
 // Calculate missing distances (admin only)
 export const calculateMissingDistances = () => {
     return axiosInstance.post(endpoint.profileDistance.calculateMissing)

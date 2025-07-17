@@ -1,6 +1,6 @@
 import EventManagement from "@/sections/DonationEvents/EventManagement";
 
-export default function DonationEventList() {
+export default function DonationEvent() {
     return(
         <EventManagement/>
     );

@@ -30,16 +30,17 @@ export default function RegisterPage() {
     toast.error(error?.message || "Gửi lại OTP thất bại!");
   }
 };
+    const handleLoginGoogle = async () => {
+      await loginGoogle();
+    }
 
-
-  // Helper to get avatar as base64 string
   async function getAvatarAsBase64(name) {
     const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
     const response = await fetch(url);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result); // Full base64 string with data:image/png;base64,...
+      reader.onloadend = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
@@ -70,8 +71,6 @@ export default function RegisterPage() {
       const account = {
         email,
         password,
-        //name,
-        // avatar: avatarBase64 // send full base64 string
       };
       const message = await register(account, name);
       if (message === "verification email sent") {
@@ -145,14 +144,9 @@ export default function RegisterPage() {
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
-          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
+          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50" onClick={handleLoginGoogle}>
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
             <span>Đăng ký qua Google</span>
-          </button>
-
-          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
-            <Image src="https://www.svgrepo.com/show/512317/github-142.svg" width={10} height={10} alt="GitHub" className="w-5 h-5" />
-            <span>Đăng ký qua Github</span>
           </button>
         </div>
 

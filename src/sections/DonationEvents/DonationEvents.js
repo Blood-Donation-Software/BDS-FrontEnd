@@ -75,7 +75,7 @@ function DonationEvents() {
             router.push('/login');
             return;
         }
-
+        
         selectEventById(event.id);
         router.push(`/donation-events/${event.id}`);
     };
@@ -407,11 +407,12 @@ function DonationEvents() {
                                         </div>
                                     </CardContent>                                    <CardFooter className="pt-0 pb-6">
                                         <Button
-                                            className={`w-full font-semibold py-2.5 shadow-md hover:shadow-lg transition-all duration-300 ${event.registeredMemberCount >= event.totalMemberCount
+                                            className={`w-full font-semibold py-2.5 shadow-md hover:shadow-lg transition-all duration-300 ${
+                                                event.registeredMemberCount >= event.totalMemberCount
                                                     ? 'bg-gray-400 cursor-not-allowed'
                                                     : !loggedIn
-                                                        ? 'bg-amber-500 hover:bg-amber-600'
-                                                        : 'bg-red-500 hover:bg-red-600'
+                                                    ? 'bg-amber-500 hover:bg-amber-600'
+                                                    : 'bg-red-500 hover:bg-red-600'
                                                 } text-white flex items-center justify-center gap-2`}
                                             onClick={() => handleRegisterClick(event)}
                                             disabled={event.registeredMemberCount >= event.totalMemberCount}

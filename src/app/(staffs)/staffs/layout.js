@@ -1,14 +1,15 @@
 'use client'
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/sidebar/sidebar"
-import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard } from "lucide-react"
+import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard, FileText, Plus, List, QrCode, Droplet, Eye, AlertCircle, Package } from "lucide-react"
 import BloodRequestProvider from "@/context/bloodRequest_context"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
-import { usePathname } from "next/navigation"
+import { useParams, usePathname } from "next/navigation"
 import { ROLES, RouteProtection } from "@/components/auth"
 
 export default function Layout({ children }) {
   const pathname = "/staffs";
+  const params = useParams();
   const items = [
     {
       title: "Dashboard",
@@ -18,7 +19,7 @@ export default function Layout({ children }) {
     },
     {
       title: "Blog Management",
-      url: "/staffs/blog",
+      url: "/staffs/blog/list",
       icon: Newspaper,
       button: true,
       btnName: "New Blog",
@@ -27,23 +28,23 @@ export default function Layout({ children }) {
         {
           title: "Blog List",
           url: "/staffs/blog/list",
-          icon: Newspaper,
+          icon: List,
         },
         {
           title: "Create Blog",
           url: "/staffs/blog/create",
-          icon: Newspaper,
+          icon: Plus,
         },
         {
           title: "Blog Requests",
           url: "/staffs/blog/requests",
-          icon: Newspaper,
+          icon: FileText,
         }
       ]
     },
     {
       title: "Donation Events",
-      url: "/staffs/donation-event",
+      url: "/staffs/donation-event/list",
       icon: Calendar,
       button: true,
       btnName: "New Event",
@@ -52,29 +53,29 @@ export default function Layout({ children }) {
         {
           title: "Event List",
           url: "/staffs/donation-event/list",
-          icon: Calendar,
+          icon: List,
         },
         {
           title: "Create Event",
           url: "/staffs/donation-event/create-event",
-          icon: Calendar,
+          icon: Plus,
         },
         {
           title: "Check In",
           url: "/staffs/donation-event/checkin",
-          icon: Calendar,
+          icon: QrCode,
         },
         {
           title: "Event Requests",
           url: "/staffs/donation-event/requests",
-          icon: Calendar,
-        }
+          icon: FileText,
+        },
       ]
     },
     {
       title: "Blood Requests",
-      url: "/staffs/emergency-request",
-      icon: TriangleAlert,
+      url: "/staffs/emergency-request/list",
+      icon: AlertCircle,
       button: true,
       btnName: "New Request",
       nav: `${pathname}/create-request`,
@@ -82,29 +83,29 @@ export default function Layout({ children }) {
         {
           title: "Request List",
           url: "/staffs/emergency-request/list",
-          icon: TriangleAlert,
+          icon: List,
         },
         {
           title: "Create Request",
           url: "/staffs/emergency-request/create-request",
-          icon: TriangleAlert,
-        }
+          icon: Plus,
+        },
       ]
     },
     {
       title: "Blood Stock",
       url: "/staffs/blood-stock",
-      icon: Warehouse,
+      icon: Droplet,
       children: [
         {
           title: "Stock View",
           url: "/staffs/blood-stock",
-          icon: Warehouse,
+          icon: Eye,
         },
       ]
     },
   ]
-  
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-gray-50">

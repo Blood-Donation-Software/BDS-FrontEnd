@@ -26,7 +26,27 @@ const crudTypeOptions = [
   { value: 'UPDATE', label: 'Update Event' },
   { value: 'DELETE', label: 'Delete Event' }
 ]
+const getTimeSlotDisplay = (timeSlotDtos) => {
+  if (!timeSlotDtos || timeSlotDtos.length === 0) return 'N/A'
 
+  const firstSlot = timeSlotDtos[0]
+  const lastSlot = timeSlotDtos[timeSlotDtos.length - 1]
+
+  if (timeSlotDtos.length === 1) {
+    return `${formatTime(firstSlot.startTime)} - ${formatTime(firstSlot.endTime)}`
+  } else {
+    return `${formatTime(firstSlot.startTime)} - ${formatTime(lastSlot.endTime)} (${timeSlotDtos.length} slots)`
+  }
+}
+
+const formatTime = (timeString) => {
+  if (!timeString) return 'N/A'
+  try {
+    return format(parseISO(`2000-01-01T${timeString}`), 'HH:mm')
+  } catch (error) {
+    return timeString
+  }
+}
 // Status badge styling
 const getStatusBadge = (status) => {
   const styles = {
@@ -400,9 +420,9 @@ export default function EventRequest() {
                             <div className="font-medium">{displayData?.hospital || 'N/A'}</div>
                             <div className="text-muted-foreground">
                               {displayData?.address && `${displayData.address}, `}
-                              {displayData?.ward && `${displayData.ward}, `}
-                              {displayData?.district && `${displayData.district}, `}
-                              {displayData?.city}
+                              {displayData?.ward && `${displayData.ward}`}
+                              {/* {displayData?.district && `${displayData.district}, `}
+                              {displayData?.city} */}
                             </div>
                           </div>
                         </div>
@@ -581,259 +601,318 @@ export default function EventRequest() {
         </CardContent>
       </Card>
 
-      {/* View Request Details Dialog */}
+      {/* View Event Request Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="min-w-[1000px] max-h-[90vh] overflow-auto">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <FileText className="h-6 w-6 text-red-600" />
               {selectedRequest?.crudType === 'CREATE' && 'New Event Request Details'}
               {selectedRequest?.crudType === 'UPDATE' && 'Event Update Request Details'}
               {selectedRequest?.crudType === 'DELETE' && 'Event Deletion Request Details'}
+              {!selectedRequest?.crudType && 'Event Request Details'}
             </DialogTitle>
-            <DialogDescription>
-              {selectedRequest?.crudType === 'CREATE' && 'Review the details of this new donation event request'}
-              {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to the existing event'}
-              {selectedRequest?.crudType === 'DELETE' && 'Review the event that is requested to be deleted'}
+            <DialogDescription className="text-base">
+              {selectedRequest?.crudType === 'CREATE' && 'Review the details of your new event request'}
+              {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to your event'}
+              {selectedRequest?.crudType === 'DELETE' && 'Review the event that you requested to be deleted'}
+              {!selectedRequest?.crudType && 'Review your complete event request'}
             </DialogDescription>
           </DialogHeader>
 
-          {selectedRequest && (() => {
-            const displayData = getDisplayData(selectedRequest)
-            return (
-              <div className="space-y-6">
-                {/* Basic Information */}
-                <div className="grid grid-cols-2 gap-4">
+          {selectedRequest && (
+            <div className="space-y-8 py-6">
+              {/* Request Status Header */}
+              <div className="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl border border-red-200">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <h4 className="font-semibold mb-2">
-                      {selectedRequest.crudType === 'DELETE' ? 'Event to be Deleted' : 'Event Information'}
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div><strong>Name:</strong> {displayData?.name || 'N/A'}</div>
-                      <div><strong>Type:</strong> {formatDonationType(displayData?.donationType)}</div>
-                      <div><strong>Date:</strong> {formatDate(displayData?.donationDate)}</div>
-                      <div><strong>Capacity:</strong> {displayData?.totalMemberCount || 'N/A'} people</div>
-                      <div><strong>Status:</strong>
-                        <Badge variant="outline" className={`ml-2 ${getStatusBadge(selectedRequest.status)}`}>
-                          {selectedRequest.status}
-                        </Badge>
-                      </div>
-                      <div><strong>Request Type:</strong>
-                        <Badge variant="outline" className={`ml-2 ${getCrudTypeBadge(selectedRequest.crudType)}`}>
-                          {formatCrudType(selectedRequest.crudType)}
-                        </Badge>
-                      </div>                      {(selectedRequest.crudType === 'UPDATE' || selectedRequest.crudType === 'DELETE') && selectedRequest.eventId && (
-                        <div><strong>Original Event ID:</strong> #{selectedRequest.eventId}</div>
-                      )}
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request Status</label>
+                    <div className="mt-2">
+                      <Badge variant="outline" className={`${getStatusBadge(selectedRequest.status)} text-sm px-3 py-1`}>
+                        {selectedRequest.status}
+                      </Badge>
                     </div>
                   </div>
-
                   <div>
-                    <h4 className="font-semibold mb-2">Location</h4>
-                    <div className="space-y-2 text-sm">
-                      <div><strong>Hospital:</strong> {displayData?.hospital || 'N/A'}</div>
-                      <div><strong>Address:</strong> {displayData?.address || 'N/A'}</div>
-                      <div><strong>Ward:</strong> {displayData?.ward || 'N/A'}</div>
-                      <div><strong>District:</strong> {displayData?.district || 'N/A'}</div>
-                      <div><strong>City:</strong> {displayData?.city || 'N/A'}</div>
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request Type</label>
+                    <div className="mt-2">
+                      <Badge variant="outline" className={`${getCrudTypeBadge(selectedRequest.crudType)} text-sm px-3 py-1`}>
+                        {formatCrudType(selectedRequest.crudType)}
+                      </Badge>
                     </div>
                   </div>
-                </div>
-
-                {/* Organizer Information */}
-                {displayData?.organizer && (
                   <div>
-                    <h4 className="font-semibold mb-2">Organizer</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div><strong>Organization:</strong> {displayData.organizer.organizationName}</div>
-                      <div><strong>Contact Person:</strong> {displayData.organizer.contactPersonName}</div>
-                      <div><strong>Email:</strong> {displayData.organizer.email}</div>
-                      <div><strong>Phone:</strong> {displayData.organizer.phoneNumber}</div>
-                    </div>
-                  </div>
-                )}              {/* Time Slots */}
-                {displayData?.timeSlotDtos && displayData.timeSlotDtos.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Time Slots</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {displayData.timeSlotDtos.map((slot, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{slot.startTime} - {slot.endTime}</span>
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            Max: {slot.maxCapacity}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Request Details */}
-                <div>
-                  <h4 className="font-semibold mb-2">Request Information</h4>
-                  <div className="text-sm text-muted-foreground">
-                    <div><strong>Request ID:</strong> #{selectedRequest.id}</div>
-                    <div><strong>Request Type:</strong> {selectedRequest.crudType}</div>
-                    <div><strong>Event ID:</strong> {selectedRequest.eventId || 'New Event'}</div>
-                    <div><strong>Author ID:</strong> {selectedRequest.authorId}</div>
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request ID</label>
+                    <p className="mt-2 text-lg font-bold text-red-800">#{selectedRequest.id}</p>
                   </div>
                 </div>
               </div>
-            )
-          })()}
-          {/* Comparison for UPDATE requests */}
-          {selectedRequest?.crudType === 'UPDATE' && (() => {
-            const originalData = getOriginalData(selectedRequest)
-            const updatedData = getDisplayData(selectedRequest)
 
-            if (!originalData || !updatedData) return null
+              {/* Event Details */}
+              {(() => {
+                const displayData = getDisplayData(selectedRequest)
+                const originalData = getOriginalData(selectedRequest)
 
-            // Helper function to check if values are different
-            const isDifferent = (original, updated) => {
-              return original !== updated
-            }
+                return (
+                  <div className="space-y-8">
+                    {/* Main Event Information */}
+                    <div className="bg-white border rounded-xl p-6 shadow-sm">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-red-600" />
+                        Event Information
+                      </h3>
 
-            // Helper function to render comparison field
-            const renderComparison = (label, originalValue, updatedValue, formatter = (val) => val || 'N/A') => {
-              const different = isDifferent(originalValue, updatedValue)
-              return (
-                <div className={`p-2 rounded ${different ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50'}`}>
-                  <div className="font-medium text-sm mb-1">{label}:</div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className={`p-2 rounded ${different ? 'bg-red-100 text-red-800' : 'bg-gray-100'}`}>
-                      <span className="font-semibold">Before:</span> {formatter(originalValue)}
-                    </div>
-                    <div className={`p-2 rounded ${different ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`}>
-                      <span className="font-semibold">After:</span> {formatter(updatedValue)}
-                    </div>
-                  </div>
-                </div>
-              )
-            }
-
-            return (
-              <div className="mt-6">
-                <h4 className="font-semibold mb-4 text-orange-600 flex items-center gap-2">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                  Changes Made (Before vs After)
-                </h4>
-
-                <div className="space-y-4">
-                  {/* Basic Information Changes */}
-                  <div>
-                    <h5 className="font-medium mb-3 text-gray-700">Basic Information</h5>
-                    <div className="space-y-3">
-                      {renderComparison('Event Name', originalData.name, updatedData.name)}
-                      {renderComparison('Donation Type', originalData.donationType, updatedData.donationType, formatDonationType)}
-                      {renderComparison('Event Date', originalData.donationDate, updatedData.donationDate, formatDate)}
-                      {renderComparison('Total Capacity', originalData.totalMemberCount, updatedData.totalMemberCount, (val) => `${val || 0} people`)}
-                    </div>
-                  </div>
-
-                  {/* Location Changes */}
-                  <div>
-                    <h5 className="font-medium mb-3 text-gray-700">Location Details</h5>
-                    <div className="space-y-3">
-                      {renderComparison('Hospital/Venue', originalData.hospital, updatedData.hospital)}
-                      {renderComparison('Street Address', originalData.address, updatedData.address)}
-                      {renderComparison('Ward', originalData.ward, updatedData.ward)}
-                      {renderComparison('District', originalData.district, updatedData.district)}
-                      {renderComparison('City/Province', originalData.city, updatedData.city)}
-                    </div>
-                  </div>
-
-                  {/* Organizer Changes */}
-                  {(originalData.organizer || updatedData.organizer) && (
-                    <div>
-                      <h5 className="font-medium mb-3 text-gray-700">Organizer Information</h5>
-                      <div className="space-y-3">
-                        {renderComparison(
-                          'Organization Name',
-                          originalData.organizer?.organizationName,
-                          updatedData.organizer?.organizationName
-                        )}
-                        {renderComparison(
-                          'Contact Person',
-                          originalData.organizer?.contactPersonName,
-                          updatedData.organizer?.contactPersonName
-                        )}
-                        {renderComparison(
-                          'Email',
-                          originalData.organizer?.email,
-                          updatedData.organizer?.email
-                        )}
-                        {renderComparison(
-                          'Phone Number',
-                          originalData.organizer?.phoneNumber,
-                          updatedData.organizer?.phoneNumber
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Time Slots Changes */}
-                  {(originalData.timeSlotDtos?.length > 0 || updatedData.timeSlotDtos?.length > 0) && (
-                    <div>
-                      <h5 className="font-medium mb-3 text-gray-700">Time Slots</h5>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h6 className="text-sm font-medium text-red-600 mb-2">Before:</h6>
-                          <div className="space-y-2">
-                            {originalData.timeSlotDtos?.map((slot, index) => (
-                              <div key={index} className="flex items-center justify-between p-2 bg-red-50 rounded border border-red-200">
-                                <span className="text-sm">{slot.startTime} - {slot.endTime}</span>
-                                <span className="text-xs bg-red-100 px-2 py-1 rounded">Max: {slot.maxCapacity}</span>
-                              </div>
-                            )) || <div className="text-sm text-gray-500 italic">No time slots</div>}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Event Name</label>
+                            <p className="mt-1 text-lg font-semibold text-gray-900">{displayData?.name || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Hospital</label>
+                            <p className="mt-1 text-base text-gray-900">{displayData?.hospital || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Donation Date</label>
+                            <div className="mt-1 flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-red-600" />
+                              <p className="text-base font-medium text-gray-900">{formatDate(displayData?.donationDate)}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Donation Type</label>
+                            <p className="mt-1 text-base text-gray-900">{formatDonationType(displayData?.donationType)}</p>
                           </div>
                         </div>
-                        <div>
-                          <h6 className="text-sm font-medium text-green-600 mb-2">After:</h6>
-                          <div className="space-y-2">
-                            {updatedData.timeSlotDtos?.map((slot, index) => (
-                              <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded border border-green-200">
-                                <span className="text-sm">{slot.startTime} - {slot.endTime}</span>
-                                <span className="text-xs bg-green-100 px-2 py-1 rounded">Max: {slot.maxCapacity}</span>
-                              </div>
-                            )) || <div className="text-sm text-gray-500 italic">No time slots</div>}
+
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Address</label>
+                            <div className="mt-1 flex items-start gap-2">
+                              <MapPin className="h-4 w-4 text-red-600 mt-0.5" />
+                              <p className="text-base text-gray-900">{displayData?.address || 'N/A'}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">City</label>
+                            <p className="mt-1 text-base text-gray-900">{displayData?.city || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Time Slots</label>
+                            <div className="mt-1 flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-red-600" />
+                              <p className="text-base font-medium text-gray-900">{getTimeSlotDisplay(displayData?.timeSlotDtos)}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Max Participants</label>
+                            <div className="mt-1 flex items-center gap-2">
+                              <Users className="h-4 w-4 text-red-600" />
+                              <p className="text-base font-medium text-gray-900">{displayData?.totalMemberCount || 'N/A'}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  )}
 
-                  {/* Summary of Changes */}
-                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-                    <h6 className="font-medium text-blue-800 mb-2">Summary</h6>
-                    <p className="text-sm text-blue-700">
-                      {(() => {
-                        const changes = []
-                        if (isDifferent(originalData.name, updatedData.name)) changes.push('event name')
-                        if (isDifferent(originalData.donationType, updatedData.donationType)) changes.push('donation type')
-                        if (isDifferent(originalData.donationDate, updatedData.donationDate)) changes.push('event date')
-                        if (isDifferent(originalData.hospital, updatedData.hospital)) changes.push('venue')
-                        if (isDifferent(originalData.address, updatedData.address)) changes.push('address')
-                        if (isDifferent(originalData.totalMemberCount, updatedData.totalMemberCount)) changes.push('capacity')
+                    {/* Time Slots Detail */}
+                    {displayData?.timeSlotDtos && displayData.timeSlotDtos.length > 0 && (
+                      <div className="bg-white border rounded-xl p-6 shadow-sm">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                          <Clock className="h-5 w-5 text-red-600" />
+                          Time Slots Details
+                          <span className="text-sm font-normal text-gray-500 ml-2">
+                            ({displayData.timeSlotDtos.length} {displayData.timeSlotDtos.length === 1 ? 'slot' : 'slots'})
+                          </span>
+                        </h3>
 
-                        if (changes.length === 0) {
-                          return 'No significant changes detected in basic information.'
-                        }
+                        {/* Time Slots Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                          {displayData.timeSlotDtos.map((slot, index) => (
+                            <div key={index} className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                              <div className="flex flex-col space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                      <Clock className="h-4 w-4 text-white" />
+                                    </div>
+                                    <span className="font-semibold text-red-800">
+                                      Slot {index + 1}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-red-600 font-medium uppercase tracking-wide">
+                                    {slot.maxParticipants ? `${slot.maxParticipants} spots` : 'Available'}
+                                  </div>
+                                </div>
 
-                        return `Changes made to: ${changes.join(', ')}.`
-                      })()}
-                    </p>
+                                <div className="flex items-center gap-2 text-gray-700">
+                                  <div className="w-1 h-8 bg-red-600 rounded-full"></div>
+                                  <div>
+                                    <div className="font-bold text-lg text-red-800">
+                                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                                    </div>
+                                    <div className="text-sm text-red-600">
+                                      Duration: {(() => {
+                                        try {
+                                          const start = new Date(`2000-01-01T${slot.startTime}`)
+                                          const end = new Date(`2000-01-01T${slot.endTime}`)
+                                          const diffMs = end - start
+                                          const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+                                          const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+                                          if (diffHours > 0) {
+                                            return `${diffHours}h ${diffMinutes}m`
+                                          }
+                                          return `${diffMinutes}m`
+                                        } catch {
+                                          return 'N/A'
+                                        }
+                                      })()}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Time Slots Summary */}
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-red-600" />
+                            Summary
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-red-600" />
+                              <span className="text-gray-600">Total Slots:</span>
+                              <span className="font-semibold text-gray-900">{displayData.timeSlotDtos.length}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-red-600" />
+                              <span className="text-gray-600">Start Time:</span>
+                              <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[0]?.startTime)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-red-600" />
+                              <span className="text-gray-600">End Time:</span>
+                              <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[displayData.timeSlotDtos.length - 1]?.endTime)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Description */}
+                    {displayData?.description && (
+                      <div className="bg-white border rounded-xl p-6 shadow-sm">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-red-600" />
+                          Description
+                        </h3>
+                        <div className="bg-gray-50 p-4 rounded-lg border">
+                          <p className="text-gray-900 leading-relaxed">{displayData.description}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Organizer Information */}
+                    {displayData?.organizer && (
+                      <div className="bg-white border rounded-xl p-6 shadow-sm">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                          <Users className="h-5 w-5 text-red-600" />
+                          Organizer Information
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Organization Name</label>
+                            <p className="mt-1 text-base font-semibold text-gray-900">{displayData.organizer.organizationName || 'N/A'}</p>
+                          </div>
+                          {displayData.organizer.email && (
+                            <div>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Email</label>
+                              <p className="mt-1 text-base text-gray-900">{displayData.organizer.email}</p>
+                            </div>
+                          )}
+                          {displayData.organizer.phoneNumber && (
+                            <div>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Phone</label>
+                              <p className="mt-1 text-base text-gray-900">{displayData.organizer.phoneNumber}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+
+
+                    {/* Show comparison for UPDATE requests */}
+                    {selectedRequest.crudType === 'UPDATE' && originalData && (
+                      <div className="bg-white border rounded-xl p-6 shadow-sm">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                          <ArrowUpDown className="h-5 w-5 text-red-600" />
+                          Changes Comparison
+                        </h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          {/* Original Data */}
+                          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <h4 className="font-semibold text-red-800 mb-4">Original Event</h4>
+                            <div className="space-y-3">
+                              <div>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Name</label>
+                                <p className="text-sm text-red-900">{originalData.name || 'N/A'}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Date</label>
+                                <p className="text-sm text-red-900">{formatDate(originalData.donationDate)}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Time</label>
+                                <p className="text-sm text-red-900">{getTimeSlotDisplay(originalData.timeSlotDtos)}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Location</label>
+                                <p className="text-sm text-red-900">{originalData.hospital || 'N/A'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* New Data */}
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h4 className="font-semibold text-green-800 mb-4">Updated Event</h4>
+                            <div className="space-y-3">
+                              <div>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Name</label>
+                                <p className="text-sm text-green-900">{displayData.name || 'N/A'}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Date</label>
+                                <p className="text-sm text-green-900">{formatDate(displayData.donationDate)}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Time</label>
+                                <p className="text-sm text-green-900">{getTimeSlotDisplay(displayData.timeSlotDtos)}</p>
+                              </div>
+                              <div>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Location</label>
+                                <p className="text-sm text-green-900">{displayData.hospital || 'N/A'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
-            )
-          })()}
+                )
+              })()}
+            </div>
+          )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+          <DialogFooter className="border-t pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setViewDialogOpen(false)}
+              className="px-6 py-2"
+            >
               Close
             </Button>
           </DialogFooter>

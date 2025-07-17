@@ -13,10 +13,7 @@ import { updatePassword } from "@/apis/user";
 export default function SettingsPage() {
   const { account, profile } = useUserProfile();
   const [settings, setSettings] = useState({
-    emailNotifications: true,
-    smsNotifications: false,
-    marketingEmails: false,
-    twoFactorAuth: false,
+    marketingEmails: profile?.status === 'AVAILABLE' ? true : false,
     language: 'vi',
     timezone: 'Asia/Ho_Chi_Minh'
   });
@@ -132,29 +129,6 @@ export default function SettingsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="email-notifications">Thông báo email</Label>
-                      <p className="text-sm text-gray-500">Nhận thông báo qua email</p>
-                    </div>
-                    <Switch
-                      id="email-notifications"
-                      checked={settings.emailNotifications}
-                      onCheckedChange={(checked) => handleSettingChange('emailNotifications', checked)}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="sms-notifications">Thông báo SMS</Label>
-                      <p className="text-sm text-gray-500">Nhận thông báo qua tin nhắn</p>
-                    </div>
-                    <Switch
-                      id="sms-notifications"
-                      checked={settings.smsNotifications}
-                      onCheckedChange={(checked) => handleSettingChange('smsNotifications', checked)}
-                    />
-                  </div>
                   
                   <div className="flex items-center justify-between">
                     <div>
@@ -167,29 +141,7 @@ export default function SettingsPage() {
                       onCheckedChange={(checked) => handleSettingChange('marketingEmails', checked)}
                     />
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Security */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Bảo mật</CardTitle>
-                  <CardDescription>
-                    Cài đặt bảo mật và quyền riêng tư
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="two-factor">Xác thực hai yếu tố</Label>
-                      <p className="text-sm text-gray-500">Thêm lớp bảo mật cho tài khoản</p>
-                    </div>
-                    <Switch
-                      id="two-factor"
-                      checked={settings.twoFactorAuth}
-                      onCheckedChange={(checked) => handleSettingChange('twoFactorAuth', checked)}
-                    />
-                  </div>
+                  
                 </CardContent>
               </Card>
 

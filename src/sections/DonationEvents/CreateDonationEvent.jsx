@@ -373,7 +373,7 @@ export default function CreateDonationEventPage() {
     try {
       const response = await createEvent(pendingEventData)
       toast.success("Blood donation event request submitted successfully!")
-      router.push(`/staffs/donation-event/list`)
+      router.push(`/staffs/donation-event/requests`)
     } catch (error) {
       console.error('Error creating event:', error)
 
@@ -564,18 +564,6 @@ export default function CreateDonationEventPage() {
 
                   {/* Organizer Selection */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">Organizer (Optional)</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setActiveTab("organizer")}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add New Organizer
-                      </Button>
-                    </div>
 
                     <FormField
                       control={eventForm.control}
@@ -645,7 +633,8 @@ export default function CreateDonationEventPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">                      
+                      <FormField
                         control={eventForm.control}
                         name="city"
                         render={({ field }) => (
@@ -764,7 +753,7 @@ export default function CreateDonationEventPage() {
                       name="totalMemberCount"
                       render={({ field }) => {
                         return (
-                          <FormItem>
+                          <FormItem className="mt-7">
                             <FormLabel>Total Capacity (Auto-calculated) *</FormLabel>
                             <FormControl>
                               <Input
@@ -1084,7 +1073,8 @@ export default function CreateDonationEventPage() {
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">                      
+                      <FormField
                         control={organizerForm.control}
                         name="city"
                         render={({ field }) => (

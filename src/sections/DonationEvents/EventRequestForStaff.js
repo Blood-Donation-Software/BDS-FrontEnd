@@ -613,7 +613,7 @@ export default function EventRequestForStaff() {
                             <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Max Participants</label>
                             <div className="mt-1 flex items-center gap-2">
                               <Users className="h-4 w-4 text-red-600" />
-                              <p className="text-base font-medium text-gray-900">{displayData?.maxParticipants || 'N/A'}</p>
+                              <p className="text-base font-medium text-gray-900">{displayData?.totalMemberCount || 'N/A'}</p>
                             </div>
                           </div>
                         </div>

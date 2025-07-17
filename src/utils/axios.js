@@ -2,7 +2,7 @@
 
 import { getRequestById } from '@/apis/bloodrequest';
 import { deleteStock } from '@/apis/bloodStock';
-import { getAllAccount, getDonationHistory, getProfile, updateProfile } from '@/apis/user';
+import { getAllAccount, updateProfile } from '@/apis/user';
 import { AVATAR_URL, BASE_URL } from '@/global-config';
 import axios from 'axios';
 import { add } from 'lodash';
@@ -35,24 +35,22 @@ export const endpoint = {
     login: `${BASE_URL}/api/auth/login`,
     register: `${BASE_URL}/api/auth/register`,
     verify: `${BASE_URL}/api/auth/verify`,
-    loginGoogle: `${BASE_URL}/oauth2/authorization/google`,
-    forgotPassword: `${BASE_URL}/api/auth/forgot-password`,
-  },
+    loginGoogle: `${BASE_URL}/oauth2/authorization/google`
+  },    
   user: {
     updateProfile: `${BASE_URL}/api/user/profile/update`,
     getProfile: `${BASE_URL}/api/user/profile`,
     getAllProfile: `${BASE_URL}/api/user/profile/list-profile`,
     getAllAccount: `${BASE_URL}/api/user/account/list-account`,
-    genAvatar: (name, rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
+    genAvatar: (name,rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
     getDonationHistory: `${BASE_URL}/api/user/profile/history`,
     profile: `${BASE_URL}/api/user/info`,
-    profile: `${BASE_URL}/user/info`,
     updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
     updatePassword: `${BASE_URL}/api/user/account/update-password`,
-    getDonationHistoryById: (profileId) => `${BASE_URL}/api/user/profile/list-profile/profileId/${profileId}/history`,
+    getDonationHistoryById: (profileId) => `${BASE_URL}/api/user/profile/list-profile/${profileId}/history`,
     create: `${BASE_URL}/api/user/profile/create`,
   },
   profileDistance: {
@@ -61,8 +59,6 @@ export const endpoint = {
     recalculateDistance: (profileId) => `${BASE_URL}/api/profile-distances/recalculate/${profileId}`,
     getWithinDistance: `${BASE_URL}/api/profile-distances/within-distance`,
     getAllOrdered: `${BASE_URL}/api/profile-distances/all-ordered`,
-    getProfilesWithinDistance: `${BASE_URL}/api/profile-distances/profiles/within-distance`,
-    getProfilesAllOrdered: `${BASE_URL}/api/profile-distances/profiles/all-ordered`,
     calculateMissing: `${BASE_URL}/api/profile-distances/calculate-missing`,
     deleteDistance: (profileId) => `${BASE_URL}/api/profile-distances/${profileId}`,
   },
@@ -81,7 +77,7 @@ export const endpoint = {
     getStockByType: `${BASE_URL}/api/medical-facility-stock/get-stock-by-type`,
     addStock: `${BASE_URL}/api/medical-facility-stock/add-blood-into-stock`,
     deleteStock: (id) => `${BASE_URL}/api/medical-facility-stock/${id}`,
-  },
+  },          
   bloodDonation: {
     createEvent: `${BASE_URL}/api/donation-event-request/create`,
     listEvent: `${BASE_URL}/api/donation-event/list-donation`,
@@ -98,7 +94,7 @@ export const endpoint = {
     register: (eventId, timeSlotId) => `${BASE_URL}/api/event-registration/${eventId}/${timeSlotId}/register`,
     registerOffline: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/registerOffline`,
     cancel: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/cancel`,
-  },
+  },  
   checkin: {
     getToken: (eventId) => `${BASE_URL}/api/checkin/${eventId}/checkin-token`,
     getInfo: (eventId) => `${BASE_URL}/api/checkin/info/${eventId}`,
@@ -126,7 +122,7 @@ export const endpoint = {
     getMyBlogById: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}`,
     updateBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/update`,
     deleteBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/delete`,
-    createBlogRequest: `${BASE_URL}/api/blog-request/create`,
+      createBlogRequest: `${BASE_URL}/api/blog-request/create`,
     getPendingRequests: `${BASE_URL}/api/blog-request/pending`,
     getBlogRequestById: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}`,
     verifyBlogRequest: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}/verify`,
