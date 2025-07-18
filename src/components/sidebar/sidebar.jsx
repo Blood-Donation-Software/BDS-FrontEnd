@@ -34,6 +34,15 @@ export default function AppSidebar({ items }) {
         setLoggedIn(false);
         router.push("/login");
     }
+
+    const handleAccountSettings = () => {
+        if(account.role === "STAFF") {
+            router.push("/staffs/profile-manage");
+        } else {
+            router.push("/admins/profile-manage");
+        }
+    }
+
     return (
         <Sidebar collapsible="icon" className="border-r border-gray-200 bg-white">
             <SidebarHeader className="h-[70px] flex flex-row items-center px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-red-50 to-pink-50">
@@ -209,8 +218,8 @@ export default function AppSidebar({ items }) {
                                 align="start"
                                 className="w-[240px] shadow-lg border border-gray-200"
                             >
-                                <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
-                                    <span className="font-medium">Account Settings</span>
+                                <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer" onClick={handleAccountSettings}>
+                                    <span className="font-medium" >Account Settings</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="px-3 py-2 hover:bg-red-50 text-red-600 cursor-pointer" onClick={handleLogout}>
                                     <span className="font-medium">Sign out</span>
