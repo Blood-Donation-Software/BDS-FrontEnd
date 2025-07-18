@@ -1,13 +1,12 @@
 {
-  "app": {
-    "name": "Blood Donation"
-  },
   "auth": {
     "register": "Register",
     "login": "Login",
     "logout": "Logout",
     "forgot_password": "Forgot Password",
     "reset_password": "Reset Password",
+    "new_password": "New Password",
+    "confirm_newPassword": "Confirm Password",
     "email": "Email",
     "password": "Password",
     "loginWithGoogle": "Login with Google",
@@ -19,7 +18,6 @@
     "loginNow": "Login Now",
     "fullName": "Full Name",
     "confirmPassword": "Confirm Password"
-
   },
   "user": {
     "profile": "Profile",
@@ -98,20 +96,19 @@
     "checkin_history": "Check-in History",
     "status": "Status"
   },
-  "organizer": {
-    "title": "Organizer",
-    "organizer_list": "Organizer List",
-    "add_organizer": "Add Organizer",
-    "edit_organizer": "Edit Organizer",
-    "delete_organizer": "Delete Organizer"
-  },
   "blog": {
     "title": "Blog",
     "blog_list": "Blog List",
     "blog_detail": "Blog Detail",
     "create_blog": "Create Blog",
+    "blog": "Blog",
     "edit_blog": "Edit Blog",
-    "delete_blog": "Delete Blog"
+    "delete_blog": "Delete Blog",
+    "loading": "Loading...",
+    "back": "Back",
+    "latest_posts": "Latest Posts",
+    "previous": "Previous",
+    "next": "Next"
   },
   "notification": {
     "title": "Notification",
@@ -149,6 +146,472 @@
     "enterEmail": "Enter your email",
     "enterPassword": "Enter your password",
     "confirmPasswordExample": "Re-enter your password"
-  }
+  },
+  "messsage": {
+    "welcome": "Welcome to the Blood Donation System",
+    "donation_success": "Thank you for your donation!",
+    "registration_success": "Registration successful!",
+    "update_success": "Profile updated successfully!",
+    "delete_success": "Deleted successfully!",
+    "error_occurred": "An error occurred, please try again later.",
+    "plsE": "Please enter your email."
+  },
+  "aboutUs": {
+    "Dedication": "Dedication",
+    "Professionalism": "Professionalism",
+    "Transparency": "Transparency",
+    "Efficiency": "Efficiency",
+    "about": {
+      "page_title": "About Us",
+      "page_subtitle": "Learn about our mission, vision and core values",
+      "vision": {
+        "title": "Vision",
+        "content": [
+          "To become Vietnam's leading blood donation center, pioneering the application of modern technology to efficiently manage and distribute blood, ensuring a safe and adequate blood supply for the whole society.",
+          "We aim to build a sustainable blood donation system where every citizen can easily participate in humanitarian blood donation activities, helping to save millions of patients' lives."
+        ]
+      },
+      "mission": {
+        "title": "Mission",
+        "content": [
+          "Connecting compassionate hearts with those in need through organizing professional, safe and effective blood donation activities.",
+          "We are committed to providing high-quality blood donation services, ensuring scientific and absolutely safe procedures for blood donors, while managing blood sources transparently and efficiently."
+        ]
+      },
+      "core_values": {
+        "title": "Core Values",
+        "subtitle": "The values that guide and shape all our activities in our development journey",
+        "values": [
+          {
+            "title": "Dedication",
+            "description": "We always prioritize the safety and health of blood donors, delivering every service with wholehearted dedication and meticulous care."
+          },
+          {
+            "title": "Professionalism",
+            "description": "Our team of highly experienced doctors, internationally standardized procedures, and modern equipment ensure the highest service quality."
+          },
+          {
+            "title": "Transparency",
+            "description": "All activities are conducted transparently and openly, safeguarding the rights and trust of blood donors."
+          },
+          {
+            "title": "Efficiency",
+            "description": "The spirit of compassion and sharing drives us to continuously strive for the health of the community."
+          }
+        ]
+      }
+    }
+  },
+  "homePage": {
+    "Name": "Blood Donation Management System",
+    "Center_Name": "HopeWell Medical Center",
+    "Description": "Connecting blood donors with those in need, efficiently managing resources and the donation process",
+    "RegisterToBloodDonation": "Register to Donate Blood",
+    "LearnMore": "Learn More",
+    "ImpactTitle": "Our Impact",
+    "Impact1": "Blood Donations",
+    "Impact2": "Campaigns",
+    "Impact3": "Patients Saved",
+    "Impact4": "Emergency Support",
+    "ProcessTitle": "Blood Donation Process",
+    "Step1Title": "Register",
+    "Step1Desc": "Fill in your information and undergo initial health screening",
+    "Step2Title": "Health Screening",
+    "Step2Desc": "Get a basic health check and blood test",
+    "Step3Title": "Donate Blood",
+    "Step3Desc": "The blood donation process takes about 10–15 minutes",
+    "TestimonialTitle": "Inspiring Stories",
+    "DonorRole": "Frequent Blood Donor",
+    "DonorQuote": "Donating blood not only helps others but also makes me feel more useful. HopeWell always provides the best support for donors.",
+    "RecipientRole": "Blood Recipient",
+    "RecipientQuote": "Thanks to the blood from HopeWell, I survived a critical surgery. Thank you to all the donors who saved my life.",
+    "CTA_Title": "You Can Save a Life Today",
+    "CTA_Description": "Just 15 minutes of donating blood can give 3 people a chance to live",
+    "CTA_Button1": "Register to Donate Now",
+    "CTA_Button2": "Contact Us"
+  },
+  "header": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact Us ",
+    "donationEvents": "Donation Events",
+    "donate_blood": "Donate Blood",
+    "blog": "Blog",
+    "events": "Events",
+    "bloodCompatibility": "Blood Compatibility Lookup",
+    "no_blogs": "It looks like there are no articles related to your search",
+    "search_placeholder": "Search for articles, events, or blood types...",
+    "clear_search": "Clear Search",
+    "search": "Search",
+    "author": "Author"
+  },
+   "notifications": {
+    "logout": {
+      "success": "Logout successful!",
+      "error": "Logout failed, please try again later!",
+      "unknownError": "Unknown error"
+    }
+  },
+  "dropDownMenu": {
+    "profile": "Profile",
+    "dashBoard": "Dashboard",
+    "settings": "Settings"
+  },
+  "system": {
+    "details_info": "Please provide detailed information about your blood donation request.",
+    "unmatched_pass": "The passwords you entered do not match. Please try again.",
+    "change_passwordSuccess": "Password changed successfully!",
+    "update_profile_success": "Profile updated successfully!",
+    "delete_account_success": "Account deleted successfully!",
+    "email_sent": "An email has been sent to your registered email address.",
+    "email_not_found": "Email not found. Please check and try again.",
+    "password_reset_success": "Password reset successfully. You can now log in with your new password.",
+    "password_reset_failed": "Password reset failed. Please try again later."
+  },
+  "footer": {
+    "about": "A system connecting blood donors and recipients, ensuring safe, sufficient, and timely blood supplies.",
+    "quick_links": "Quick Links",
+    "register_donate": "Register to Donate",
+    "emergency_request": "Emergency Request",
+    "compatibility_lookup": "Compatibility Lookup",
+    "blog": "Blog",
+    "contact": "Contact",
+    "address": "123 Medical Street, Binh Thanh District, Ho Chi Minh City",
+    "phone": "+84 123 456 789",
+    "email": "contact@hopewell.vn",
+    "newsletter": "Newsletter",
+    "subscribe_info": "Subscribe to receive the latest information about blood donation campaigns and emergency news.",
+    "placeholder_email": "Your email",
+    "submit": "Submit",
+    "rights_reserved": "© 2025 Hopewell. All rights reserved.",
+    "built_with": "Built with",
+    "by_team": "by the Hopewell Team"
+  },
+  "blood_compatibility": {
+    "title": "Blood Compatibility Lookup",
+    "subtitle": "Check compatibility between blood types and blood components",
+    "step1": "1. Select blood component",
+    "step2": "2. Select your blood type",
+    "donate_tab": "Can donate to",
+    "receive_tab": "Can receive from",
+    "select_blood_type_notice": "Please select a blood type to view results",
+    "info_section_title": "Important Information:",
+    "info_1": "• O- is a universal donor (can donate to all blood types)",
+    "info_2": "• AB+ is a universal recipient (can receive from all blood types)",
+    "info_3": "• Rh-negative can donate to Rh-positive, but not the other way around",
+    "component_info_title": "Blood Component Information",
+    "compatible_label": "Compatible"
+  },
+  "blood_components": {
+    "whole_blood": {
+      "name": "Whole Blood",
+      "description": "Whole blood contains all the components of blood, including red blood cells, white blood cells, platelets, and plasma."
+    },
+    "red_blood_cells": {
+      "name": "Red Blood Cells",
+      "description": "Red blood cells carry oxygen from the lungs to tissues throughout the body. Essential in treating anemia."
+    },
+    "platelets": {
+      "name": "Platelets",
+      "description": "Platelets help blood clot and prevent bleeding. Commonly used in cancer treatments."
+    },
+    "plasma": {
+      "name": "Plasma",
+      "description": "Plasma is the liquid part of blood, containing proteins and nutrients. Important for treating burns and shock."
+    }
+  },
+  "donationEvents": {
+    "title": "Blood Donation Events",
+    "description": "Join voluntary blood donation events to help save lives. Every drop you give can bring hope to someone in need.",
+    "searchPlaceholder": "Search for events, locations, addresses, or cities...",
+    "dateRangePlaceholder": "Select date range",
+    "sortAsc": "Sort from oldest to newest",
+    "sortDesc": "Sort from newest to oldest",
+    "sortByDate": "Sort by date",
+    "noEventTitle": "No events found",
+    "noEventDescription": "Try adjusting filters or search keywords",
+    "fullLabel": "Full",
+    "register": "Register to join",
+    "loginToRegister": "Log in to register",
+    "fullSlot": "Fully booked",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "ONGOING": "Ongoing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "donationType": {
+      "WHOLE_BLOOD": "Whole Blood",
+      "PLASMA": "Plasma",
+      "PLATELETS": "Platelets",
+      "DOUBLE_RED_CELLS": "Red Blood Cells"
+    },
+    "organizer": {
+      "title": "Organizer"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "date": {
+      "label": "Date"
+    },
+    "timeSlot": {
+      "label": "Time Slot",
+      "none": "No time slot",
+      "multiple": "{{count}} different time slots"
+    },
+    "registration": {
+      "label": "Registered",
+      "of": "people registered"
+    },
+    "error": {
+      "title": "Error",
+      "loading": "Loading events...",
+      "notFound": "Unable to load event list"
+     
 
+    }
+  },
+
+  "createEvent": {
+    "title": "Create New Blood Donation Event Request",
+    "description": "Submit a request for a new blood donation campaign",
+    "tabs": {
+      "event": "Create Request",
+      "organizer": "Add Organizer"
+    },
+    "eventInfo": {
+      "title": "Event Information",
+      "fields": {
+        "name": "Event Name *",
+        "namePlaceholder": "Blood Donation Drive 2025",
+        "donationType": "Donation Type *",
+        "donationTypePlaceholder": "Select donation type",
+        "organizer": {
+          "title": "Organizer (Optional)",
+          "selectPlaceholder": "Select an organizer (optional)",
+          "noOrganizers": "No organizers found",
+          "addButton": "Add New Organizer",
+           "loadingOrganizers": "Loading organizers..."
+        },
+        "location": {
+          "title": "Location Details",
+          "hospital": "Hospital/Venue Name *",
+          "hospitalPlaceholder": "Community Center, Hospital, etc.",
+          "address": "Street Address *",
+          "addressPlaceholder": "123 Main Street",
+          "city": "Province/City *",
+          "cityPlaceholder": "Select province",
+          "district": "District *",
+          "districtPlaceholder": "Select district",
+          "selectProvinceFirst": "Select province first",
+          "selectDistrictFirst": "Select disctrict first",
+          "ward": "Ward *",
+          "wardPlaceholder": "Select ward"
+        },
+        "date": "Event Date *",
+        "datePlaceholder": "Pick a date",
+        "capacity": "Total Capacity (Auto-calculated) *",
+        "capacityNote": "This is automatically calculated from the sum of all time slot capacities",
+        "timeSlots": {
+          "title": "Time Slots",
+          "totalCapa": "Total Capacity",
+          "people": "people",
+          "addButton": "Add Time Slot",
+          "conflictWarning": "This time slot conflicts with another time slot",
+          "startTime": "Start Time",
+          "endTime": "End Time",
+          "maxCapacity": "Max Capacity",
+          "remove": "Remove",
+          "summary": " conflicting slots detected"
+        }
+      }
+    },
+    "organizerInfo": {
+      "title": "Add New Organizer",
+      "fields": {
+        "orgName": "Organization Name *",
+        "orgNamePlaceholder": "Red Cross Vietnam",
+        "organizerName": "Organizer Name *",
+        "contactPerson": "Contact Person Name *",
+        "contactPersonPlaceholder": "John Doe",
+        "email": "Email Address *",
+        "emailPlaceholder": "contact@organization.org",
+        "phone": "Phone Number",
+        "phonePlaceholder": "0123456789",
+        "website": "Website URL (Optional)",
+        "websitePlaceholder": "https://www.organization.org",
+        "description": "Description (Optional)",
+        "descriptionPlaceholder": "Brief description of the organization and its mission...",
+        "address": {
+          "title": "Address Information (Optional)",
+          "street": "Street Address",
+          "streetPlaceholder": "123 Organization Street",
+          "city": "Province/City",
+          "cityPlaceholder": "Select province",
+          "district": "District",
+          "districtPlaceholder": "Select district",
+          "selectProvinceFirst": "Select province first",
+           "selectDistrictFirst": "Select disctrict first",
+          "ward": "Ward",
+          "wardPlaceholder": "Select ward"
+        }
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit Request",
+      "submitting": "Submitting Request...",
+      "back": "Back to Event",
+      "createOrganizer": "Create Organizer",
+      "creatingOrganizer": "Creating Organizer..."
+      
+    },
+    "error":{
+  "startTime_required": "Start time is required",
+  "startTime_invalidFormat": "Invalid time format",
+  "endTime_required": "End time is required",
+  "endTime_invalidFormat": "Invalid time format",
+  "endTime_afterStart": "End time must be after start time",
+  "maxCapacity_min": "Capacity must be at least 1",
+  "maxCapacity_max": "Capacity cannot exceed 100",
+  "timeSlots_noOverlap": "Time slots cannot overlap with each other",
+  "timeSlots_min": "At least one time slot is required",
+  "timeSlots_max": "Maximum 10 time slots allowed",
+
+  "event_name_min": "Event name must be at least 5 characters",
+  "event_name_max": "Event name cannot exceed 200 characters",
+  "event_hospital_min": "Hospital/Location must be at least 3 characters",
+  "event_hospital_max": "Hospital/Location cannot exceed 200 characters",
+  "event_address_min": "Address must be at least 10 characters",
+  "event_address_max": "Address cannot exceed 300 characters",
+  "event_city_required": "City is required",
+  "event_district_required": "District is required",
+  "event_ward_required": "Ward is required",
+  "event_donationDate_required": "Donation date is required",
+  "event_donationDate_future": "Donation date must be today or in the future",
+  "event_donationType_required": "Please select a donation type",
+  "event_totalMemberCount_min": "Total capacity must be at least 1",
+  "event_totalMemberCount_max": "Total capacity cannot exceed 10000",
+
+  "organizer_organizationName_min": "Organization name must be at least 2 characters",
+  "organizer_organizationName_max": "Organization name cannot exceed 200 characters",
+  "organizer_contactPersonName_min": "Contact person name must be at least 2 characters",
+  "organizer_contactPersonName_max": "Contact person name cannot exceed 100 characters",
+  "organizer_email_invalid": "Please provide a valid email address",
+  "organizer_phoneNumber_invalid": "Phone number must be exactly 10 digits",
+  "organizer_address_max": "Address cannot exceed 300 characters",
+  "organizer_description_max": "Description cannot exceed 1000 characters",
+  "organizer_websiteUrl_invalid": "Please provide a valid website URL"
+}
+  },
+  "donateEdetailFmember":{
+  "donateEdetailFmember": {
+    "title": "Event Details",
+    "backToEvents": "Back to Events",
+    "location": "Location",
+    "address": "Address",
+    "date": "Date",
+    "donationType": "Donation Type",
+    "donationTypeMap": {
+      "WHOLE_BLOOD": "Whole Blood",
+      "PLASMA": "Plasma",
+      "PLATELETS": "Platelets",
+      "DOUBLE_RED_CELLS": "Double Red Cells"
+    },
+    "organizer": "Organizer",
+    "contact": "Contact",
+    "email": "Email",
+    "notFound": "Event not found",
+    "loading": "Loading event information...",
+    "notSpecified": "Not specified",
+    "timeSlots": "Time Slots",
+    "slotCapacity": "{{count}} slots",
+    "selectToChoose": "Tap to select",
+    "selected": "Selected",
+    "selectedSlot": "Selected Time Slot",
+    "registerThisSlot": "Register for this time slot",
+    "registering": "Processing...",
+    "eventStats": "Event Statistics",
+    "registeredCount": "Registered:",
+    "capacity": "Capacity:",
+    "slotCount": "Number of slots:",
+    "eventFull": "Event is full",
+    "registrationGuide": "Registration Guide",
+    "guideSelected": {
+      "title": "Time slot selected!",
+      "desc": "Click \"Register for this time slot\" to confirm your registration."
+    },
+    "guideUnselected": {
+      "title": "How to register:",
+      "steps": [
+        "1. Select a time slot from the available options",
+        "2. Click the \"Register for this time slot\" button",
+        "3. You will receive a confirmation email"
+      ]
+    },
+    "toast": {
+      "noEventId": "No event ID",
+      "cannotLoad": "Unable to load event information",
+      "selectTimeSlot": "Please select a time slot",
+      "registerError": "An error occurred while navigating"
+    }
+  }
+},
+"dashboard":{
+  "header":{
+    "title":"Track your blood donation history"
+  },
+  "userWel":{
+"welcome": "Welcome, ",
+"messsage": "Thank you for saving lives with your blood donation!"
+  },
+  "errors": {
+      "donationHistory": {
+        "fetchFailed": "Failed to load donation history",
+        "tryAgain": "Please try again later",
+        "noData": "No donation history found"
+      },
+      "general": {
+        "fetchFailed": "Failed to load data",
+        "serverError": "Server error"
+      }
+    },
+    "noti": {
+    "error": {
+      "donationHistory": "Failed to load donation history"
+    }
+  },
+   "StatisticsCard":{
+    "total": "Total Registrations",
+    "done": "Completed",
+    "totalVolume": "Total Blood Volume Donated (ml)",
+    "latest": "Latest donation"
+  },
+  "donateHistory":{
+    "title": "Donation History",
+    "description": "Track your past donations and their impact",
+    "noData": "No donation history found",
+    "loading": "Loading donation history...",
+    "tryAgain":"Please try again",
+    "columns": {
+      "date": "Date",
+      "type": "Donation Type",
+      "volume": "Volume (ml)",
+      "status": "Status"
+    },
+    "statusMap": {
+      "COMPLETED": "Completed",
+      "PENDING": "Pending",
+      "CANCELLED": "Cancelled"
+  },
+  "callToAction": {
+      "joinEvents": "Join blood donation events to build your history here",
+      "participateButton": "Participate in blood donation events"
+    }
+      
+  }
+  
+}
 }

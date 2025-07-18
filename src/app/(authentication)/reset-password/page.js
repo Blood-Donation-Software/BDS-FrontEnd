@@ -5,8 +5,10 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/utils/axios";
+import { useLanguage } from "@/context/language_context";
 
 export default function ResetPasswordPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email] = useState(searchParams.get("email") || "");
@@ -17,11 +19,11 @@ export default function ResetPasswordPage() {
   const handleReset = async (e) => {
     e.preventDefault();
     if (!password || !confirmPassword) {
-      toast.warning("Vui lòng nhập đầy đủ thông tin!");
+      toast.warning(t?.system?.details_info);
       return;
     }
     if (password !== confirmPassword) {
-      toast.warning("Mật khẩu xác nhận không khớp!");
+      toast.warning(t?.system?.unmatched_pass);
       return;
     }
     setLoading(true);
@@ -31,10 +33,10 @@ export default function ResetPasswordPage() {
         newPassword: password,
         verificationCode: code,
       });
-      toast.success("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+      toast.success(t?.system?.password_reset_success);
       router.push("/login");
     } catch (err) {
-      toast.error("Đổi mật khẩu thất bại. Vui lòng thử lại!");
+      toast.error(t?.system?.password_reset_failed);
     } finally {
       setLoading(false);
     }
@@ -43,23 +45,23 @@ export default function ResetPasswordPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center">Đặt lại mật khẩu</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">{t?.auth?.reset_password}</h1>
         <form onSubmit={handleReset}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Mật khẩu mới</label>
+            <label className="block text-sm font-medium mb-1">{t?.auth?.new_password}</label>
             <Input
               type="password"
-              placeholder="Nhập mật khẩu mới"
+              placeholder={t?.example?.enterPassword}
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
             />
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-1">Xác nhận mật khẩu mới</label>
+            <label className="block text-sm font-medium mb-1">{t?.confirmPasswordExample}</label>
             <Input
               type="password"
-              placeholder="Nhập lại mật khẩu mới"
+              placeholder={t?.example?.confirmPasswordExample}
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
               required
@@ -70,7 +72,7 @@ export default function ResetPasswordPage() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Đang đổi mật khẩu..." : "Đổi mật khẩu"}
+            {loading ? t?.system?.changing_password : t?.system?.change_passwordSuccess}
           </Button>
         </form>
       </div>

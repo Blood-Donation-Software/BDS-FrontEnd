@@ -6,6 +6,7 @@ import { getDonationHistory } from '@/apis/user';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/language_context';
 import { 
     Calendar, 
     MapPin, 
@@ -39,6 +40,7 @@ const donationTypeMap = {
 };
 
 function Dashboard() {
+    const {t} =useLanguage();
     const { profile, account, loggedIn, isLoading: userLoading } = useContext(UserContext);
     const router = useRouter();
     const [donationHistory, setDonationHistory] = useState([]);
@@ -68,9 +70,9 @@ function Dashboard() {
             setTotalElements(response.totalElements || 0);
             setCurrentPage(page);
         } catch (error) {
-            console.error('Error fetching donation history:', error);
-            setError('Không thể tải lịch sử hiến máu. Vui lòng thử lại sau.');
-            toast.error('Không thể tải lịch sử hiến máu');
+            console.error(t?.dashboard?.errors?.donationHistory?.fetchFailed, error);
+            setError(t.dashboard?.donationHistory?.tryAgain);
+            toast.error(t?.noti?.error?.doantionHistory);
         } finally {
             setLoading(false);
         }
@@ -110,7 +112,7 @@ function Dashboard() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Đang tải...</p>
+                    <p className="text-gray-600">{t?.blog?.loading}</p>
                 </div>
             </div>
         );
@@ -126,8 +128,8 @@ function Dashboard() {
                             <Activity className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Bảng điều khiển</h1>
-                            <p className="text-gray-600">Theo dõi lịch sử hiến máu của bạn</p>
+                            <h1 className="text-3xl font-bold text-gray-900">{t?.dropDownMenu?.dashboard}</h1>
+                            <p className="text-gray-600">{t?.dashboard?.header?.title}</p>
                         </div>
                     </div>
                     
@@ -139,10 +141,10 @@ function Dashboard() {
                             </div>
                             <div>
                                 <h2 className="text-xl font-semibold text-gray-900">
-                                    Chào mừng, {profile?.name || account?.email}!
+                                    {t?.dashboard?.userWel?.welcome} {profile?.name || account?.email}!
                                 </h2>
                                 <p className="text-gray-600">
-                                    Cảm ơn bạn đã tham gia vào hoạt động hiến máu tình nguyện
+                                    {t?.dashboard?.userWel?.message}
                                 </p>
                             </div>
                         </div>
@@ -155,7 +157,7 @@ function Dashboard() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-red-100 text-sm">Tổng số lần đăng ký</p>
+                                    <p className="text-red-100 text-sm">{t?.dashboard?.StatisticsCard?.total}</p>
                                     <p className="text-3xl font-bold">{stats.totalDonations}</p>
                                 </div>
                                 <Droplets className="h-8 w-8 text-red-200" />
@@ -167,7 +169,7 @@ function Dashboard() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-green-100 text-sm">Đã hoàn thành</p>
+                                    <p className="text-green-100 text-sm">{t?.dashboard?.StatisticsCard?.done}</p>
                                     <p className="text-3xl font-bold">{stats.completedDonations}</p>
                                 </div>
                                 <Award className="h-8 w-8 text-green-200" />
@@ -179,7 +181,7 @@ function Dashboard() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-blue-100 text-sm">Tổng thể tích (ml)</p>
+                                    <p className="text-blue-100 text-sm">{t?.dashboard?.StatisticsCard?.totalVolume}</p>
                                     <p className="text-3xl font-bold">{stats.totalVolume.toFixed(0)}</p>
                                 </div>
                                 <TrendingUp className="h-8 w-8 text-blue-200" />
@@ -191,7 +193,7 @@ function Dashboard() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-purple-100 text-sm">Lần gần nhất</p>
+                                    <p className="text-purple-100 text-sm">{t?.dashboard?.StatisticsCard?.latest}</p>
                                     <p className="text-lg font-semibold">
                                         {stats.mostRecentDonation 
                                             ? formatDate(stats.mostRecentDonation.registrationDate)
@@ -210,33 +212,33 @@ function Dashboard() {
                     <CardHeader className="bg-white border-b border-gray-100">
                         <CardTitle className="flex items-center gap-2 text-xl">
                             <Activity className="h-6 w-6 text-red-500" />
-                            Lịch sử hiến máu
+                            {t?.dashboard?.donateHistory?.title}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
                         {loading ? (
                             <div className="text-center py-12">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-                                <p className="text-gray-600">Đang tải lịch sử...</p>
+                                <p className="text-gray-600">{t?.donateHistory?.loading}</p>
                             </div>
                         ) : error ? (
                             <div className="text-center py-12">
                                 <p className="text-red-600 mb-4">{error}</p>
                                 <Button onClick={() => fetchDonationHistory(currentPage)} variant="outline">
-                                    Thử lại
+                                    "{t?.dashboard?.donateHistory?.tryAgain}"
                                 </Button>
                             </div>
                         ) : donationHistory.length === 0 ? (
                             <div className="text-center py-12">
                                 <Droplets className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                                <p className="text-xl text-gray-500 mb-2">Chưa có lịch sử hiến máu</p>
-                                <p className="text-gray-400 mb-4">Hãy tham gia các sự kiện hiến máu để có lịch sử tại đây</p>
+                                <p className="text-xl text-gray-500 mb-2">{t?.dashboard?.donateHistory?.noData}</p>
+                                <p className="text-gray-400 mb-4">{t?.dashboard?.donateHistory?.callToAction?.joinEvents}</p>
                                 <Button onClick={() => router.push('/donation-events')} className="bg-red-500 hover:bg-red-600">
-                                    Tham gia sự kiện hiến máu
+                                    {t?.dashboard?.donateHistory?.callToAction?.participateButton}
                                 </Button>
                             </div>
-                        ) : (
-                            <>
+                            ////////////////////////
+                        ) : (                          <>
                                 <div className="divide-y divide-gray-100">
                                     {donationHistory.map((donation, index) => {
                                         const status = statusMap[donation.registrationStatus] || 

@@ -86,3 +86,8 @@ export const updatePassword = (oldPassword, newPassword) => {
         newPassword
     }).then(res => res.data);
 }
+export async function createAccount(user) {
+    const res = await axiosInstance.post(endpoint.user.createAccount, user);
+    return res.data;
+}
+ 

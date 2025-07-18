@@ -13,12 +13,11 @@ import { useLanguage } from '@/context/language_context';
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();
   const [loading, setLoading] = useState(false);
-  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const {dictionary} = useLanguage();
+  const {t} = useLanguage();
   const router = useRouter();
 
   const handleResendOtp = async () => {
@@ -89,13 +88,13 @@ export default function RegisterPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">{dictionary?.auth?.register}</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Đăng Ký</h1>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.fullName}</label>
+          <label className="block text-sm font-medium mb-1">Họ và Tên</label>
           <input
             type="text"
-            placeholder={dictionary?.example?.nameExample}
+            placeholder="VD: Nguyễn Văn A"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -103,10 +102,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.email}</label>
+          <label className="block text-sm font-medium mb-1">Email</label>
           <input
             type="email"
-            placeholder={dictionary?.example?.enterEmail}
+            placeholder="Vui lòng nhập email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -114,10 +113,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.password}</label>
+          <label className="block text-sm font-medium mb-1">Mật Khẩu</label>
           <input
             type="password"
-            placeholder= {dictionary?.example?.enterPassword}
+            placeholder="Nhập mật khẩu"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -125,10 +124,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">{dictionary?.auth?.confirmPassword}</label>
+          <label className="block text-sm font-medium mb-1">Xác nhận mật khẩu</label>
           <input
             type="password"
-            placeholder={dictionary?.example?.confirmPasswordExample}
+            placeholder="Nhập lại mật khẩu"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -143,20 +142,25 @@ export default function RegisterPage() {
           {loading ? (
             <Loader2 className="animate-spin w-5 h-5" />
           ) : (
-            dictionary?.auth?.register
+            'Tạo tài khoản'
           )}
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
           <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
-            <span>{dictionary?.auth?.registerWithGoogle}</span>
+            <span>Đăng ký qua Google</span>
+          </button>
+
+          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
+            <Image src="https://www.svgrepo.com/show/512317/github-142.svg" width={10} height={10} alt="GitHub" className="w-5 h-5" />
+            <span>Đăng ký qua Github</span>
           </button>
         </div>
 
         <p className="text-sm text-center">
-          {dictionary?.auth?.alreadyhadAccount}{' '}
-          <a href="/login" className="text-blue-600 hover:underline">{dictionary?.auth?.loginNow}</a>
+          Đã có tài khoản?{' '}
+          <a href="/login" className="text-blue-600 hover:underline">Đăng nhập ngay</a>
         </p>
       </div>
     </div>

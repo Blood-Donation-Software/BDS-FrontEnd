@@ -1,13 +1,12 @@
 {
-  "app": {
-    "name": "Hiến Máu"
-  },
   "auth": {
     "register": "Đăng ký",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
     "forgot_password": "Quên mật khẩu",
     "reset_password": "Đặt lại mật khẩu",
+    "new_password": "Mật khẩu mới",
+    "confirm_newPassword": "Xác nhận mật khẩu mới",
     "email": "Email",
     "password": "Mật khẩu",
     "loginWithGoogle": "Đăng nhập với Google",
@@ -19,7 +18,6 @@
     "loginNow": "Đăng nhập ngay",
     "fullName": "Họ và Tên",
     "confirmPassword": "Xác nhận mật khẩu"
-    
   },
   "user": {
     "profile": "Hồ sơ",
@@ -109,9 +107,20 @@
     "title": "Bài viết",
     "blog_list": "Danh sách bài viết",
     "blog_detail": "Chi tiết bài viết",
+    "blog": "bài viết",
     "create_blog": "Tạo bài viết",
     "edit_blog": "Chỉnh sửa bài viết",
-    "delete_blog": "Xóa bài viết"
+    "delete_blog": "Xóa bài viết",
+    "loading": "Đang tải...",
+    "back": "Quay lại",
+    "latest_posts": "Bài viết mới nhất",
+    "previous": "Trước",
+    "next": "Tiếp theo",
+    "no_blogs": "Không có bài viết nào phù hợp với tìm kiếm của bạn",
+    "search_placeholder": "Tìm kiếm bài viết...",
+    "clear_search": "Xóa tìm kiếm",
+    "search": "Tìm kiếm",
+    "author": "Tác giả"
   },
   "notification": {
     "title": "Thông báo",
@@ -144,10 +153,451 @@
     "previous": "Trước",
     "save": "Lưu"
   },
-  "example":{
+  "example": {
     "nameExample": "Nguyễn Văn A",
-    "enterEmail": "Nhập email của bạn", 
+    "enterEmail": "Nhập email của bạn",
     "enterPassword": "Nhập mật khẩu của bạn",
     "confirmPasswordExample": "Nhập lại mật khẩu của bạn"
+  },
+  "placeholder": {},
+  "message": {
+    "welcome": "Chào mừng đến với hệ thống Hiến Máu",
+    "donation_success": "Cảm ơn bạn đã hiến máu!",
+    "registration_success": "Đăng ký thành công!",
+    "update_success": "Cập nhật hồ sơ thành công!",
+    "delete_success": "Xóa thành công!",
+    "error_occurred": "Đã xảy ra lỗi, vui lòng thử lại sau.",
+    "plsE": "Vui lòng nhập email của bạn."
+  },
+  "aboutUs": {
+    "Dedication": "Tận tâm",
+    "Professionalism": "Chuyên nghiệp",
+    "Transparency": "Minh bạch",
+    "Efficiency": "Hiệu quả",
+    "about": {
+      "page_title": "Về Chúng Tôi",
+      "page_subtitle": "Tìm hiểu về sứ mệnh, tầm nhìn và giá trị cốt lõi của chúng tôi",
+      "vision": {
+        "title": "Tầm Nhìn",
+        "content": [
+          "Trở thành trung tâm hiến máu hàng đầu tại Việt Nam, tiên phong trong ứng dụng công nghệ hiện đại nhằm quản lý và phân phối máu hiệu quả, đảm bảo nguồn máu an toàn và đầy đủ cho toàn xã hội.",
+          "Chúng tôi hướng đến xây dựng một hệ thống hiến máu bền vững, nơi mọi công dân đều có thể dễ dàng tham gia các hoạt động hiến máu nhân đạo, góp phần cứu sống hàng triệu người bệnh."
+        ]
+      },
+      "mission": {
+        "title": "Sứ Mệnh",
+        "content": [
+          "Kết nối những trái tim nhân ái với người cần được giúp đỡ thông qua việc tổ chức các hoạt động hiến máu chuyên nghiệp, an toàn và hiệu quả.",
+          "Chúng tôi cam kết cung cấp dịch vụ hiến máu chất lượng cao, đảm bảo quy trình khoa học và tuyệt đối an toàn cho người hiến máu, đồng thời quản lý nguồn máu một cách minh bạch và hiệu quả."
+        ]
+      },
+      "core_values": {
+        "title": "Giá Trị Cốt Lõi",
+        "subtitle": "Những giá trị định hướng và hình thành mọi hoạt động trên hành trình phát triển của chúng tôi",
+        "values": [
+          {
+            "title": "Tận Tâm",
+            "description": "Luôn đặt sự an toàn và sức khỏe của người hiến máu lên hàng đầu, phục vụ với sự tận tụy và chăm sóc tỉ mỉ."
+          },
+          {
+            "title": "Chuyên Nghiệp",
+            "description": "Đội ngũ bác sĩ giàu kinh nghiệm, quy trình đạt chuẩn quốc tế và thiết bị hiện đại đảm bảo chất lượng dịch vụ cao nhất."
+          },
+          {
+            "title": "Minh Bạch",
+            "description": "Mọi hoạt động đều minh bạch và công khai, bảo vệ quyền lợi và niềm tin của người hiến máu."
+          },
+          {
+            "title": "Hiệu Quả",
+            "description": "Tinh thần sẻ chia và nhân ái thúc đẩy chúng tôi không ngừng nỗ lực vì sức khỏe cộng đồng."
+          }
+        ]
+      }
+    }
+  },
+  "homePage": {
+    "Name": "Hệ thống Quản lý Hiến Máu",
+    "Center_Name": "Trung tâm Y tế HopeWell",
+    "Description": "Kết nối người hiến máu với những người cần máu, quản lý hiệu quả nguồn lực và quá trình hiến máu",
+    "RegisterToBloodDonation": "Đăng ký hiến máu",
+    "LearnMore": "Tìm hiểu thêm",
+    "ImpactTitle": "Tác Động Của Chúng Tôi",
+    "Impact1": "Lượt hiến máu",
+    "Impact2": "Đợt vận động",
+    "Impact3": "Bệnh nhân được cứu",
+    "Impact4": "Hỗ trợ khẩn cấp",
+    "ProcessTitle": "Quy Trình Hiến Máu",
+    "Step1Title": "Đăng Ký",
+    "Step1Desc": "Điền thông tin và kiểm tra điều kiện sức khỏe ban đầu",
+    "Step2Title": "Khám Sàng Lọc",
+    "Step2Desc": "Kiểm tra sức khỏe và xét nghiệm máu cơ bản",
+    "Step3Title": "Hiến Máu",
+    "Step3Desc": "Quá trình hiến máu diễn ra trong khoảng 10-15 phút",
+    "TestimonialTitle": "Câu Chuyện Cảm Động",
+    "DonorRole": "Người hiến máu thường xuyên",
+    "DonorQuote": "Hiến máu không chỉ giúp người khác mà còn giúp tôi cảm thấy mình có ích hơn. HopeWell luôn tạo điều kiện tốt nhất cho người hiến máu.",
+    "RecipientRole": "Người nhận máu",
+    "RecipientQuote": "Nhờ có máu từ HopeWell, tôi đã vượt qua ca phẫu thuật nguy hiểm. Cảm ơn tất cả những người hiến máu đã cứu sống tôi.",
+    "CTA_Title": "Bạn Có Thể Cứu Sống Ai Đó Hôm Nay",
+    "CTA_Description": "Chỉ với 15 phút hiến máu, bạn có thể mang lại cơ hội sống cho 3 người",
+    "CTA_Button1": "Đăng Ký Hiến Máu Ngay",
+    "CTA_Button2": "Liên Hệ Chúng Tôi"
+  },
+  "header": {
+    "home": "Trang chủ",
+    "about": "Về chúng tôi",
+    "contact": "Liên hệ",
+    "donate_blood": "Hiến máu",
+    "donationEvents": "Sự kiện hiến máu",
+    "blog": "Blog",
+    "events": "Sự kiện",
+    "bloodCompatibility": "Tra cứu tương thích máu"
+  },
+   "notifications": {
+    "logout": {
+      "success": "Đăng xuất thành công!",
+      "error": "Đăng xuất thất bại, vui lòng thử lại sau!",
+      "unknownError": "Lỗi không xác định"
+    }
+  },
+  "dropDownMenu": {
+    "profile": "Thông tin cá nhân",
+    "dashBoard": "Bảng điều khiển",
+    "settings": "Cài đặt"
+  },
+  "system": {
+    "details_info": "Vui lòng cung cấp thông tin chi tiết về yêu cầu hiến máu của bạn.",
+    "unmatched_pass": "Mật khẩu bạn nhập không khớp. Vui lòng thử lại.",
+    "change_passwordSuccess": "Đổi mật khẩu thành công!",
+    "update_profile_success": "Cập nhật hồ sơ thành công!",
+    "delete_account_success": "Xóa tài khoản thành công!",
+    "email_sent": "Email đã được gửi đến địa chỉ email đăng ký của bạn.",
+    "email_not_found": "Không tìm thấy email. Vui lòng kiểm tra và thử lại.",
+    "password_reset_success": "Đặt lại mật khẩu thành công. Bạn có thể đăng nhập bằng mật khẩu mới.",
+    "password_reset_failed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại sau.",
+    "changing_password": "Đang thay đổi mật khẩu..."
+  },
+  "footer": {
+    "about": "Hệ thống kết nối người hiến máu và người cần máu, đảm bảo nguồn máu an toàn, đầy đủ và kịp thời.",
+    "quick_links": "Liên kết nhanh",
+    "register_donate": "Đăng ký hiến máu",
+    "emergency_request": "Yêu cầu khẩn cấp",
+    "compatibility_lookup": "Tra cứu tương thích",
+    "blog": "Blog",
+    "contact": "Liên hệ",
+    "address": "123 Đường Y Tế, Quận Bình Thạnh, TP. Hồ Chí Minh",
+    "phone": "+84 123 456 789",
+    "email": "contact@hopewell.vn",
+    "newsletter": "Nhận thông tin",
+    "subscribe_info": "Đăng ký nhận thông tin mới nhất về các chiến dịch hiến máu và các tin tức khẩn cấp.",
+    "placeholder_email": "Email của bạn",
+    "submit": "Gửi",
+    "rights_reserved": "© 2025 Hopewell. Tất cả quyền được bảo lưu.",
+    "built_with": "Xây dựng với",
+    "by_team": "bởi Hopewell Team"
+  },
+  "blood_compatibility": {
+    "title": "Tra cứu tương thích nhóm máu",
+    "subtitle": "Kiểm tra khả năng tương thích giữa các nhóm máu và thành phần máu",
+    "step1": "1. Chọn thành phần máu",
+    "step2": "2. Chọn nhóm máu của bạn",
+    "donate_tab": "Có thể hiến cho",
+    "receive_tab": "Có thể nhận từ",
+    "select_blood_type_notice": "Vui lòng chọn nhóm máu để xem kết quả",
+    "info_section_title": "Thông tin quan trọng:",
+    "info_1": "• O- là nhóm máu cho (có thể hiến cho tất cả các nhóm máu)",
+    "info_2": "• AB+ là nhóm máu nhận (có thể nhận từ tất cả các nhóm máu)",
+    "info_3": "• Rh âm có thể hiến cho Rh dương, nhưng ngược lại thì không",
+    "component_info_title": "Thông tin thành phần máu",
+    "compatible_label": "Tương thích"
+  },
+  "blood_components": {
+    "whole_blood": {
+      "name": "Máu toàn phần",
+      "description": "Máu toàn phần chứa tất cả các thành phần của máu, bao gồm hồng cầu, bạch cầu, tiểu cầu và huyết tương."
+    },
+    "red_blood_cells": {
+      "name": "Hồng cầu",
+      "description": "Hồng cầu vận chuyển oxy từ phổi đến các mô trong cơ thể. Quan trọng trong điều trị thiếu máu."
+    },
+    "platelets": {
+      "name": "Tiểu cầu",
+      "description": "Tiểu cầu giúp máu đông lại và ngăn chặn chảy máu. Thường được sử dụng trong điều trị ung thư."
+    },
+    "plasma": {
+      "name": "Huyết tương",
+      "description": "Huyết tương là phần lỏng của máu, chứa các protein và chất dinh dưỡng. Quan trọng trong điều trị bỏng và sốc."
+    }
+  },
+  "donationEvents": {
+    "title": "Sự kiện hiến máu",
+    "description": "Tham gia các sự kiện hiến máu tình nguyện để cứu sống nhiều người cần giúp đỡ. Mỗi giọt máu của bạn có thể mang lại hy vọng cho những người đang cần.",
+    "searchPlaceholder": "Tìm kiếm sự kiện, địa điểm, địa chỉ, hoặc thành phố...",
+    "dateRangePlaceholder": "Chọn khoảng thời gian",
+    "sortAsc": "Sắp xếp từ cũ đến mới",
+    "sortDesc": "Sắp xếp từ mới đến cũ",
+    "noEventTitle": "Không tìm thấy sự kiện nào",
+    "noEventDescription": "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm",
+    "sortByDate": "Sắp xếp theo ngày",
+    "fullLabel": "Đã đầy",
+    "register": "Đăng ký tham gia",
+    "loginToRegister": "Đăng nhập để đăng ký",
+    "fullSlot": "Đã đầy chỗ",
+    "status": {
+      "PENDING": "Chờ duyệt",
+      "APPROVED": "Đã duyệt",
+      "ONGOING": "Đang diễn ra",
+      "COMPLETED": "Đã hoàn thành",
+      "CANCELLED": "Đã hủy"
+    },
+    "donationType": {
+      "WHOLE_BLOOD": "Máu toàn phần",
+      "PLASMA": "Huyết tương",
+      "PLATELETS": "Tiểu cầu",
+      "DOUBLE_RED_CELLS": "Hồng cầu"
+    },
+    "organizer": {
+      "title": "Đơn vị tổ chức"
+    },
+    "location": {
+      "label": "Địa điểm"
+    },
+    "date": {
+      "label": "Ngày tổ chức"
+    },
+    "timeSlot": {
+      "label": "Khung giờ",
+      "none": "Chưa có khung giờ",
+      "multiple": "{{count}} khung giờ khác nhau"
+    },
+    "registration": {
+      "label": "Đã đăng ký",
+      "of": "người đã đăng ký"
+    },
+    "error": {
+      "title": "Lỗi",
+      "loading": "Đang tải sự kiện...",
+      "notFound": "Không thể tải danh sách sự kiện"
+      
+    }
+  },
+
+  "createEvent": {
+    "title": "Tạo Yêu Cầu Sự Kiện Hiến Máu Mới",
+    "description": "Gửi yêu cầu cho chiến dịch hiến máu mới",
+    "tabs": {
+      "event": "Tạo Yêu Cầu",
+      "organizer": "Thêm Tổ Chức"
+    },
+    "eventInfo": {
+      "title": "Thông Tin Sự Kiện",
+      "fields": {
+        "name": "Tên Sự Kiện *",
+        "namePlaceholder": "Chiến Dịch Hiến Máu 2025",
+        "donationType": "Loại Hiến Máu *",
+        "donationTypePlaceholder": "Chọn loại hiến máu",
+        "organizer": {
+          "title": "Tổ Chức (Tùy chọn)",
+          "selectPlaceholder": "Chọn tổ chức (tùy chọn)",
+          "noOrganizers": "Không tìm thấy tổ chức",
+          "addButton": "Thêm Tổ Chức Mới",
+          "loadingOrganizers": "Đang tải danh sách tổ chức..."
+
+        },
+        "location": {
+          "title": "Thông Tin Địa Điểm",
+          "hospital": "Tên Bệnh Viện/Địa Điểm *",
+          "hospitalPlaceholder": "Trung tâm cộng đồng, Bệnh viện, v.v.",
+          "address": "Địa Chỉ *",
+          "addressPlaceholder": "123 Đường Chính",
+          "city": "Tỉnh/Thành Phố *",
+          "cityPlaceholder": "Chọn tỉnh/thành phố",
+          "district": "Quận/Huyện *",
+          "selectProvinceFirst": "Vui lòng chọn tỉnh/thành phố trước",
+          "districtPlaceholder": "Chọn quận/huyện",
+           "selectDistrictFirst": "Vui lòng chọn quận/huyện trước",
+          "ward": "Phường/Xã *",
+          "wardPlaceholder": "Chọn phường/xã"
+        },
+        "date": "Ngày Hiến Máu *",
+        "datePlaceholder": "Chọn ngày",
+        "capacity": "Tổng Sức Chứa (Tự động tính) *",
+        "capacityNote": "Tự động tính từ tổng sức chứa của các khung giờ",
+        "timeSlots": {
+          "title": "Khung Giờ",
+          "totalCapa": "Tổng Sức Chứa",
+          "people": "người",
+          "addButton": "Thêm Khung Giờ",
+          "conflictWarning": "Khung giờ này xung đột với khung giờ khác",
+          "startTime": "Giờ Bắt Đầu",
+          "endTime": "Giờ Kết Thúc",
+          "maxCapacity": "Sức Chứa Tối Đa",
+          "remove": "Xóa",
+          "summary": "Phát hiện khung giờ xung đột"
+        }
+      }
+    },
+    "organizerInfo": {
+      "title": "Thêm Tổ Chức Mới",
+      "fields": {
+        "orgName": "Tên Tổ Chức *",
+        "orgNamePlaceholder": "Hội Chữ Thập Đỏ Việt Nam",
+        "organizerName" : "Tên Tổ Chức *",
+        "contactPerson": "Tên Người Liên Hệ *",
+        "contactPersonPlaceholder": "Nguyễn Văn A",
+        "email": "Địa Chỉ Email *",
+        "emailPlaceholder": "lienhe@tochuc.org",
+        "phone": "Số Điện Thoại",
+        "phonePlaceholder": "0123456789",
+        "website": "Website (Tùy chọn)",
+        "websitePlaceholder": "https://www.tochuc.org",
+        "description": "Mô Tả (Tùy chọn)",
+        "descriptionPlaceholder": "Mô tả ngắn về tổ chức và sứ mệnh...",
+        "address": {
+          "title": "Thông Tin Địa Chỉ (Tùy chọn)",
+          "street": "Địa Chỉ",
+          "streetPlaceholder": "123 Đường Tổ Chức",
+          "city": "Tỉnh/Thành Phố",
+          "cityPlaceholder": "Chọn tỉnh/thành phố",
+          "district": "Quận/Huyện",
+          "selectProvinceFirst": "Vui lòng chọn tỉnh/thành phố trước",
+          "districtPlaceholder": "Chọn quận/huyện",
+          "selectDistrictFirst": "Vui lòng chọn quận/huyện trước",
+          "ward": "Phường/Xã",
+          "wardPlaceholder": "Chọn phường/xã"
+        }
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy",
+      "submit": "Gửi Yêu Cầu",
+      "submitting": "Đang gửi yêu cầu...",
+      "back": "Quay Lại Sự Kiện",
+      "createOrganizer": "Tạo Tổ Chức",
+      "creatingOrganizer": "Đang tạo tổ chức..."
+      
+    },
+    "error":{
+  "startTime_required": "Vui lòng nhập thời gian bắt đầu",
+  "startTime_invalidFormat": "Định dạng thời gian không hợp lệ",
+  "endTime_required": "Vui lòng nhập thời gian kết thúc",
+  "endTime_invalidFormat": "Định dạng thời gian không hợp lệ",
+  "endTime_afterStart": "Thời gian kết thúc phải sau thời gian bắt đầu",
+  "maxCapacity_min": "Sức chứa tối thiểu là 1",
+  "maxCapacity_max": "Sức chứa không được vượt quá 100",
+  "timeSlots_noOverlap": "Các khung giờ không được trùng nhau",
+  "timeSlots_min": "Phải có ít nhất một khung giờ",
+  "timeSlots_max": "Tối đa 10 khung giờ",
+
+  "event_name_min": "Tên sự kiện phải có ít nhất 5 ký tự",
+  "event_name_max": "Tên sự kiện không được vượt quá 200 ký tự",
+  "event_hospital_min": "Tên bệnh viện/địa điểm phải có ít nhất 3 ký tự",
+  "event_hospital_max": "Tên bệnh viện/địa điểm không được vượt quá 200 ký tự",
+  "event_address_min": "Địa chỉ phải có ít nhất 10 ký tự",
+  "event_address_max": "Địa chỉ không được vượt quá 300 ký tự",
+  "event_city_required": "Vui lòng chọn thành phố",
+  "event_district_required": "Vui lòng chọn quận/huyện",
+  "event_ward_required": "Vui lòng chọn phường/xã",
+  "event_donationDate_required": "Vui lòng chọn ngày hiến máu",
+  "event_donationDate_future": "Ngày hiến máu phải là hôm nay hoặc trong tương lai",
+  "event_donationType_required": "Vui lòng chọn loại hiến máu",
+  "event_totalMemberCount_min": "Sức chứa tổng phải ít nhất là 1",
+  "event_totalMemberCount_max": "Sức chứa tổng không được vượt quá 10000",
+
+  "organizer_organizationName_min": "Tên tổ chức phải có ít nhất 2 ký tự",
+  "organizer_organizationName_max": "Tên tổ chức không được vượt quá 200 ký tự",
+  "organizer_contactPersonName_min": "Tên người liên hệ phải có ít nhất 2 ký tự",
+  "organizer_contactPersonName_max": "Tên người liên hệ không được vượt quá 100 ký tự",
+  "organizer_email_invalid": "Vui lòng nhập địa chỉ email hợp lệ",
+  "organizer_phoneNumber_invalid": "Số điện thoại phải đúng 10 chữ số",
+  "organizer_address_max": "Địa chỉ không được vượt quá 300 ký tự",
+  "organizer_description_max": "Mô tả không được vượt quá 1000 ký tự",
+  "organizer_websiteUrl_invalid": "Vui lòng nhập đường dẫn website hợp lệ"
+} 
+  },
+  "donateEdetailFmember":{
+  "title": "Chi tiết sự kiện",
+  "backToEvents": "Quay về trang Sự kiện",
+  "location": "Địa điểm",
+  "address": "Địa chỉ",
+  "date": "Ngày",
+  "donationType": "Hình thức hiến máu",
+  "donationTypeMap": {
+    "WHOLE_BLOOD": "Toàn phần",
+    "PLASMA": "Huyết tương",
+    "PLATELETS": "Tiểu cầu",
+    "DOUBLE_RED_CELLS": "Hồng cầu"
+  },
+  "organizer": "Đơn vị tổ chức",
+  "contact": "Liên hệ",
+  "email": "Email",
+  "notFound": "Không tìm thấy sự kiện",
+  "loading": "Đang tải thông tin sự kiện...",
+  "notSpecified": "Không xác định",
+  "timeSlots": "Các khoảng thời gian",
+  "slotCapacity": "{{count}} suất",
+  "selectToChoose": "Ấn để chọn",
+  "selected": "Đã chọn",
+  "selectedSlot": "Khoảng thời gian đã chọn",
+  "registerThisSlot": "Đăng ký khung giờ này",
+  "registering": "Đang xử lý...",
+  "eventStats": "Thống kê sự kiện",
+  "registeredCount": "Số người đã đăng ký:",
+  "capacity": "Sức chứa:",
+  "slotCount": "Số ca:",
+  "eventFull": "Sự kiện đã đầy",
+  "registrationGuide": "Hướng dẫn đăng ký",
+  "guideSelected": {
+    "title": "Đã chọn khoảng thời gian!",
+    "desc": "Nhấn \"Đăng ký khung giờ này\" để xác nhận đăng ký của bạn."
+  },
+  "guideUnselected": {
+    "title": "Làm sao để đăng ký:",
+    "steps": [
+      "1. Chọn một khung giờ trong các tùy chọn có sẵn",
+      "2. Nhấn nút \"Đăng ký khung giờ này\"",
+      "3. Bạn sẽ nhận được email xác nhận"
+    ]
+  },
+  "toast": {
+    "noEventId": "Không có mã sự kiện",
+    "cannotLoad": "Không thể tải thông tin sự kiện",
+    "selectTimeSlot": "Vui lòng chọn khung thời gian",
+    "registerError": "Có lỗi xảy ra khi chuyển trang"
   }
+},
+"dashboard":{
+  "StatisticsCard":{
+    "total": "Tổng số lần đăng ký",
+    "done": "Đã hoàn thành",
+    "totalVolume": "Tổng khối lượng máu đã hiến (ml)",
+    "latest": "Lần gần nhất"
+  },
+  "header":{
+    "title":"theo dõi lịch sử hiến máu của bạn",
+    "message":"Cảm ơn bạn đã tham gia vào hoạt động hiến máu tình nguyện"
+  },
+  "userWel":{
+    "welcome": "Chào Mừng, "
+  },
+
+  "errors": {
+      "donationHistory": {
+        "fetchFailed": "Không thể tải lịch sử hiến máu",
+        "tryAgain": "Vui lòng thử lại sau",
+        "noData": "Không tìm thấy lịch sử hiến máu"
+      },
+      "general": {
+        "fetchFailed": "Không thể tải dữ liệu",
+        "serverError": "Lỗi máy chủ"
+      }
+    }
+  },
+  "noti": {
+    "error": {
+      "donationHistory": "Không thể tải lịch sử hiến máu"
+    }
+  }
+  
+     
 }

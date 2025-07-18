@@ -3,7 +3,7 @@
 import { useLanguage } from "@/context/language_context";
 
 export default function AuthenticationLayout({children}) {
-    const { dictionary } = useLanguage();
+    const { t } = useLanguage();
     return(
         <div className="flex min-h-screen bg-gray-50">
 
@@ -12,9 +12,9 @@ export default function AuthenticationLayout({children}) {
             <div className="hidden md:flex w-1/2 justify-center items-center flex-col px-8">
                 <div className="text-center">
                 <h1 className="text-3xl font-bold mb-4">HopeWell</h1>
-                <h2 className="text-xl font-semibold text-red-600">{dictionary?.greeting?.slogan}</h2>
+                <h2 className="text-xl font-semibold text-red-600">{t?.greeting?.slogan}</h2>
                 <p className="mt-4 text-gray-700 max-w-md">
-                    {dictionary?.greeting?.explain}
+                    {t?.greeting?.explain}
                 </p>
                 </div>
             </div>

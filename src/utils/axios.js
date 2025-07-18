@@ -51,6 +51,7 @@ export const endpoint = {
      updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
     updatePassword: `${BASE_URL}/api/user/account/update-password`,
+    createAccount: `${BASE_URL}/api/user/account/list-account/create`,
   },
   bloodRequest: {
     getAll: `${BASE_URL}/blood-request/request-list`,

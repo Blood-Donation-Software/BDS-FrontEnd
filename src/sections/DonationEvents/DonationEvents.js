@@ -31,6 +31,7 @@ import { format, isAfter, isBefore, isEqual, parse } from "date-fns"
 import { useDonationEvents } from "@/context/donationEvent_context"
 import { UserContext } from "@/context/user_context"
 import { useRouter } from "next/navigation"
+import { useLanguage } from '@/context/language_context';
 
 // Status and donation type mappings
 const statusMap = {
@@ -49,6 +50,7 @@ const donationTypeMap = {
 }
 
 function DonationEvents() {
+    const{ dictionary}= useLanguage();
     // All hooks must be at the top, before any return or conditional
     const { events, organizers, loading, error, selectEventById } = useDonationEvents();
     const { loggedIn, isLoading: userLoading } = useContext(UserContext);
@@ -98,11 +100,11 @@ function DonationEvents() {
     if (error) {
         return (
             <div className="container mx-auto py-8 px-4">
-                <h1 className="text-2xl font-bold mb-2">Sự kiện hiến máu</h1>
-                <p className="text-gray-600 mb-6">Tham gia các sự kiện hiến máu tình nguyện để cứu sống nhiều người cần giúp đỡ.</p>
+                <h1 className="text-2xl font-bold mb-2">{dictionary?.donationEvents?.title}</h1>
+                <p className="text-gray-600 mb-6">{dictionary?.donationEvents?.description}</p>
                 <div className="text-center py-10">
-                    <p className="text-red-500">Lỗi: {error}</p>
-                    <p className="text-gray-500 mt-2">Không thể tải danh sách sự kiện</p>
+                    <p className="text-red-500">{dictionary?.donationEvents?.error?.title}: {error}</p>
+                    <p className="text-gray-500 mt-2">{dictionary?.donationEvents?.error?.notFound}</p>
                 </div>
             </div>
         );
@@ -204,12 +206,11 @@ function DonationEvents() {
                             <Droplets className="h-8 w-8 text-white" />
                         </div>
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
-                            Sự kiện hiến máu
+                            {dictionary?.donationEvents?.title }
                         </h1>
                     </div>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Tham gia các sự kiện hiến máu tình nguyện để cứu sống nhiều người cần giúp đỡ.
-                        Mỗi giọt máu của bạn có thể mang lại hy vọng cho những người đang cần.
+                        {dictionary?.donationEvents?.description}
                     </p>
                 </div>
 
@@ -219,7 +220,7 @@ function DonationEvents() {
                         <div className="flex-3/4">
                             <Input
                                 type="text"
-                                placeholder="Tìm kiếm sự kiện, địa điểm, địa chỉ, hoặc thành phố..."
+                                placeholder={dictionary?.donationEvents?.searchPlaceholder}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="text-lg border-gray-200 focus:border-red-300 focus:ring-red-200"
@@ -244,7 +245,7 @@ function DonationEvents() {
                                                 dateRange.from ? format(dateRange.from, "dd/MM/yyyy") : ""
                                             )
                                         ) : (
-                                            "Chọn khoảng thời gian"
+                                            dictionary?.donationEvents?.dateRangePlaceholder
                                         )}
                                     </Button>
                                 </PopoverTrigger>
@@ -289,12 +290,12 @@ function DonationEvents() {
                                 size="icon"
                                 onClick={toggleSortOrder}
                                 className="shrink-0"
-                                title="Sắp xếp theo ngày"
+                                title= {dictionary?.donationEvents?.sortByDate}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
                                 {sortOrder !== 'default' && (
                                     <span className="sr-only">
-                                        {sortOrder === 'asc' ? 'Sắp xếp từ cũ đến mới' : 'Sắp xếp từ mới đến cũ'}
+                                        {sortOrder === 'asc' ? dictionary?.donationEvents?.sortAsc : dictionary?.donationEvents?.sortDesc}
                                     </span>
                                 )}
                             </Button>
@@ -306,8 +307,8 @@ function DonationEvents() {
                         <div className="flex justify-center mb-4">
                             <Droplets className="h-16 w-16 text-gray-300" />
                         </div>
-                        <p className="text-xl text-gray-500 mb-2">Không tìm thấy sự kiện nào</p>
-                        <p className="text-gray-400">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+                        <p className="text-xl text-gray-500 mb-2">{dictionary?.donationEvents?.noEventTitle}</p>
+                        <p className="text-gray-400">{dictionary?.donationEvents?.noEventDescription}</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -385,8 +386,8 @@ function DonationEvents() {
                                                 {event.timeSlotDtos && event.timeSlotDtos.length > 0 ? (
                                                     event.timeSlotDtos.length === 1 ?
                                                         `${event.timeSlotDtos[0].startTime} - ${event.timeSlotDtos[0].endTime}` :
-                                                        `${event.timeSlotDtos.length} khung giờ khác nhau`
-                                                ) : 'Chưa có khung giờ'}
+                                                        `${event.timeSlotDtos.length} {dictionary?,donationEvents?.timeSlots?.multiple}`
+                                                ) : dictionary?.donationEvents?.timeSlots?.none}
                                             </p>
                                         </div>
                                         {/* Registration Status */}
@@ -397,10 +398,10 @@ function DonationEvents() {
                                                     {event.registeredMemberCount || 0}
                                                 </span>
                                                 <span className="text-gray-500">/{event.totalMemberCount}</span>
-                                                <span className="ml-1">người đã đăng ký</span>
+                                                <span className="ml-1">{dictionary?.donationEvents?.registration?.of}</span>
                                                 {event.registeredMemberCount >= event.totalMemberCount && (
                                                     <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
-                                                        Đã đầy
+                                                        {dictionary?.donationEvents?.fullLabel}
                                                     </span>
                                                 )}
                                             </p>
@@ -417,14 +418,14 @@ function DonationEvents() {
                                             disabled={event.registeredMemberCount >= event.totalMemberCount}
                                         >
                                             {event.registeredMemberCount >= event.totalMemberCount ? (
-                                                'Đã đầy chỗ'
+                                                dictionary?.donationEvents?.fullSlot
                                             ) : !loggedIn ? (
                                                 <>
                                                     <LogIn className="h-4 w-4" />
-                                                    Đăng nhập để đăng ký
+                                                    {dictionary?.donationEvents?.loginToRegister}
                                                 </>
                                             ) : (
-                                                'Đăng ký tham gia'
+                                                <>{dictionary?.donationEvents?.register}</>
                                             )}
                                         </Button>
                                     </CardFooter>

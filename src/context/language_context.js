@@ -8,7 +8,7 @@ export const languageContext = createContext(null);
 
 export default function LanguageProvider({ children }) {
     const [selectedLanguage, setSelectedLanguage] = useState('vie');
-    const [dictionary, setDictionary] = useState({});
+    const [t, setDictionary] = useState({});
     useEffect(() => {
 
         const fetchDictionary = async () => {
@@ -20,7 +20,7 @@ export default function LanguageProvider({ children }) {
     }, [selectedLanguage])
 
     return (
-        <languageContext.Provider value={{selectedLanguage, setSelectedLanguage, dictionary}}>
+        <languageContext.Provider value={{selectedLanguage, setSelectedLanguage, t}}>
             {children}
         </languageContext.Provider>
     );

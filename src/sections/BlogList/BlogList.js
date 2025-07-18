@@ -5,11 +5,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/context/language_context';
 
 export default function BlogList() {
   const [posts, setPosts] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const postsPerPage = 6;
@@ -113,7 +115,7 @@ export default function BlogList() {
           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
       >
-        Trước
+        {t?.blog?.previous}
       </button>
 
       {[...Array(totalPages)].map((_, index) => (
@@ -137,7 +139,7 @@ export default function BlogList() {
           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
       >
-        Sau
+        {t?.blog?.next}
       </button>
     </div>
   );
@@ -147,7 +149,7 @@ export default function BlogList() {
       <div className="mb-6 relative">
         <input
           type="text"
-          placeholder="Tìm kiếm bài viết..."
+          placeholder={t?.blog?.search_placeholder}
           className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 pl-12 pr-12 text-gray-700 placeholder-gray-500"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -165,7 +167,7 @@ export default function BlogList() {
           <button
             onClick={() => setSearchTerm('')}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-            aria-label="Xóa tìm kiếm"
+            aria-label= {t?.blog?.clear_search || 'Clear search'}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -178,9 +180,9 @@ export default function BlogList() {
       </div>
 
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Bài Viết Mới Nhất</h1>
+        <h1 className="text-3xl font-bold">{t?.blog?.latest_posts}</h1>
         <span className="text-gray-500">
-          {filteredPosts.length} bài viết
+          {filteredPosts.length} {t?.blog?.blog}
         </span>
       </div>
 
@@ -194,7 +196,7 @@ export default function BlogList() {
 
       {filteredPosts.length === 0 && (
         <div className="text-center text-gray-500 py-8">
-          Không tìm thấy bài viết phù hợp
+          <p>{t?.blog?.no_blogs}</p>
         </div>
       )}
     </div>
