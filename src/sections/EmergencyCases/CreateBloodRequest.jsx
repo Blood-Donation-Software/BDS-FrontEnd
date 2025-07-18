@@ -17,6 +17,7 @@ import React, { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import vietnamProvinces from "@/data/vietnam-provinces.json";
+import { convertBloodType } from "@/utils/utils";
 
 // Custom debounce function
 const debounce = (func, wait) => {
@@ -413,7 +414,7 @@ export default function CreateBloodRequest() {
     try {
       await createRequest(pendingRequestData);
       toast.success("Blood request created successfully!");
-      router.push("/staffs/emergency-request");
+      router.push("/staffs/emergency-request/list");
     } catch (error) {
       console.error(error);
       toast.error("Submission failed. Please try again.");
@@ -994,7 +995,7 @@ export default function CreateBloodRequest() {
                       </p>
                       {bloodRequest.selectedProfile.bloodType && (
                         <p className="text-sm text-blue-700">
-                          Blood Type: {bloodRequest.selectedProfile.bloodType}
+                          Blood Type: {convertBloodType(bloodRequest.selectedProfile.bloodType)}
                         </p>
                       )}
                     </div>
@@ -1240,7 +1241,7 @@ export default function CreateBloodRequest() {
                     <div><strong>Address:</strong> {bloodRequest.selectedProfile.address}, {bloodRequest.selectedProfile.ward}, {bloodRequest.selectedProfile.district}, {bloodRequest.selectedProfile.city}</div>
                   )}
                   {bloodRequest.selectedProfile.bloodType && (
-                    <div><strong>Patient Blood Type:</strong> {bloodRequest.selectedProfile.bloodType}</div>
+                    <div><strong>Patient Blood Type:</strong> {convertBloodType(bloodRequest.selectedProfile.bloodType)}</div>
                   )}
                   {bloodRequest.selectedProfile.isNew && (
                     <div className="text-sm text-blue-600 font-medium">* This is a new profile that will be created</div>

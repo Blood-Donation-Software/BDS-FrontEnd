@@ -59,6 +59,8 @@ export const endpoint = {
     recalculateDistance: (profileId) => `${BASE_URL}/api/profile-distances/recalculate/${profileId}`,
     getWithinDistance: `${BASE_URL}/api/profile-distances/within-distance`,
     getAllOrdered: `${BASE_URL}/api/profile-distances/all-ordered`,
+    getProfilesWithinDistance: `${BASE_URL}/api/profile-distances/profiles/within-distance`,
+    getProfilesAllOrdered: `${BASE_URL}/api/profile-distances/profiles/all-ordered`,
     calculateMissing: `${BASE_URL}/api/profile-distances/calculate-missing`,
     deleteDistance: (profileId) => `${BASE_URL}/api/profile-distances/${profileId}`,
   },

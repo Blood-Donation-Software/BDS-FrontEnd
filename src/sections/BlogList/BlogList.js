@@ -91,7 +91,7 @@ export default function BlogList() {
             </div> */}
             <div>
               <p className="font-semibold text-sm">
-                {post.authorId || 'Tác giả'}
+                {post.authorName || 'Tác giả'}
               </p>
               {/* If you have a role field, display it here */}
               <p className="text-gray-500 text-xs">{post.author?.role}</p>

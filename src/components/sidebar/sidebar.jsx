@@ -18,11 +18,22 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { useUserProfile } from "@/context/user_context"
+import { logout } from "@/apis/auth"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function AppSidebar({ items }) {
     const pathname = usePathname()
-    const { profile, account } = useUserProfile();
-
+    const { profile, account, setProfile, setAccount, setLoggedIn } = useUserProfile();
+    const router = useRouter();
+    const handleLogout = async () => {
+        await logout();
+        toast.success('Đăng xuất thành công!');
+        setProfile(null);
+        setAccount(null);
+        setLoggedIn(false);
+        router.push("/login");
+    }
     return (
         <Sidebar collapsible="icon" className="border-r border-gray-200 bg-white">
             <SidebarHeader className="h-[70px] flex flex-row items-center px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-red-50 to-pink-50">
@@ -201,7 +212,7 @@ export default function AppSidebar({ items }) {
                                 <DropdownMenuItem className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
                                     <span className="font-medium">Account Settings</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="px-3 py-2 hover:bg-red-50 text-red-600 cursor-pointer">
+                                <DropdownMenuItem className="px-3 py-2 hover:bg-red-50 text-red-600 cursor-pointer" onClick={handleLogout}>
                                     <span className="font-medium">Sign out</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

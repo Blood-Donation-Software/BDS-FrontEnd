@@ -549,10 +549,10 @@ export default function StaffEventDetailPage() {
             <CardTitle>Event Management</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" onClick={handleEditEvent}>
+            {event.status === 'AVAILABLE' &&  <Button className="w-full" onClick={handleEditEvent}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Event Details
-            </Button>
+            </Button>}
             <Button variant="outline" className="w-full" onClick={handleViewDonors}>
               <Users className="h-4 w-4 mr-2" />
               View Donor List
@@ -703,7 +703,6 @@ export default function StaffEventDetailPage() {
                       <TableHead>Gender</TableHead>
                       <TableHead>Age</TableHead>
                       <TableHead>Status</TableHead>
-                      {event.status === 'COMPLETED' && <TableHead>Volume Donated</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>

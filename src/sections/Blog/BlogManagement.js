@@ -311,7 +311,7 @@ export default function BlogManagement() {
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-sm">
-                                                Author ID: {blog.authorId || 'Unknown'}
+                                                {blog.authorName || 'Unknown'}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -445,8 +445,8 @@ export default function BlogManagement() {
                                     <p className="mt-1 text-sm text-gray-900">{selectedBlog.title || 'Untitled'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Author ID</label>
-                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.authorId || 'Unknown'}</p>
+                                    <label className="text-sm font-medium text-gray-500">Author Name</label>
+                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.authorName || 'Unknown'}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Status</label>

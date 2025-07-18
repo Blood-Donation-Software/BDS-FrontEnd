@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 
 const bloodTypeMap = {
   'A_POSITIVE': 'A+',
@@ -29,6 +29,10 @@ const genderMap = {
 };
 
 export default function DonorTable({ donors, handleSort, setActiveTab, setDonor, bloodRequest, distanceEnabled = false }) {
+  useEffect(() => {
+    console.log("Donors data:", donors);
+  }, [donors]);
+
   const SortableHeader = ({ children, sortKey }) => (
     <div 
       className="flex items-center cursor-pointer hover:text-primary"
