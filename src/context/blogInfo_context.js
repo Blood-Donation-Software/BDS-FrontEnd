@@ -16,7 +16,6 @@ export default function BlogInfoProvider({ children }) {
             setLoading(true);
             setError(null);
 
-            console.log("Fetching blog");
             const res = await getAllBlogs();
 
             let eventsData = [];
@@ -33,7 +32,6 @@ export default function BlogInfoProvider({ children }) {
             }
 
             setBlogs(eventsData);
-            console.log("hello", res.data);
         } catch (error) {
             console.error("Fetch blog error:", error);
             setError(error.message || 'Không thể tải');
