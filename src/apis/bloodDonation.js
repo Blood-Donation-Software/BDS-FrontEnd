@@ -143,3 +143,9 @@ export const recordDonations = (eventId, donationRecords) => {
     return axiosInstance.post(endpoint.bloodDonation.recordDonation(eventId), bulkRecordDto)
         .then(res => res.data);
 }
+
+export const findDonorByPersonalID = (eventId, personal_id) => {
+    return axiosInstance.get(endpoint.checkin.findByPersonalId(eventId), {
+        params: { personal_id }
+    }).then(res => res.data);
+}

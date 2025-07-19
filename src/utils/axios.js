@@ -102,6 +102,7 @@ export const endpoint = {
     getToken: (eventId) => `${BASE_URL}/api/checkin/${eventId}/checkin-token`,
     getInfo: (eventId) => `${BASE_URL}/api/checkin/info/${eventId}`,
     checkIn: (eventId) => `${BASE_URL}/api/checkin/action/${eventId}`,
+    findByPersonalId: (eventId) => `${BASE_URL}/api/checkin/info/profile/${eventId}`,
   },
   organizer: {
     getAll: `${BASE_URL}/api/organizers`,

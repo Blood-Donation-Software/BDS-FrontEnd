@@ -29,7 +29,7 @@ import {
     Building2,
     Users
 } from 'lucide-react';
-import { getOngoingDonationEvents, getCheckinInfo, checkInDonor } from '@/apis/bloodDonation';
+import { getOngoingDonationEvents, getCheckinInfo, checkInDonor, findDonorByPersonalID } from '@/apis/bloodDonation';
 import { toast } from 'sonner';
 import { convertBloodType } from '@/utils/utils';
 import Html5QrcodePlugin from '@/components/qrcode-scanner/qrScanner';
@@ -39,7 +39,7 @@ export default function CheckInPage() {
 
     // State management
     const [scannedToken, setScannedToken] = useState('');
-    const [manualToken, setManualToken] = useState('');
+    const [personalId, setPersonalId] = useState('');
     const [donorInfo, setDonorInfo] = useState(null);
     const [selectedEventId, setSelectedEventId] = useState('');
     const [ongoingEvents, setOngoingEvents] = useState([]);
@@ -127,17 +127,17 @@ export default function CheckInPage() {
     };
 
     // Handle manual token submission
-    const handleManualSubmit = () => {
-        if (!manualToken.trim()) {
-            toast.error('Please enter a check-in token');
-            return;
+    const handleManualSubmit = async () => {
+        const donorInfo = await findDonorByPersonalID(selectedEventId, personalId.trim());
+        if (donorInfo) {
+            setDonorInfo(donorInfo);
+            setScannedToken(donorInfo.checkinToken)
         }
-        handleTokenReceived(manualToken);
     };
 
     // Handle check-in action (approve/reject)
     const handleCheckInAction = async (action) => {
-        if (!donorInfo || (!scannedToken && !manualToken)) {
+        if (!donorInfo || (!scannedToken && !personalId.trim())) {
             toast.error('No donor information available');
             return;
         }
@@ -152,7 +152,7 @@ export default function CheckInPage() {
         setShowConfirmDialog(false);
 
         try {
-            const token = scannedToken || manualToken;
+            const token = scannedToken;
             const response = await checkInDonor(selectedEventId, actionType, token);
 
             if (actionType === 'approve') {
@@ -164,7 +164,7 @@ export default function CheckInPage() {
             // Reset state for next scan
             setDonorInfo(null);
             setScannedToken('');
-            setManualToken('');
+            setPersonalId('');
             setActionType('');
         } catch (error) {
             console.error('Error processing check-in:', error);
@@ -182,7 +182,7 @@ export default function CheckInPage() {
     const resetState = () => {
         setDonorInfo(null);
         setScannedToken('');
-        setManualToken('');
+        setPersonalId('');
         setActionType('');
         setScannerError(null);
     };
@@ -359,24 +359,24 @@ export default function CheckInPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Search className="h-5 w-5 text-blue-500" />
-                                    Manual Token Entry
+                                    Check-in by Personal ID (CMND/CCCD)
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
                                     <div>
-                                        <Label htmlFor="manualToken">Check-in Token</Label>
+                                        <Label htmlFor="manualToken">Personal ID</Label>
                                         <Input
                                             id="manualToken"
-                                            value={manualToken}
-                                            onChange={(e) => setManualToken(e.target.value)}
-                                            placeholder="Enter check-in token manually"
+                                            value={personalId}
+                                            onChange={(e) => setPersonalId(e.target.value)}
+                                            placeholder="Enter Personal ID manually"
                                             className="mt-1 font-mono"
                                         />
                                     </div>
                                     <Button
                                         onClick={handleManualSubmit}
-                                        disabled={!selectedEventId || !manualToken.trim() || loading}
+                                        disabled={!selectedEventId || !personalId.trim() || loading}
                                         className="w-full flex items-center gap-2"
                                     >
                                         {loading ? (
@@ -467,38 +467,119 @@ export default function CheckInPage() {
                                             Health Survey
                                         </h3>
 
-                                        {donorInfo.formResponse && (
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <p className="text-sm font-medium text-blue-700">Previous Blood Donation</p>
-                                                    <p className="text-blue-900">
-                                                        {donorInfo.formResponse.experience === 'yes' ? 'Yes, has donated before' : 'No, first time'}
-                                                    </p>
-                                                    {donorInfo.formResponse.experienceDetails && (
-                                                        <p className="text-sm text-blue-600 bg-blue-100 p-2 rounded mt-1">
-                                                            {donorInfo.formResponse.experienceDetails}
-                                                        </p>
-                                                    )}
-                                                </div>
+                                        {donorInfo.jsonForm && (() => {
+                                            // Parse the jsonForm
+                                            let formData = {};
+                                            try {
+                                                if (typeof donorInfo.jsonForm === 'string') {
+                                                    formData = JSON.parse(donorInfo.jsonForm);
+                                                } else if (typeof donorInfo.jsonForm === 'object') {
+                                                    formData = donorInfo.jsonForm;
+                                                }
+                                            } catch (e) {
+                                                console.error('Error parsing jsonForm:', e);
+                                                return (
+                                                    <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
+                                                        Error parsing health survey data
+                                                    </div>
+                                                );
+                                            }
 
-                                                <div>
-                                                    <p className="text-sm font-medium text-blue-700">Current Health Issues</p>
-                                                    <p className="text-blue-900">
-                                                        {donorInfo.formResponse.currentIllness === 'yes' ? 'Yes, has health issues' : 'No current health issues'}
-                                                    </p>
-                                                    {donorInfo.formResponse.currentIllnessDetails && (
-                                                        <p className="text-sm text-blue-600 bg-blue-100 p-2 rounded mt-1">
-                                                            {donorInfo.formResponse.currentIllnessDetails}
+                                            return (
+                                                <div className="space-y-4">
+                                                    {/* Question 1: Blood Donation Experience */}
+                                                    <div>
+                                                        <p className="text-sm font-medium text-blue-700 mb-2">
+                                                            1. Anh/chị đã từng hiến máu trước đây chưa?
                                                         </p>
-                                                    )}
-                                                </div>
+                                                        <p className="text-blue-900">
+                                                            {formData.experience === 'yes' 
+                                                                ? 'Có, tôi đã từng hiến máu' 
+                                                                : 'Không, đây là lần đầu tiên'
+                                                            }
+                                                        </p>
+                                                        {formData.experience === 'yes' && formData.experienceDetails && (
+                                                            <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
+                                                                <p className="font-medium text-blue-700 mb-1">Chi tiết kinh nghiệm:</p>
+                                                                <p>{formData.experienceDetails}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
 
-                                                <div>
-                                                    <p className="text-sm font-medium text-blue-700">Registration Time</p>
-                                                    <p className="text-blue-900">
-                                                        {new Date(donorInfo.formResponse.timestamp).toLocaleString()}
-                                                    </p>
+                                                    {/* Question 2: Current Health Issues */}
+                                                    <div>
+                                                        <p className="text-sm font-medium text-blue-700 mb-2">
+                                                            2. Hiện tại anh/chị có đang mắc bệnh gì không?
+                                                        </p>
+                                                        <p className="text-blue-900">
+                                                            {formData.currentIllness === 'yes' 
+                                                                ? 'Có, tôi đang có vấn đề sức khỏe' 
+                                                                : 'Không, tôi hoàn toàn khỏe mạnh'
+                                                            }
+                                                        </p>
+                                                        {formData.currentIllness === 'yes' && formData.currentIllnessDetails && (
+                                                            <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
+                                                                <p className="font-medium text-blue-700 mb-1">Tình trạng sức khỏe hiện tại:</p>
+                                                                <p>{formData.currentIllnessDetails}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Question 3: Past Diseases */}
+                                                    <div>
+                                                        <p className="text-sm font-medium text-blue-700 mb-2">
+                                                            3. Anh/chị đã từng mắc các bệnh nghiêm trọng nào không?
+                                                        </p>
+                                                        <p className="text-blue-900">
+                                                            {formData.pastDiseases === 'yes' 
+                                                                ? 'Có, tôi đã từng mắc bệnh nghiêm trọng' 
+                                                                : 'Không, tôi chưa từng mắc bệnh nghiêm trọng'
+                                                            }
+                                                        </p>
+                                                        {formData.pastDiseases === 'yes' && formData.pastDiseasesDetails && (
+                                                            <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
+                                                                <p className="font-medium text-blue-700 mb-1">Các bệnh đã từng mắc:</p>
+                                                                <p>{formData.pastDiseasesDetails}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Question 4: Recent Activities */}
+                                                    <div>
+                                                        <p className="text-sm font-medium text-blue-700 mb-2">
+                                                            4. Trong 3 tháng gần đây, anh/chị có thực hiện các hoạt động sau không?
+                                                        </p>
+                                                        <p className="text-blue-900">
+                                                            {formData.recentActivities === 'yes' 
+                                                                ? 'Có (phẫu thuật, tiêm vaccine, xăm mình, v.v.)' 
+                                                                : 'Không có hoạt động đặc biệt nào'
+                                                            }
+                                                        </p>
+                                                        {formData.recentActivities === 'yes' && formData.recentActivitiesDetails && (
+                                                            <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
+                                                                <p className="font-medium text-blue-700 mb-1">Các hoạt động đã thực hiện:</p>
+                                                                <p>{formData.recentActivitiesDetails}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Registration Time */}
+                                                    <div className="pt-3 border-t border-blue-200">
+                                                        <p className="text-sm font-medium text-blue-700">Thời gian đăng ký</p>
+                                                        <p className="text-blue-900">
+                                                            {formData.submittedAt 
+                                                                ? new Date(formData.submittedAt).toLocaleString('vi-VN')
+                                                                : 'Không có thông tin'
+                                                            }
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                            );
+                                        })()}
+
+                                        {!donorInfo.jsonForm && (
+                                            <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded">
+                                                Không có thông tin khảo sát sức khỏe
                                             </div>
                                         )}
                                     </div>

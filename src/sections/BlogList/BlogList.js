@@ -29,9 +29,12 @@ export default function BlogList() {
   };
 
 
-  // Logic tìm kiếm theo ký tự trong tiêu đề
+  // Logic tìm kiếm theo ký tự trong tiêu đề và chỉ hiển thị blog có status ACTIVE
   const filteredPosts = blogs.filter(post => {
-
+    // Chỉ hiển thị blog có status là ACTIVE
+    if (post.status !== 'ACTIVE') {
+      return false;
+    }
 
     const searchLower = searchTerm.toLowerCase().trim();
     const titleLower = post.title.toLowerCase();
