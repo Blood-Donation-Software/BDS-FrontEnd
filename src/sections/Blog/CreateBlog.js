@@ -17,21 +17,21 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { 
-  Bold, 
-  Italic, 
-  Strikethrough, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Code, 
-  Undo, 
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
+  Undo,
   Redo,
   Save,
   Eye,
@@ -72,7 +72,7 @@ const MenuBar = ({ editor }) => {
       command: () => editor.chain().focus().toggleItalic().run(),
       isActive: editor.isActive('italic'),
       title: 'Italic'
-    },    {
+    }, {
       icon: UnderlineIcon,
       command: () => editor.chain().focus().toggleUnderline().run(),
       isActive: editor.isActive('underline'),
@@ -160,7 +160,8 @@ const MenuBar = ({ editor }) => {
     {
       label: 'H3',
       command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-      isActive: editor.isActive('heading', { level: 3 })    }
+      isActive: editor.isActive('heading', { level: 3 })
+    }
   ]
 
   // Handle link insertion
@@ -212,24 +213,24 @@ const MenuBar = ({ editor }) => {
           const reader = new FileReader()
           reader.onload = (e) => {
             const imageUrl = e.target.result
-            
+
             // Insert image into editor
-            editor.chain().focus().setImage({ 
+            editor.chain().focus().setImage({
               src: imageUrl,
               alt: file.name,
               title: file.name
             }).run()
-            
+
             // Dismiss loading toast and show success
             toast.dismiss(loadingToast)
             toast.success('Image uploaded and added to blog content')
           }
-          
+
           reader.onerror = () => {
             toast.dismiss(loadingToast)
             toast.error('Failed to read image file')
           }
-          
+
           reader.readAsDataURL(file)
         } catch (error) {
           console.error('Error processing image:', error)
@@ -260,13 +261,14 @@ const MenuBar = ({ editor }) => {
           if (!confirm) return
         }
 
-        editor.chain().focus().setImage({ 
+        editor.chain().focus().setImage({
           src: url,
           alt: 'Image from URL',
           title: 'Image from URL'
         }).run()
-        
-        toast.success('Image added from URL')      } catch (error) {
+
+        toast.success('Image added from URL')
+      } catch (error) {
         console.error('Error adding image from URL:', error)
         toast.error('Failed to add image from URL')
       }
@@ -379,7 +381,7 @@ const MenuBar = ({ editor }) => {
           >
             <Link2 className="h-4 w-4" />
           </Button>
-          
+
           {/* Image dropdown with upload and URL options */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -440,13 +442,13 @@ export default function CreateBlog() {
       const reader = new FileReader()
       reader.onload = (e) => {
         const imageUrl = e.target.result
-        
+
         // Get the position where the image was dropped
         const coordinates = view.posAtCoords({
           left: event.clientX,
           top: event.clientY,
         })
-        
+
         if (coordinates) {
           view.dispatch(
             view.state.tr.insert(coordinates.pos, view.state.schema.nodes.image.create({
@@ -456,16 +458,16 @@ export default function CreateBlog() {
             }))
           )
         }
-        
+
         toast.dismiss(loadingToast)
         toast.success('Image dropped and added to blog content')
       }
-      
+
       reader.onerror = () => {
         toast.dismiss(loadingToast)
         toast.error('Failed to process dropped image')
       }
-      
+
       reader.readAsDataURL(file)
     } catch (error) {
       toast.dismiss(loadingToast)
@@ -487,7 +489,7 @@ export default function CreateBlog() {
       const reader = new FileReader()
       reader.onload = (e) => {
         const imageUrl = e.target.result
-        
+
         // Insert at current cursor position
         const { from } = view.state.selection
         view.dispatch(
@@ -497,16 +499,16 @@ export default function CreateBlog() {
             title: 'Pasted image',
           }))
         )
-        
+
         toast.dismiss(loadingToast)
         toast.success('Pasted image added to blog content')
       }
-      
+
       reader.onerror = () => {
         toast.dismiss(loadingToast)
         toast.error('Failed to process pasted image')
       }
-      
+
       reader.readAsDataURL(file)
     } catch (error) {
       toast.dismiss(loadingToast)
@@ -541,12 +543,12 @@ export default function CreateBlog() {
       handleDrop: (view, event, slice, moved) => {
         if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
           const file = event.dataTransfer.files[0]
-          
+
           // Check if it's an image
           if (file.type.startsWith('image/')) {
             // Prevent default drop behavior
             event.preventDefault()
-            
+
             // Handle the image upload
             handleDroppedImage(file, view, event)
             return true
@@ -557,7 +559,7 @@ export default function CreateBlog() {
       handlePaste: (view, event, slice) => {
         const items = Array.from(event.clipboardData?.items || [])
         const imageItem = items.find(item => item.type.startsWith('image/'))
-        
+
         if (imageItem) {
           event.preventDefault()
           const file = imageItem.getAsFile()
@@ -595,15 +597,15 @@ export default function CreateBlog() {
         toast.error('Please select an image file')
         return
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('Image size should be less than 5MB')
         return
       }
-      
+
       setThumbnail(file)
-      
+
       // Create preview
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -657,7 +659,7 @@ export default function CreateBlog() {
 
       const result = await createBlogRequest(blogData, thumbnail)
       toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
-      
+
       // Redirect to blog list or dashboard
       router.push('/staffs/blog/requests')
     } catch (error) {
@@ -689,9 +691,9 @@ export default function CreateBlog() {
 
       const result = await createBlogRequest(blogData, thumbnail)
       toast.success('Blog submitted for publication! It will be reviewed by administrators.')
-      
+
       // Redirect to blog list or dashboard
-      router.push('/blog')
+      router.push('/staffs/blog/requests')
     } catch (error) {
       console.error('Error submitting blog:', error)
       if (error.response?.data) {
@@ -725,20 +727,8 @@ export default function CreateBlog() {
           </Button>
           <h1 className="text-3xl font-bold">Create New Blog Post</h1>
         </div>
-          <div className="flex gap-2">
-          <Button variant="outline" onClick={previewBlog}>
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={saveDraft}
-            disabled={isLoading}
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save as Draft
-          </Button>
-          <Button 
+        <div className="flex gap-2">
+          <Button
             onClick={submitForPublication}
             disabled={isLoading}
             className="bg-blue-600 hover:bg-blue-700"
@@ -779,9 +769,9 @@ export default function CreateBlog() {
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                   {thumbnailPreview ? (
                     <div className="relative">
-                      <img 
-                        src={thumbnailPreview} 
-                        alt="Thumbnail preview" 
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail preview"
                         className="w-full h-48 object-cover rounded-lg"
                       />
                       <Button
@@ -826,7 +816,7 @@ export default function CreateBlog() {
             </CardContent>
           </Card>
 
-          {/* Editor */}          
+          {/* Editor */}
           <Card>
             <CardHeader>
               <CardTitle>Content *</CardTitle>
@@ -838,8 +828,8 @@ export default function CreateBlog() {
               <div className={`border rounded-lg ${errors.content ? 'border-red-500' : 'border-gray-200'}`}>
                 <div className="p-4">
                   <MenuBar editor={editor} />
-                  <EditorContent 
-                    editor={editor} 
+                  <EditorContent
+                    editor={editor}
                     className="min-h-[400px] focus-within:outline-none"
                   />
                 </div>

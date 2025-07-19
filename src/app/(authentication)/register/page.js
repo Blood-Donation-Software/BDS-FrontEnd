@@ -1,5 +1,5 @@
 'use client'
-import { register } from '@/apis/auth';
+import { loginGoogle, register } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { genAvatar } from '@/apis/user';
 import { useUserProfile } from '@/context/user_context';
 import { resendOtp } from '@/apis/auth';
+import { validateEmail } from '@/utils/utils';
 
 export default function RegisterPage() {
   const { loggedIn, account } = useUserProfile();
@@ -63,6 +64,10 @@ export default function RegisterPage() {
     }
     if (password !== confirmPassword) {
       toast.warning("Password does not match!");
+      return;
+    }
+    if (!validateEmail(email)) {
+      toast.warning("Email is not valid!");
       return;
     }
     try {

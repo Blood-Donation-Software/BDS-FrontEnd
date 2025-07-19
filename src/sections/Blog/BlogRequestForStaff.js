@@ -344,7 +344,7 @@ export default function BlogRequestForStaff() {
                       <TableCell>
                         <div className="max-w-xs text-sm text-muted-foreground">
                           {request.blog?.content ?
-                            request.blog.content.replace(/<[^>]*>/g, '').substring(0, 100) + (request.blog.content.length > 100 ? '...' : '') :
+                            request.blog.content.replace(/<[^>]*>/g, '').substring(0, 20) + '...' :
                             'No content available'
                           }
                         </div>

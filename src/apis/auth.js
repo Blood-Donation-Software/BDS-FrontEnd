@@ -40,6 +40,13 @@ export const logout = () => {
   return axiosInstance.get('/api/auth/logout');
 }
 
+export const verifyPassword = (verificationCode) => {
+  return axiosInstance.post(
+    '/api/auth/verify-password-reset',null,
+    { params: { verificationCode } }
+  ).then(res => res.data);
+}
+
 export const forgotPassword = (email) => {
   return axiosInstance.post(
     '/api/auth/forgot-password',

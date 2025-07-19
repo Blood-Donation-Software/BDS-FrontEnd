@@ -35,7 +35,8 @@ export const endpoint = {
     login: `${BASE_URL}/api/auth/login`,
     register: `${BASE_URL}/api/auth/register`,
     verify: `${BASE_URL}/api/auth/verify`,
-    loginGoogle: `${BASE_URL}/oauth2/authorization/google`
+    loginGoogle: `${BASE_URL}/oauth2/authorization/google`,
+    verifyPasswordReset: `${BASE_URL}/api/auth/verify-password-reset`,
   },    
   user: {
     updateProfile: `${BASE_URL}/api/user/profile/update`,

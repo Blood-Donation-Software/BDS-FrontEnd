@@ -18,7 +18,7 @@ import { BASE_URL } from '@/global-config'
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
   { value: 'ACTIVE', label: 'Published' },
-  { value: 'INACTIVE', label: 'Draft' }
+  { value: 'INACTIVE', label: 'Deleted' }
 ]
 
 // Status badge styling
@@ -26,7 +26,7 @@ const getStatusBadge = (status) => {
   const styles = {
     ACTIVE: 'bg-green-100 text-green-800 border-green-200',
     INACTIVE: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    DELETED: 'bg-red-100 text-red-800 border-red-200'
+    INACTIVE: 'bg-red-100 text-red-800 border-red-200'
   }
   return styles[status] || 'bg-gray-100 text-gray-800 border-gray-200'
 }
@@ -35,8 +35,7 @@ const getStatusBadge = (status) => {
 const formatStatus = (status) => {
   const statusMap = {
     ACTIVE: 'Published',
-    INACTIVE: 'Draft',
-    DELETED: 'Deleted'
+    INACTIVE: 'Deleted',
   }
   return statusMap[status] || status
 }
@@ -150,7 +149,7 @@ export default function BlogManagement() {
       try {
         setActionLoading(true)
         await deleteBlog(blogId)
-        toast.success('Blog deleted successfully!')
+        toast.success('Request of deletion submitted!')
         await fetchBlogs(pagination.page, pagination.size)
       } catch (error) {
         console.error('Error deleting blog:', error)
@@ -458,7 +457,7 @@ export default function BlogManagement() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Created Date</label>
-                                    <p className="mt-1 text-sm text-gray-900">{formatDate(selectedBlog.createdAt)}</p>
+                                    <p className="mt-1 text-sm text-gray-900">{formatDate(selectedBlog.creationDate)}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Blog ID</label>

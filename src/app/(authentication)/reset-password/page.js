@@ -27,9 +27,8 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       await axiosInstance.post("/api/auth/reset-password", {
-        email,
         newPassword: password,
-        verificationCode: code,
+        code,
       });
       toast.success("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
       router.push("/login");

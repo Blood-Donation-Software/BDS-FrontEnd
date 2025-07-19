@@ -377,7 +377,7 @@ export default function BlogRequest() {
                       <TableCell>
                         <div className="max-w-xs text-sm text-muted-foreground">
                           {request.blog?.content ?
-                            request.blog.content.replace(/<[^>]*>/g, '').substring(0, 100) + (request.blog.content.length > 100 ? '...' : '') :
+                            request.blog.content.replace(/<[^>]*>/g, '').substring(0, 20) + '...' :
                             'No content available'
                           }
                         </div>
@@ -537,7 +537,7 @@ export default function BlogRequest() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Author ID</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog.accountId || 'Unknown'}</p>
+                  <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog.authorName || 'Unknown'}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Request Status</label>
