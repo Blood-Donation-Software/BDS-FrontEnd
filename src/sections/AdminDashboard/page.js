@@ -1,11 +1,14 @@
+'use client'
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import {useLanguage} from "@/context/language_context";
 
 export default function AdminDashboard() {
+    const {t} = useLanguage();
     const dashboardStats = [
-        { title: 'Total Accounts', value: '1,245', change: '+12%', icon: 'users' },
-        { title: 'Pending Events', value: '8', change: '+3', icon: 'calendar' },
-        { title: 'Pending Blog Posts', value: '14', change: '-2', icon: 'document' },
-        { title: 'Total Donations', value: '867', change: '+23%', icon: 'heart' }
+        { title: t?.dashboard?.admin?.totalAcc, value: '1,245', change: '+12%', icon: t?.dashboard?.users },
+        { title: t?.dashboard?.admin?.pendingEvents, value: '8', change: '+3', icon: t?.dashboard?.calendar },
+        { title: t?.dashboard?.admin?.pendingBlogPosts, value: '14', change: '-2', icon: t?.dashboard?.documents },
+        { title: t?.dashboard?.admin?.totalDonations, value: '867', change: '+23%', icon: t?.dashboard?.hearts }
     ];
     const getStatIcon = (icon) => {
         switch (icon) {

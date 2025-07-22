@@ -1,5 +1,6 @@
 {
   "auth": {
+    "createAccount": "Tạo tài khoản",
     "register": "Đăng ký",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
@@ -17,7 +18,14 @@
     "registerNow": " Đăng ký ngay",
     "loginNow": "Đăng nhập ngay",
     "fullName": "Họ và Tên",
-    "confirmPassword": "Xác nhận mật khẩu"
+    "confirmPassword": "Xác nhận mật khẩu",
+    "placeholder":{
+      "email": "Vui lòng nhập email trước khi gửi lại OTP!",
+      "OtpReSend":"Đã gửi lại OTP thành công!",
+      "OtpReSendError!": "Gửi lại OTP thất bại!",
+       "blank": "không được để trống!",
+      "passwordMismatch": "Mật khẩu không khớp!"
+    }
   },
   "user": {
     "profile": "Hồ sơ",
@@ -591,13 +599,24 @@
         "fetchFailed": "Không thể tải dữ liệu",
         "serverError": "Lỗi máy chủ"
       }
-    }
-  },
-  "noti": {
+    },
+     "noti": {
     "error": {
       "donationHistory": "Không thể tải lịch sử hiến máu"
     }
+  },
+    "admin":{
+       "totalAcc": "Tổng số tài khoản",
+    "pendingEvents": "Sự kiện đang chờ duyệt",
+    "pendingBlogPosts": "Bài viết đang chờ duyệt",
+    "totalDonations": "Tổng số lần hiến máu",
+    "users": "Người dùng",
+    "calendar": "lịch",
+    "documents": "tài liệu",
+    "hearts": "trái tim"
   }
+  }
+  
   
      
 }

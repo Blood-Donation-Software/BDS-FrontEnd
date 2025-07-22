@@ -1,5 +1,6 @@
 {
   "auth": {
+    "createAccount": "Create Account",
     "register": "Register",
     "login": "Login",
     "logout": "Logout",
@@ -17,7 +18,14 @@
     "registerNow": "Register Now",
     "loginNow": "Login Now",
     "fullName": "Full Name",
-    "confirmPassword": "Confirm Password"
+    "confirmPassword": "Confirm Password",
+     "placeholder":{
+      "email": "Please enter your email before resending OTP!",
+      "OtpReSend": "OTP has been resent successfully!",
+      "OtpReSendError!": "Failed to resend OTP!",
+      "blank":"Fields must not be bank!",
+      "passwordMismatch": "Passwords does not match!"
+    }
   },
   "user": {
     "profile": "Profile",
@@ -147,7 +155,7 @@
     "enterPassword": "Enter your password",
     "confirmPasswordExample": "Re-enter your password"
   },
-  "messsage": {
+  "message": {
     "welcome": "Welcome to the Blood Donation System",
     "donation_success": "Thank you for your donation!",
     "registration_success": "Registration successful!",
@@ -232,7 +240,7 @@
   },
   "header": {
     "home": "Home",
-    "about": "About Us",
+    "about": "About Us", 
     "contact": "Contact Us ",
     "donationEvents": "Donation Events",
     "donate_blood": "Donate Blood",
@@ -611,7 +619,18 @@
       "participateButton": "Participate in blood donation events"
     }
       
+  },
+  "admin":{
+    "totalAcc": "Total Accounts",
+    "pendingEvents": "Pending Events",
+    "pendingBlogPosts": "Pending Blog Posts",
+    "totalDonations": "Total Donations",
+    "users": "Users",
+    "calendar": "Calendar",
+    "documents": "Documents",
+    "hearts": "Hearts"
   }
+  
   
 }
 }
