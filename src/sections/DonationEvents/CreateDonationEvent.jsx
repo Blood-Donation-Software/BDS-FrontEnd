@@ -17,64 +17,64 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 import vietnamProvinces from '@/data/vietnam-provinces.json'
 import { createEvent } from '@/apis/bloodDonation'
 import { getActiveOrganizers, createOrganizer, checkEmailExists } from '@/apis/organizer'
 import { useLanguage } from '@/context/language_context'
-const {t} = useLanguage()
 // Sort provinces alphabetically
 const sortedProvinces = vietnamProvinces.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }))
 // Zod validation schemas
 const timeSlotSchema = z.object({
   startTime: z.string()
-    .min(1, t?.createEvent?.error?.startTime_required)
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, t?.createEvent?.error?.startTime_invalidFormat),
+    .min(1, "Start time is required")
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format"),
   endTime: z.string()
     .min(1, "End time is required")
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, t?.createEvent?.error?.startTime_required),
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format"),
   maxCapacity: z.number()
-    .min(1, t?.createEvent?.error?.maxCapacity_min)
-    .max(100, t?.createEvent?.error?.maxCapacity_max)
+    .min(1, "Capacity must be at least 1")
+    .max(100, "Capacity cannot exceed 100")
 }).refine((data) => {
   const start = new Date(`1970-01-01T${data.startTime}:00`)
   const end = new Date(`1970-01-01T${data.endTime}:00`)
   return end > start
 }, {
-  message: t?.createEvent?.error?.endTime_afterStart,
+  message: "End time must be after start time",
   path: ["endTime"]
 })
 
 const donationEventSchema = z.object({
   name: z.string()
-    .min(5, t?.createEvent?.error?.event_name_min)
-    .max(200, t?.createEvent?.error?.event_name_max),
+    .min(5, "Event name must be at least 5 characters")
+    .max(200, "Event name cannot exceed 200 characters"),
   hospital: z.string()
-    .min(3, t?.createEvent?.error?.event_hospital_min)
-    .max(200, t?.createEvent?.error?.event_hospital_max),
+    .min(3, "Hospital/Location must be at least 3 characters")
+    .max(200, "Hospital/Location cannot exceed 200 characters"),
   address: z.string()
-    .min(10, t?.createEvent?.error?.event_address_min)
-    .max(300, t?.createEvent?.error?.event_address_max),
-  city: z.string().min(1, t?.createEvent?.error?.event_city_required),
-  district: z.string().min(1, t?.createEvent?.error?.event_district_required),
-  ward: z.string().min(1, t?.createEvent?.error?.event_ward_required),
+    .min(10, "Address must be at least 10 characters")
+    .max(300, "Address cannot exceed 300 characters"),
+  city: z.string().min(1, "City is required"),
+  district: z.string().min(1, "District is required"),
+  ward: z.string().min(1, "Ward is required"),
   donationDate: z.date({
-    required_error: t?.createEvent?.error?.event?.donationDate_required
+    required_error: "Donation date is required"
   }).refine((date) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return date >= today
-  }, t?.createEvent?.error?.event_donationDate_future), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
-    required_error: t?.createEvent?.error?.event_donationType_required
+  }, "Donation date must be today or in the future"), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
+    required_error: "Please select a donation type"
   }),
   totalMemberCount: z.number()
-    .min(1, t?.createEvent?.error?.event_totalMemberCount_min)
-    .max(10000, t?.createEvent?.error?.event_totalMemberCount_max),
+    .min(1, "Total capacity must be at least 1")
+    .max(10000, "Total capacity cannot exceed 10000"),
   organizerId: z.string().optional(),
   timeSlots: z.array(timeSlotSchema)
-    .min(1, t?.createEvent?.error?.timesSlots_min)
-    .max(10, t?.createEvent?.error?.timesSlots_max)
+    .min(1, "At least one time slot is required")
+    .max(10, "Maximum 10 time slots allowed")
     .refine((timeSlots) => {
       // Check for overlapping time slots
       for (let i = 0; i < timeSlots.length; i++) {
@@ -95,36 +95,36 @@ const donationEventSchema = z.object({
       }
       return true
     }, {
-      message: t?.createEvent?.error?.timeSlots_noOverlap,
+      message: "Time slots cannot overlap with each other",
     })
 })
 
 const organizerSchema = z.object({
   organizationName: z.string()
-    .min(2, t?.createEvent?.error?.organizer_organizationName_min)
-    .max(200, t?.createEvent?.error?.organizer_organizationName_max),
+    .min(2, "Organization name must be at least 2 characters")
+    .max(200, "Organization name cannot exceed 200 characters"),
   contactPersonName: z.string()
-    .min(2, t?.createEvent?.error?.organizer_contactPersonName_min)
-    .max(100, t?.createEvent?.error?.organizer_contactPersonName_max),  
+    .min(2, "Contact person name must be at least 2 characters")
+    .max(100, "Contact person name cannot exceed 100 characters"),
   email: z.string()
-    .email(t?.createEvent?.error?.organizer_email_invalid),
+    .email("Please provide a valid email address"),
   phoneNumber: z.string()
-    .regex(/^[0-9]{10}$/, t?.createEvent?.error?.organizer_phoneNumber_invalid)
+    .regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
     .optional()
     .or(z.literal("")),
   address: z.string()
-    .max(300, t?.createEvent?.error?.organizer_address_max)
+    .max(300, "Address cannot exceed 300 characters")
     .optional()
     .or(z.literal("")),
   ward: z.string().optional().or(z.literal("")),
   district: z.string().optional().or(z.literal("")),
   city: z.string().optional().or(z.literal("")),
   description: z.string()
-    .max(1000, t?.createEvent?.error?.organizer_description_max)
+    .max(1000, "Description cannot exceed 1000 characters")
     .optional()
     .or(z.literal("")),
   websiteUrl: z.string()
-    .url(t?.createEvent?.error?.organizer_websiteUrl_invalid)
+    .url("Please provide a valid website URL")
     .optional()
     .or(z.literal(""))
 })
@@ -136,12 +136,15 @@ const donationTypes = [
 ]
 
 export default function CreateDonationEventPage() {
+  const  { t }  = useLanguage();
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isCreatingOrganizer, setIsCreatingOrganizer] = useState(false)
   const [organizers, setOrganizers] = useState([])
   const [activeTab, setActiveTab] = useState("event")
   const [organizersLoading, setOrganizersLoading] = useState(true)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [pendingEventData, setPendingEventData] = useState(null)
   // Event form
   const eventForm = useForm({
     resolver: zodResolver(donationEventSchema),
@@ -319,52 +322,59 @@ export default function CreateDonationEventPage() {
     return conflicts
   }
   const onSubmitEvent = async (data) => {
-    setIsSubmitting(true)
-    try {
-      // Get the selected organizer details if organizerId is provided
-      let organizerDetails = null
-      if (data.organizerId && data.organizerId !== "") {
-        const selectedOrganizer = organizers.find(org => org.id.toString() === data.organizerId)
-        if (selectedOrganizer) {
-          organizerDetails = {
-            id: selectedOrganizer.id,
-            organizationName: selectedOrganizer.organizationName,
-            contactPersonName: selectedOrganizer.contactPersonName,
-            email: selectedOrganizer.email,
-            phoneNumber: selectedOrganizer.phoneNumber,
-            address: selectedOrganizer.address,
-            ward: selectedOrganizer.ward,
-            district: selectedOrganizer.district,
-            city: selectedOrganizer.city,
-            description: selectedOrganizer.description,
-            websiteUrl: selectedOrganizer.websiteUrl
-          }
+    // Prepare the event data but don't submit yet
+    let organizerDetails = null
+    if (data.organizerId && data.organizerId !== "") {
+      const selectedOrganizer = organizers.find(org => org.id.toString() === data.organizerId)
+      if (selectedOrganizer) {
+        organizerDetails = {
+          id: selectedOrganizer.id,
+          organizationName: selectedOrganizer.organizationName,
+          contactPersonName: selectedOrganizer.contactPersonName,
+          email: selectedOrganizer.email,
+          phoneNumber: selectedOrganizer.phoneNumber,
+          address: selectedOrganizer.address,
+          ward: selectedOrganizer.ward,
+          district: selectedOrganizer.district,
+          city: selectedOrganizer.city,
+          description: selectedOrganizer.description,
+          websiteUrl: selectedOrganizer.websiteUrl
         }
       }
+    }
 
-      // Format the data for the backend
-      const eventData = {
-        name: data.name,
-        hospital: data.hospital,
-        address: data.address,
-        ward: data.ward,
-        district: data.district,
-        city: data.city,
-        donationDate: format(data.donationDate, 'dd-MM-yyyy'),
-        totalMemberCount: data.totalMemberCount,
-        donationType: data.donationType,
-        organizerId: data.organizerId && data.organizerId !== "" ? parseInt(data.organizerId) : null,
-        organizer: organizerDetails,
-        timeSlotDtos: data.timeSlots.map(slot => ({
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          maxCapacity: slot.maxCapacity
-        }))
-      }
+    const eventData = {
+      name: data.name,
+      hospital: data.hospital,
+      address: data.address,
+      ward: data.ward,
+      district: data.district,
+      city: data.city,
+      donationDate: format(data.donationDate, 'dd-MM-yyyy'),
+      totalMemberCount: data.totalMemberCount,
+      donationType: data.donationType,
+      organizerId: data.organizerId && data.organizerId !== "" ? parseInt(data.organizerId) : null,
+      organizer: organizerDetails,
+      timeSlotDtos: data.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        maxCapacity: slot.maxCapacity
+      }))
+    }
 
-      const response = await createEvent(eventData)
+    // Store the data and show confirmation dialog
+    setPendingEventData(eventData)
+    setShowConfirmDialog(true)
+  }
+
+  const confirmSubmitEvent = async () => {
+    setIsSubmitting(true)
+    setShowConfirmDialog(false)
+
+    try {
+      const response = await createEvent(pendingEventData)
       toast.success("Blood donation event request submitted successfully!")
-      router.push(`/blood-donation-events/my-requests`)
+      router.push(`/staffs/donation-event/requests`)
     } catch (error) {
       console.error('Error creating event:', error)
 
@@ -411,7 +421,13 @@ export default function CreateDonationEventPage() {
       }
     } finally {
       setIsSubmitting(false)
+      setPendingEventData(null)
     }
+  }
+
+  const cancelEventCreation = () => {
+    setShowConfirmDialog(false)
+    setPendingEventData(null)
   }
 
   const onSubmitOrganizer = async (data) => {
@@ -481,16 +497,16 @@ export default function CreateDonationEventPage() {
           <p className="text-muted-foreground mt-2">{t?.createEvent?.description}</p>
         </div>
       </div>
-      
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2" key={activeTab}>
           <TabsTrigger value="event" className="flex items-center gap-2">
             <Droplet className="h-4 w-4" />
-            {T?.createEvent?.tabs?.event}
+            {toast?.createEvent?.tabs?.event}
           </TabsTrigger>
           <TabsTrigger value="organizer" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            {T?.createEvent?.tabs?.organizer}
+            {t?.createEvent?.tabs?.organizer}
           </TabsTrigger>
         </TabsList>
 
@@ -549,29 +565,17 @@ export default function CreateDonationEventPage() {
 
                   {/* Organizer Selection */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.organizer?.title}</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setActiveTab("organizer")}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t?.createEvent?.eventInfo?.fields?.organizer?.addButton}
-                      </Button>
-                    </div>
 
                     <FormField
                       control={eventForm.control}
                       name="organizerId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.organizer?.selectPlaceHolder}</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.organizer?.selectPlaceholder}</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value} disabled={organizersLoading}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder={organizersLoading ? t?.createEvent?.eventInfo?.fields?.organinzer?.loadingPrganizers : t?.createEvent?.eventInfo?.fields?.organinzer?.selecttPlaceholder} />
+                                <SelectValue placeholder={organizersLoading ? t?.createEvent?.eventInfo?.fields?.organizer?.loadingOrganizers : t?.createEvent?.eventInfo?.fields?.organizer?.selectPlaceholder} />
                               </SelectTrigger>
                             </FormControl>                            <SelectContent>
                               <SelectItem value="*">{t?.createEvent?.eventInfo?.fields?.organizer?.noOrganizers}</SelectItem>
@@ -630,7 +634,8 @@ export default function CreateDonationEventPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <FormField
                         control={eventForm.control}
                         name="city"
                         render={({ field }) => (
@@ -693,7 +698,7 @@ export default function CreateDonationEventPage() {
                               </FormControl>                              <SelectContent>
                                 {getWards().map((ward) => (
                                   <SelectItem key={ward.name} value={ward.name}>
-                                    {ward.name} 
+                                    {ward.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -775,7 +780,7 @@ export default function CreateDonationEventPage() {
                       <div>
                         <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.timeSlot?.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                         {t?.createEvent?.eventInfo?.fields?.timeSlots?.totalCapa} {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}
+                          {t?.createEvent?.eventInfo?.fields?.timeSlots?.totalCapa} {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}
                         </p>
                       </div>
                       <Button
@@ -886,12 +891,12 @@ export default function CreateDonationEventPage() {
                                 disabled={fields.length <= 1}
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                      {  t?.createEvent?.eventInfo?.fields?.timeSlots?.remove  }              </Button>
+                                {t?.createEvent?.eventInfo?.fields?.timeSlots?.remove}              </Button>
                             </div>
                           </div>)
                       })}
                     </div>
- 
+
                     {/* Time Slots Summary */}
                     <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="flex justify-between items-center text-sm">
@@ -985,7 +990,7 @@ export default function CreateDonationEventPage() {
                         <FormItem>
                           <FormLabel>{t?.createEvent?.organizerInfo?.fields?.email}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder= {t?.createEvent?.organizerInfo?.fields?.emailPlaceholder}{...field} />
+                            <Input type="email" placeholder={t?.createEvent?.organizerInfo?.fields?.emailPlaceholder}{...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1062,14 +1067,15 @@ export default function CreateDonationEventPage() {
                         <FormItem>
                           <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.street}</FormLabel>
                           <FormControl>
-                            <Input placeholder= {t?.createEvent?.organizerInfo?.fields?.address?.streetPlaceholder}{...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.address?.streetPlaceholder}{...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <FormField
                         control={organizerForm.control}
                         name="city"
                         render={({ field }) => (
@@ -1103,7 +1109,7 @@ export default function CreateDonationEventPage() {
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedOrganizerCity}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedOrganizerCity ? t?.createEvent?.organizerInfo?.fields?.address?.districtPlaceholder :t?.createEvent?.organizerInfo?.fields?.address?.selectProvinceFirst} />
+                                  <SelectValue placeholder={watchedOrganizerCity ? t?.createEvent?.organizerInfo?.fields?.address?.districtPlaceholder : t?.createEvent?.organizerInfo?.fields?.address?.selectProvinceFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getOrganizerDistricts().map((district) => (
@@ -1127,7 +1133,7 @@ export default function CreateDonationEventPage() {
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedOrganizerDistrict}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedOrganizerDistrict ? t?.createEvent?.organizerInfo?.fields?.location?.wardPlaceholder :t?.createEvent?.organizerInfo?.fields?.location?.selectDisctrictFirst} />
+                                  <SelectValue placeholder={watchedOrganizerDistrict ? t?.createEvent?.organizerInfo?.fields?.location?.wardPlaceholder : t?.createEvent?.organizerInfo?.fields?.location?.selectDisctrictFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getOrganizerWards().map((ward) => (
@@ -1169,6 +1175,72 @@ export default function CreateDonationEventPage() {
           </Form>
         </TabsContent>
       </Tabs>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelEventCreation()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t?.createEvent?.confirmation?.title}</DialogTitle>
+            <DialogDescription>
+              {t?.createEvent?.confirmation?.description}
+            </DialogDescription>
+          </DialogHeader>
+
+          {pendingEventData && (
+            <div className="space-y-2 py-4">
+              <div><strong>{t?.createEvent?.confirmation?.eventName}:</strong> {pendingEventData.name}</div>
+              <div><strong>{t?.createEvent?.confirmation?.hospital}:</strong> {pendingEventData.hospital}</div>
+              <div><strong>{t?.createEvent?.confirmation?.date}:</strong> {pendingEventData.donationDate}</div>
+              <div><strong>{t?.createEvent?.confirmation?.location}:</strong> {pendingEventData.address}, {pendingEventData.ward}, {pendingEventData.district}, {pendingEventData.city}</div>
+              <div><strong>{t?.createEvent?.confirmation?.totalCapacity}:</strong> {pendingEventData.totalMemberCount} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}</div>
+              <div><strong>{t?.createEvent?.confirmation?.donationType}:</strong> {pendingEventData.donationType}</div>
+              {pendingEventData.timeSlotDtos && pendingEventData.timeSlotDtos.length > 0 && (
+                <div>
+                  <strong>{t?.createEvent?.confirmation?.timeSlots}:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {pendingEventData.timeSlotDtos.map((slot, index) => (
+                      <li key={index}>
+                        {t?.createEvent?.confirmation?.timeSlotItem
+                          ?.replace('{startTime}', slot.startTime)
+                          ?.replace('{endTime}', slot.endTime)
+                          ?.replace('{maxCapacity}', slot.maxCapacity)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {pendingEventData.organizer && (
+                <div><strong>{t?.createEvent?.confirmation?.organizer}:</strong> {pendingEventData.organizer.organizationName}</div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelEventCreation}
+              disabled={isSubmitting}
+            >
+              {t?.createEvent?.confirmation?.cancel}
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmSubmitEvent}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t?.createEvent?.confirmation?.creating}
+                </>
+              ) : (
+                t?.createEvent?.confirmation?.confirm
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

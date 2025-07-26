@@ -20,6 +20,7 @@ import { RoleProtection, ROLES } from "@/components/auth";
 import { BASE_URL } from "@/global-config";
 import vietnamProvinces from "@/data/vietnam-provinces.json";
 import { Camera, Edit2, Save, X, User, Mail, Phone, MapPin, Calendar, IdCard, Droplets } from "lucide-react";
+import { convertBloodType } from "@/utils/utils";
 
 // Sort provinces alphabetically for better UX
 const sortedProvinces = vietnamProvinces.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }));
@@ -451,7 +452,7 @@ export default function ProfilePage() {
                         <Droplets className="h-4 w-4 text-red-500" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-red-600">Nhóm máu</p>
-                          <p className="font-medium text-red-700">{watch("bloodType")?.replace('_', '')}</p>
+                          <p className="font-medium text-red-700">{convertBloodType(watch("bloodType"))}</p>
                         </div>
                       </div>
                     )}

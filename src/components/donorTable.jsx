@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from 'react';
+import { use, useEffect } from 'react';
 
 const bloodTypeMap = {
   'A_POSITIVE': 'A+',
@@ -28,7 +28,11 @@ const genderMap = {
   'OTHER': 'Khác'
 };
 
-export default function DonorTable({ donors, handleSort, setActiveTab, setDonor, bloodRequest }) {
+export default function DonorTable({ donors, handleSort, setActiveTab, setDonor, bloodRequest, distanceEnabled = false }) {
+  useEffect(() => {
+    console.log("Donors data:", donors);
+  }, [donors]);
+
   const SortableHeader = ({ children, sortKey }) => (
     <div 
       className="flex items-center cursor-pointer hover:text-primary"
@@ -71,6 +75,11 @@ export default function DonorTable({ donors, handleSort, setActiveTab, setDonor,
               <TableHead>
                 <SortableHeader sortKey="address">Địa chỉ</SortableHeader>
               </TableHead>
+              {distanceEnabled && (
+                <TableHead>
+                  <SortableHeader sortKey="distance">Khoảng cách</SortableHeader>
+                </TableHead>
+              )}
               <TableHead>Tình trạng</TableHead>
               <TableHead>Đã hiến</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
@@ -95,6 +104,24 @@ export default function DonorTable({ donors, handleSort, setActiveTab, setDonor,
                       {donor.address}
                     </div>
                   </TableCell>
+                  {distanceEnabled && (
+                    <TableCell>
+                      <div className="flex items-center text-sm">
+                        <MapPin className="h-4 w-4 mr-1 text-blue-500" />
+                        <div className="flex flex-col">
+                          {donor.distanceText && (
+                            <span className="text-blue-600 font-medium">{donor.distanceText}</span>
+                          )}
+                          {donor.durationText && (
+                            <span className="text-gray-500 text-xs">{donor.durationText}</span>
+                          )}
+                          {!donor.distanceText && !donor.durationText && (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                  )}
                   <TableCell>
                     {isEligibleToDonate(donor.nextEligibleDonationDate) ? (
                       <Badge variant="default" className="bg-green-100 text-green-800">
@@ -127,7 +154,7 @@ export default function DonorTable({ donors, handleSort, setActiveTab, setDonor,
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={10} className="h-24 text-center">
+                <TableCell colSpan={distanceEnabled ? 10 : 9} className="h-24 text-center">
                   Không tìm thấy người hiến phù hợp
                 </TableCell>
               </TableRow>

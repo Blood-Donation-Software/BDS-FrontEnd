@@ -49,9 +49,11 @@ export default function DonationEventProvider({ children }) {    const [selected
             } else if (res && res.events && Array.isArray(res.events)) {
                 eventsData = res.events;
             } else {
+                console.warn("Unexpected API response structure:", res);
                 eventsData = [];
             }
             
+            console.log("Events fetched:", eventsData.length);
             setEvents(eventsData);
             
             // Fetch organizer details for unique organizer IDs
@@ -62,6 +64,7 @@ export default function DonationEventProvider({ children }) {    const [selected
             )];
             
             if (uniqueOrganizerIds.length > 0) {
+                console.log("Fetching organizers for IDs:", uniqueOrganizerIds);
                 await fetchOrganizers(uniqueOrganizerIds);
             }
             

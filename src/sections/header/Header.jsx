@@ -16,10 +16,11 @@ import { logout } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner'
 import Avatar from '@/components/ui/avatar';
-import { useLanguage } from '@/context/language_context' 
+import { useLanguage } from '@/context/language_context'
+import { Droplet } from 'lucide-react'
 
 export default function Header() {
-  const {t} = useLanguage();
+  const { t } = useLanguage();
   const { account, isLoading, loggedIn, profile, setProfile, setAccount, setLoggedIn } = useUserProfile();
   const router = useRouter();
 
@@ -114,7 +115,8 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="focus:outline-none flex items-center space-x-3 hover:bg-gray-50 rounded-full p-2 transition-colors">
-                  {/* Avatar */}                  <Avatar
+                  {/* Avatar */}
+                  <Avatar
                     src={account?.avatar}
                     name={profile?.name}
                     email={account?.email}
@@ -126,15 +128,19 @@ export default function Header() {
                   <div className="flex flex-col items-start text-left">
                     <span className="font-semibold text-sm text-gray-800 leading-tight">
                       {profile?.name || account?.email || 'Người dùng'}
-                    </span>                    {account?.role && (
+                    </span>
+                    {account?.role && (
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${account.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' :
                         account.role === 'STAFF' ? 'bg-blue-100 text-blue-700' :
                           account.role === 'MEMBER' ? 'bg-green-100 text-green-700' :
                             'bg-gray-100 text-gray-700'
                         }`}>
-                        {account.role === 'ADMIN' ? 'Quản trị viên' :
-                          account.role === 'STAFF' ? 'Nhân viên' :
-                            account.role === 'MEMBER' ? 'Thành viên' : 'Khách'}
+                        {account.role === 'ADMIN' ? t?.Account?.ADMIN :
+                          account.role === 'STAFF' ? t?.Account?.STAFF :
+                            account.role === 'MEMBER' ? t?.Account?.MEMBER : t?.Account?.GUEST}
+
+
+
                       </span>
                     )}
                   </div>
@@ -162,12 +168,19 @@ export default function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard" className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                    </svg>
-                    {t?.dropDownMenu?.dashboard}
+                    <Droplet className='w-4 h-4 mr-2' />
+                    {t?.dropDownMenu?.donationHistory}
                   </Link>
                 </DropdownMenuItem>
+                {(account.role === 'ADMIN' || account.role === 'STAFF') && (
+                  <DropdownMenuItem asChild>
+                    <Link href={account.role === 'ADMIN' ? `/admins/dashboard` : `/staffs/dashboard`} className="flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                      </svg>
+                      {t?.dropDownMenu?.dashBoard}
+                    </Link>
+                  </DropdownMenuItem>)}
                 <DropdownMenuItem asChild>
                   <Link href="/settings" className="flex items-center">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -14,25 +14,47 @@ export default function BloodRequestDetails({ request, isLoading }) {
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-muted-foreground">Name</p>
-            {isLoading ? <Skeleton className="h-5 w-3/4" /> : <p className="truncate">{safeRequest.name || '—'}</p>}
+            <p className="text-sm text-muted-foreground">Patient Name</p>
+            {isLoading ? <Skeleton className="h-5 w-3/4" /> : <p className="truncate">{safeRequest.profile?.name || safeRequest.name || '—'}</p>}
           </div>
           <div>
+            <p className="text-sm text-muted-foreground">Personal ID</p>
+            {isLoading ? <Skeleton className="h-5 w-1/2" /> : <p>{safeRequest.profile?.personalId || safeRequest.personalId || '—'}</p>}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
             <p className="text-sm text-muted-foreground">Phone</p>
-            {isLoading ? <Skeleton className="h-5 w-1/2" /> : <p>{safeRequest.phone || '—'}</p>}
+            {isLoading ? <Skeleton className="h-5 w-1/2" /> : <p>{safeRequest.profile?.phone || safeRequest.phone || '—'}</p>}
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Patient Blood Type</p>
+            {isLoading ? (
+              <Skeleton className="h-6 w-16 rounded-md" />
+            ) : (
+              <Badge variant="secondary" className="text-sm">{safeRequest.profile?.bloodType || '—'}</Badge>
+            )}
           </div>
         </div>
 
         <div>
           <p className="text-sm text-muted-foreground">Address</p>
-          {isLoading ? <Skeleton className="h-5 w-full" /> : <p className="break-words">{safeRequest.address || '—'}</p>}
+          {isLoading ? <Skeleton className="h-5 w-full" /> : (
+            <p className="break-words">
+              {safeRequest.profile ? 
+                `${safeRequest.profile.address || ''}, ${safeRequest.profile.ward || ''}, ${safeRequest.profile.district || ''}, ${safeRequest.profile.city || ''}`.replace(/^,\s*|,\s*$/g, '').replace(/,\s*,/g, ',') 
+                : safeRequest.address || '—'
+              }
+            </p>
+          )}
         </div>
 
         <Separator />
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-muted-foreground">Blood Type</p>
+            <p className="text-sm text-muted-foreground">Requested Blood Type</p>
             {isLoading ? (
               <Skeleton className="h-6 w-16 rounded-md" />
             ) : (
@@ -67,14 +89,20 @@ export default function BloodRequestDetails({ request, isLoading }) {
               </p>
             )}
           </div>
-          {isLoading ? (
-            <Skeleton className="h-5 w-2/3" />
-          ) : safeRequest.endTime && (
-            <div>
-              <p className="text-sm text-muted-foreground">End Time</p>
-              <p className="text-sm">{new Date(safeRequest.endTime).toLocaleString()}</p>
-            </div>
-          )}
+          <div>
+            <p className="text-sm text-muted-foreground">Required Date</p>
+            {isLoading ? (
+              <Skeleton className="h-5 w-2/3" />
+            ) : (
+              <p className="text-sm">
+                {safeRequest.requiredDate
+                  ? new Date(safeRequest.requiredDate).toLocaleDateString()
+                  : safeRequest.endTime 
+                  ? new Date(safeRequest.endTime).toLocaleDateString()
+                  : '—'}
+              </p>
+            )}
+          </div>
         </div>
 
         <Separator />
@@ -105,6 +133,87 @@ export default function BloodRequestDetails({ request, isLoading }) {
             )}
           </div>
         </div>
+
+        {!isLoading && safeRequest.medicalConditions?.length > 0 && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Medical Conditions</p>
+              <div className="flex flex-wrap gap-2">
+                {safeRequest.medicalConditions.map((condition, index) => {
+                  // Convert enum to display format
+                  const displayCondition = condition.replace(/_/g, ' ')
+                    .toLowerCase()
+                    .replace(/\b\w/g, l => l.toUpperCase());
+                  
+                  return (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {displayCondition}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
+        {isLoading && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Medical Conditions</p>
+              <div className="flex flex-wrap gap-2">
+                {[1, 2, 3].map((_, i) => (
+                  <Skeleton key={i} className="h-6 w-24 rounded-md" />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {!isLoading && safeRequest.additionalMedicalInformation && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Additional Medical Information</p>
+              <p className="text-sm break-words bg-gray-50 p-3 rounded-md">
+                {safeRequest.additionalMedicalInformation}
+              </p>
+            </div>
+          </>
+        )}
+
+        {isLoading && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Additional Medical Information</p>
+              <Skeleton className="h-16 w-full rounded-md" />
+            </div>
+          </>
+        )}
+
+        {!isLoading && safeRequest.additionalNotes && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Additional Notes</p>
+              <p className="text-sm break-words bg-gray-50 p-3 rounded-md">
+                {safeRequest.additionalNotes}
+              </p>
+            </div>
+          </>
+        )}
+
+        {isLoading && (
+          <>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Additional Notes</p>
+              <Skeleton className="h-12 w-full rounded-md" />
+            </div>
+          </>
+        )}
 
         {!isLoading && safeRequest.componentRequests?.length > 0 && (
           <>

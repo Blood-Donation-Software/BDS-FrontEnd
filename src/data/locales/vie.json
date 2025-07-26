@@ -19,13 +19,19 @@
     "loginNow": "Đăng nhập ngay",
     "fullName": "Họ và Tên",
     "confirmPassword": "Xác nhận mật khẩu",
-    "placeholder":{
+    "placeholder": {
       "email": "Vui lòng nhập email trước khi gửi lại OTP!",
-      "OtpReSend":"Đã gửi lại OTP thành công!",
+      "OtpReSend": "Đã gửi lại OTP thành công!",
       "OtpReSendError!": "Gửi lại OTP thất bại!",
-       "blank": "không được để trống!",
+      "blank": "không được để trống!",
       "passwordMismatch": "Mật khẩu không khớp!"
     }
+  },
+  "Account": {
+    "ADMIN": "Quản trị viên",
+    "STAFF": "Nhân viên",
+    "MEMBER": "Thành viên",
+    "GUEST": "Khách"
   },
   "user": {
     "profile": "Hồ sơ",
@@ -261,7 +267,7 @@
     "events": "Sự kiện",
     "bloodCompatibility": "Tra cứu tương thích máu"
   },
-   "notifications": {
+  "notifications": {
     "logout": {
       "success": "Đăng xuất thành công!",
       "error": "Đăng xuất thất bại, vui lòng thử lại sau!",
@@ -271,7 +277,9 @@
   "dropDownMenu": {
     "profile": "Thông tin cá nhân",
     "dashBoard": "Bảng điều khiển",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "dashboard": "Bảng điều khiển",
+    "donationHistory": "Lịch sử hiến máu"
   },
   "system": {
     "details_info": "Vui lòng cung cấp thông tin chi tiết về yêu cầu hiến máu của bạn.",
@@ -386,11 +394,25 @@
       "title": "Lỗi",
       "loading": "Đang tải sự kiện...",
       "notFound": "Không thể tải danh sách sự kiện"
-      
     }
   },
-
   "createEvent": {
+    "confirmation": {
+      "title": "Xác nhận tạo sự kiện",
+      "description": "Bạn có chắc chắn muốn tạo sự kiện hiến máu này? Vui lòng kiểm tra lại thông tin trước khi xác nhận.",
+      "eventName": "Tên sự kiện",
+      "hospital": "Bệnh viện/Địa điểm",
+      "date": "Ngày tổ chức",
+      "location": "Địa chỉ",
+      "totalCapacity": "Tổng sức chứa",
+      "donationType": "Loại hiến máu",
+      "timeSlots": "Khung giờ",
+      "timeSlotItem": "{startTime} - {endTime} (Tối đa: {maxCapacity} người)",
+      "organizer": "Đơn vị tổ chức",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận & Tạo sự kiện",
+      "creating": "Đang tạo sự kiện..."
+    },
     "title": "Tạo Yêu Cầu Sự Kiện Hiến Máu Mới",
     "description": "Gửi yêu cầu cho chiến dịch hiến máu mới",
     "tabs": {
@@ -410,7 +432,6 @@
           "noOrganizers": "Không tìm thấy tổ chức",
           "addButton": "Thêm Tổ Chức Mới",
           "loadingOrganizers": "Đang tải danh sách tổ chức..."
-
         },
         "location": {
           "title": "Thông Tin Địa Điểm",
@@ -423,7 +444,7 @@
           "district": "Quận/Huyện *",
           "selectProvinceFirst": "Vui lòng chọn tỉnh/thành phố trước",
           "districtPlaceholder": "Chọn quận/huyện",
-           "selectDistrictFirst": "Vui lòng chọn quận/huyện trước",
+          "selectDistrictFirst": "Vui lòng chọn quận/huyện trước",
           "ward": "Phường/Xã *",
           "wardPlaceholder": "Chọn phường/xã"
         },
@@ -450,7 +471,7 @@
       "fields": {
         "orgName": "Tên Tổ Chức *",
         "orgNamePlaceholder": "Hội Chữ Thập Đỏ Việt Nam",
-        "organizerName" : "Tên Tổ Chức *",
+        "organizerName": "Tên Tổ Chức *",
         "contactPerson": "Tên Người Liên Hệ *",
         "contactPersonPlaceholder": "Nguyễn Văn A",
         "email": "Địa Chỉ Email *",
@@ -483,113 +504,109 @@
       "back": "Quay Lại Sự Kiện",
       "createOrganizer": "Tạo Tổ Chức",
       "creatingOrganizer": "Đang tạo tổ chức..."
-      
     },
-    "error":{
-  "startTime_required": "Vui lòng nhập thời gian bắt đầu",
-  "startTime_invalidFormat": "Định dạng thời gian không hợp lệ",
-  "endTime_required": "Vui lòng nhập thời gian kết thúc",
-  "endTime_invalidFormat": "Định dạng thời gian không hợp lệ",
-  "endTime_afterStart": "Thời gian kết thúc phải sau thời gian bắt đầu",
-  "maxCapacity_min": "Sức chứa tối thiểu là 1",
-  "maxCapacity_max": "Sức chứa không được vượt quá 100",
-  "timeSlots_noOverlap": "Các khung giờ không được trùng nhau",
-  "timeSlots_min": "Phải có ít nhất một khung giờ",
-  "timeSlots_max": "Tối đa 10 khung giờ",
-
-  "event_name_min": "Tên sự kiện phải có ít nhất 5 ký tự",
-  "event_name_max": "Tên sự kiện không được vượt quá 200 ký tự",
-  "event_hospital_min": "Tên bệnh viện/địa điểm phải có ít nhất 3 ký tự",
-  "event_hospital_max": "Tên bệnh viện/địa điểm không được vượt quá 200 ký tự",
-  "event_address_min": "Địa chỉ phải có ít nhất 10 ký tự",
-  "event_address_max": "Địa chỉ không được vượt quá 300 ký tự",
-  "event_city_required": "Vui lòng chọn thành phố",
-  "event_district_required": "Vui lòng chọn quận/huyện",
-  "event_ward_required": "Vui lòng chọn phường/xã",
-  "event_donationDate_required": "Vui lòng chọn ngày hiến máu",
-  "event_donationDate_future": "Ngày hiến máu phải là hôm nay hoặc trong tương lai",
-  "event_donationType_required": "Vui lòng chọn loại hiến máu",
-  "event_totalMemberCount_min": "Sức chứa tổng phải ít nhất là 1",
-  "event_totalMemberCount_max": "Sức chứa tổng không được vượt quá 10000",
-
-  "organizer_organizationName_min": "Tên tổ chức phải có ít nhất 2 ký tự",
-  "organizer_organizationName_max": "Tên tổ chức không được vượt quá 200 ký tự",
-  "organizer_contactPersonName_min": "Tên người liên hệ phải có ít nhất 2 ký tự",
-  "organizer_contactPersonName_max": "Tên người liên hệ không được vượt quá 100 ký tự",
-  "organizer_email_invalid": "Vui lòng nhập địa chỉ email hợp lệ",
-  "organizer_phoneNumber_invalid": "Số điện thoại phải đúng 10 chữ số",
-  "organizer_address_max": "Địa chỉ không được vượt quá 300 ký tự",
-  "organizer_description_max": "Mô tả không được vượt quá 1000 ký tự",
-  "organizer_websiteUrl_invalid": "Vui lòng nhập đường dẫn website hợp lệ"
-} 
+    "error": {
+      "startTime_required": "Vui lòng nhập thời gian bắt đầu",
+      "startTime_invalidFormat": "Định dạng thời gian không hợp lệ",
+      "endTime_required": "Vui lòng nhập thời gian kết thúc",
+      "endTime_invalidFormat": "Định dạng thời gian không hợp lệ",
+      "endTime_afterStart": "Thời gian kết thúc phải sau thời gian bắt đầu",
+      "maxCapacity_min": "Sức chứa tối thiểu là 1",
+      "maxCapacity_max": "Sức chứa không được vượt quá 100",
+      "timeSlots_noOverlap": "Các khung giờ không được trùng nhau",
+      "timeSlots_min": "Phải có ít nhất một khung giờ",
+      "timeSlots_max": "Tối đa 10 khung giờ",
+      "event_name_min": "Tên sự kiện phải có ít nhất 5 ký tự",
+      "event_name_max": "Tên sự kiện không được vượt quá 200 ký tự",
+      "event_hospital_min": "Tên bệnh viện/địa điểm phải có ít nhất 3 ký tự",
+      "event_hospital_max": "Tên bệnh viện/địa điểm không được vượt quá 200 ký tự",
+      "event_address_min": "Địa chỉ phải có ít nhất 10 ký tự",
+      "event_address_max": "Địa chỉ không được vượt quá 300 ký tự",
+      "event_city_required": "Vui lòng chọn thành phố",
+      "event_district_required": "Vui lòng chọn quận/huyện",
+      "event_ward_required": "Vui lòng chọn phường/xã",
+      "event_donationDate_required": "Vui lòng chọn ngày hiến máu",
+      "event_donationDate_future": "Ngày hiến máu phải là hôm nay hoặc trong tương lai",
+      "event_donationType_required": "Vui lòng chọn loại hiến máu",
+      "event_totalMemberCount_min": "Sức chứa tổng phải ít nhất là 1",
+      "event_totalMemberCount_max": "Sức chứa tổng không được vượt quá 10000",
+      "organizer_organizationName_min": "Tên tổ chức phải có ít nhất 2 ký tự",
+      "organizer_organizationName_max": "Tên tổ chức không được vượt quá 200 ký tự",
+      "organizer_contactPersonName_min": "Tên người liên hệ phải có ít nhất 2 ký tự",
+      "organizer_contactPersonName_max": "Tên người liên hệ không được vượt quá 100 ký tự",
+      "organizer_email_invalid": "Vui lòng nhập địa chỉ email hợp lệ",
+      "organizer_phoneNumber_invalid": "Số điện thoại phải đúng 10 chữ số",
+      "organizer_address_max": "Địa chỉ không được vượt quá 300 ký tự",
+      "organizer_description_max": "Mô tả không được vượt quá 1000 ký tự",
+      "organizer_websiteUrl_invalid": "Vui lòng nhập đường dẫn website hợp lệ"
+    }
   },
-  "donateEdetailFmember":{
-  "title": "Chi tiết sự kiện",
-  "backToEvents": "Quay về trang Sự kiện",
-  "location": "Địa điểm",
-  "address": "Địa chỉ",
-  "date": "Ngày",
-  "donationType": "Hình thức hiến máu",
-  "donationTypeMap": {
-    "WHOLE_BLOOD": "Toàn phần",
-    "PLASMA": "Huyết tương",
-    "PLATELETS": "Tiểu cầu",
-    "DOUBLE_RED_CELLS": "Hồng cầu"
+  "donateEdetailFmember": {
+    "title": "Chi tiết sự kiện",
+    "backToEvents": "Quay về trang Sự kiện",
+    "location": "Địa điểm",
+    "address": "Địa chỉ",
+    "date": "Ngày",
+    "donationType": "Hình thức hiến máu",
+    "donationTypeMap": {
+      "WHOLE_BLOOD": "Toàn phần",
+      "PLASMA": "Huyết tương",
+      "PLATELETS": "Tiểu cầu",
+      "DOUBLE_RED_CELLS": "Hồng cầu"
+    },
+    "organizer": "Đơn vị tổ chức",
+    "contact": "Liên hệ",
+    "email": "Email",
+    "notFound": "Không tìm thấy sự kiện",
+    "loading": "Đang tải thông tin sự kiện...",
+    "notSpecified": "Không xác định",
+    "timeSlots": "Các khoảng thời gian",
+    "slotCapacity": "{{count}} suất",
+    "selectToChoose": "Ấn để chọn",
+    "selected": "Đã chọn",
+    "selectedSlot": "Khoảng thời gian đã chọn",
+    "registerThisSlot": "Đăng ký khung giờ này",
+    "registering": "Đang xử lý...",
+    "eventStats": "Thống kê sự kiện",
+    "registeredCount": "Số người đã đăng ký:",
+    "capacity": "Sức chứa:",
+    "slotCount": "Số ca:",
+    "eventFull": "Sự kiện đã đầy",
+    "registrationGuide": "Hướng dẫn đăng ký",
+    "guideSelected": {
+      "title": "Đã chọn khoảng thời gian!",
+      "desc": "Nhấn \"Đăng ký khung giờ này\" để xác nhận đăng ký của bạn."
+    },
+    "guideUnselected": {
+      "title": "Làm sao để đăng ký:",
+      "steps": [
+        "1. Chọn một khung giờ trong các tùy chọn có sẵn",
+        "2. Nhấn nút \"Đăng ký khung giờ này\"",
+        "3. Bạn sẽ nhận được email xác nhận"
+      ]
+    },
+    "toast": {
+      "noEventId": "Không có mã sự kiện",
+      "cannotLoad": "Không thể tải thông tin sự kiện",
+      "selectTimeSlot": "Vui lòng chọn khung thời gian",
+      "registerError": "Có lỗi xảy ra khi chuyển trang"
+    }
   },
-  "organizer": "Đơn vị tổ chức",
-  "contact": "Liên hệ",
-  "email": "Email",
-  "notFound": "Không tìm thấy sự kiện",
-  "loading": "Đang tải thông tin sự kiện...",
-  "notSpecified": "Không xác định",
-  "timeSlots": "Các khoảng thời gian",
-  "slotCapacity": "{{count}} suất",
-  "selectToChoose": "Ấn để chọn",
-  "selected": "Đã chọn",
-  "selectedSlot": "Khoảng thời gian đã chọn",
-  "registerThisSlot": "Đăng ký khung giờ này",
-  "registering": "Đang xử lý...",
-  "eventStats": "Thống kê sự kiện",
-  "registeredCount": "Số người đã đăng ký:",
-  "capacity": "Sức chứa:",
-  "slotCount": "Số ca:",
-  "eventFull": "Sự kiện đã đầy",
-  "registrationGuide": "Hướng dẫn đăng ký",
-  "guideSelected": {
-    "title": "Đã chọn khoảng thời gian!",
-    "desc": "Nhấn \"Đăng ký khung giờ này\" để xác nhận đăng ký của bạn."
-  },
-  "guideUnselected": {
-    "title": "Làm sao để đăng ký:",
-    "steps": [
-      "1. Chọn một khung giờ trong các tùy chọn có sẵn",
-      "2. Nhấn nút \"Đăng ký khung giờ này\"",
-      "3. Bạn sẽ nhận được email xác nhận"
-    ]
-  },
-  "toast": {
-    "noEventId": "Không có mã sự kiện",
-    "cannotLoad": "Không thể tải thông tin sự kiện",
-    "selectTimeSlot": "Vui lòng chọn khung thời gian",
-    "registerError": "Có lỗi xảy ra khi chuyển trang"
-  }
-},
-"dashboard":{
-  "StatisticsCard":{
-    "total": "Tổng số lần đăng ký",
-    "done": "Đã hoàn thành",
-    "totalVolume": "Tổng khối lượng máu đã hiến (ml)",
-    "latest": "Lần gần nhất"
-  },
-  "header":{
-    "title":"theo dõi lịch sử hiến máu của bạn",
-    "message":"Cảm ơn bạn đã tham gia vào hoạt động hiến máu tình nguyện"
-  },
-  "userWel":{
-    "welcome": "Chào Mừng, "
-  },
-
-  "errors": {
+  "dashboard": {
+    "StatisticsCard": {
+      "total": "Tổng số lần đăng ký",
+      "done": "Đã hoàn thành",
+      "totalVolume": "Tổng khối lượng máu đã hiến (ml)",
+      "latest": "Lần gần nhất"
+    },
+    "header": {
+      "title": "theo dõi lịch sử hiến máu của bạn",
+      "message": "Cảm ơn bạn đã tham gia vào hoạt động hiến máu tình nguyện"
+    },
+    "userWel": {
+      "welcome": "Chào Mừng, "
+    },
+    "errors": {
       "donationHistory": {
         "fetchFailed": "Không thể tải lịch sử hiến máu",
         "tryAgain": "Vui lòng thử lại sau",
@@ -600,23 +617,790 @@
         "serverError": "Lỗi máy chủ"
       }
     },
-     "noti": {
-    "error": {
-      "donationHistory": "Không thể tải lịch sử hiến máu"
+    "noti": {
+      "error": {
+        "donationHistory": "Không thể tải lịch sử hiến máu"
+      }
+    },
+    "admin": {
+      "totalAcc": "Tổng số tài khoản",
+      "pendingEvents": "Sự kiện đang chờ duyệt",
+      "pendingBlogPosts": "Bài viết đang chờ duyệt",
+      "totalDonations": "Tổng số lần hiến máu",
+      "users": "Người dùng",
+      "calendar": "lịch",
+      "documents": "tài liệu",
+      "hearts": "trái tim"
     }
   },
-    "admin":{
-       "totalAcc": "Tổng số tài khoản",
-    "pendingEvents": "Sự kiện đang chờ duyệt",
-    "pendingBlogPosts": "Bài viết đang chờ duyệt",
-    "totalDonations": "Tổng số lần hiến máu",
-    "users": "Người dùng",
-    "calendar": "lịch",
-    "documents": "tài liệu",
-    "hearts": "trái tim"
+  "dashboardStaff": {
+    "title": "Bảng điều khiển nhân viên",
+    "subtitle": "Quản lý yêu cầu hiến máu và người hiến",
+    "today": "Hôm nay",
+    "thisWeek": "Tuần này",
+    "thisMonth": "Tháng này",
+    "totalDonors": "Tổng người hiến",
+    "activeDonors": "Người hiến hoạt động",
+    "currentRequests": "Yêu cầu hiện tại",
+    "avgResponseTime": "Thời gian phản hồi TB",
+    "comparedToLastMonth": "so với tháng trước",
+    "comparedToLastWeek": "so với tuần trước",
+    "urgent": "khẩn cấp",
+    "bloodInventory": "Tồn kho máu",
+    "bloodInventoryDesc": "Trạng thái hiện tại của các nhóm máu",
+    "unit": "đơn vị",
+    "lack": "Thiếu",
+    "enough": "Đủ",
+    "recentRequests": "Yêu cầu gần đây",
+    "recentRequestsDesc": "Các yêu cầu hiến máu mới nhất",
+    "status": {
+      "pending": "Chờ xử lý",
+      "processing": "Đang xử lý",
+      "completed": "Hoàn thành",
+      "urgent": "Khẩn cấp",
+      "new": "Mới"
+    },
+    "action": {
+      "process": "Xử lý",
+      "detail": "Chi tiết"
+    },
+    "nearbyDonors": "Người hiến gần đây",
+    "nearbyDonorsDesc": "Danh sách người hiến trong khu vực",
+    "lastDonation": "Hiến gần nhất",
+    "responseRate": "Phản hồi",
+    "call": "Gọi",
+    "invite": "Mời hiến",
+    "todayActivities": "Hoạt động hôm nay",
+    "todayActivitiesDesc": "Lịch sử hoạt động trong ngày",
+    "quickActions": "Hành động nhanh",
+    "quickActionUrgent": "Yêu cầu khẩn cấp",
+    "quickActionFindDonor": "Tìm người hiến",
+    "quickActionUpdateInventory": "Cập nhật kho",
+    "quickActionDonationHistory": "Lịch sử hiến máu"
+  },
+  "blogManagement": {
+    "title": "Quản lý Blog",
+    "subtitle": "Quản lý và kiểm duyệt các bài viết blog",
+    "total": "bài viết",
+    "loading": "Đang tải...",
+    "refresh": "Làm mới",
+    "searchPlaceholder": "Tìm kiếm blog...",
+    "status": {
+      "all": "Tất cả trạng thái",
+      "published": "Đã xuất bản",
+      "deleted": "Đã xóa",
+      "status": "Trạng thái"
+    },
+    "showing": "Hiển thị",
+    "request": "yêu cầu",
+    "of": "trên tổng",
+    "to": "đến",
+    "blogs": "blog",
+    "blogsPerPage": "Blog mỗi trang:",
+    "table": {
+      "title": "Tiêu đề",
+      "status": "Trạng thái",
+      "author": "Tác giả",
+      "actions": "Hành động"
+    },
+    "loadingBlogs": "Đang tải blog...",
+    "noBlogsFound": "Không tìm thấy blog nào",
+    "noBlogsMatch": "Không có blog nào phù hợp với bộ lọc",
+    "untitled": "Không có tiêu đề",
+    "unknown": "Không xác định",
+    "deleteTitle": "Xóa Blog",
+    "deleteDesc": "Bạn có chắc chắn muốn xóa blog này? Hành động này không thể hoàn tác.",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "detailsTitle": "Chi tiết Blog",
+    "detailsDesc": "Xem chi tiết bài viết blog",
+    "authorName": "Tên tác giả",
+    "createdDate": "Ngày tạo",
+    "blogId": "Mã Blog",
+    "lastUpdated": "Cập nhật lần cuối",
+    "thumbnail": "Ảnh đại diện",
+    "blogContent": "Nội dung Blog",
+    "noContent": "Không có nội dung",
+    "close": "Đóng",
+    "editBlog": "Chỉnh sửa Blog",
+    "errorLoad": "Không thể tải blog. Vui lòng thử lại.",
+    "errorLoadToast": "Không thể tải blog",
+    "successDelete": "Đã gửi yêu cầu xóa!",
+    "errorDelete": "Xóa blog thất bại"
+  },
+  "createBlog": {
+    "back": "Quay lại",
+    "title": "Tạo bài viết Blog mới",
+    "submit": "Gửi duyệt xuất bản",
+    "submitting": "Đang gửi...",
+    "titleLabel": "Tiêu đề *",
+    "titlePlaceholder": "Nhập tiêu đề bài viết...",
+    "titleRequired": "Tiêu đề là bắt buộc",
+    "titleMax": "Tiêu đề không vượt quá 100 ký tự",
+    "thumbnailLabel": "Ảnh đại diện *",
+    "thumbnailClick": "Nhấn để tải ảnh đại diện",
+    "thumbnailNote": "PNG, JPG, GIF tối đa 5MB",
+    "thumbnailRequired": "Ảnh đại diện là bắt buộc",
+    "thumbnailUploaded": "Đã tải lên",
+    "thumbnailRequiredShort": "Bắt buộc",
+    "contentLabel": "Nội dung *",
+    "contentPlaceholder": "Bắt đầu viết bài blog...",
+    "contentRequired": "Nội dung phải có ít nhất 10 ký tự",
+    "publication": "Xuất bản",
+    "publicationNote": "Bài viết sẽ được gửi duyệt. Quản trị viên sẽ phê duyệt hoặc từ chối.",
+    "quickStats": "Thống kê nhanh",
+    "titleLength": "Độ dài tiêu đề:",
+    "contentLength": "Độ dài nội dung:",
+    "thumbnail": "Ảnh đại diện:",
+    "guidelines": "Hướng dẫn",
+    "uploadFromComputer": "Thêm từ máy tính",
+    "addFromUrl": "Thêm từ URL",
+    "guidelinesList": [
+      "Tiêu đề rõ ràng, mô tả đúng nội dung",
+      "Nội dung tối thiểu 10 ký tự",
+      "Định dạng hợp lý, dễ đọc",
+      "Ảnh đại diện liên quan đến nội dung",
+      "Tất cả bài viết đều phải duyệt"
+    ],
+    "uploaded": "Đã tải lên",
+    "required": "Bắt buộc",
+    "remove": "Xóa",
+    "saveDraft": "Lưu nháp",
+    "preview": "Xem trước",
+    "previewComing": "Chức năng xem trước sẽ sớm có!",
+    "successDraft": "Đã gửi yêu cầu tạo blog! Bài viết sẽ được quản trị viên duyệt.",
+    "successSubmit": "Đã gửi bài viết xuất bản! Bài viết sẽ được quản trị viên duyệt.",
+    "errorRequired": "Vui lòng điền đầy đủ các trường bắt buộc",
+    "errorSaveDraft": "Lưu nháp thất bại. Vui lòng thử lại.",
+    "errorSubmit": "Gửi bài viết thất bại. Vui lòng thử lại.",
+    "errorImageType": "Vui lòng chọn tệp hình ảnh",
+    "errorImageSize": "Kích thước ảnh phải nhỏ hơn 5MB",
+    "errorImageRead": "Không đọc được tệp ảnh",
+    "errorImageAdd": "Thêm ảnh thất bại",
+    "errorImageDrop": "Vui lòng thả tệp hình ảnh",
+    "errorImageDropProcess": "Xử lý ảnh thả thất bại",
+    "errorImagePaste": "Xử lý ảnh dán thất bại",
+    "processingImage": "Đang xử lý ảnh...",
+    "imageAdded": "Đã tải ảnh lên và thêm vào nội dung",
+    "imageDropped": "Đã thả ảnh vào nội dung",
+    "imagePasted": "Đã dán ảnh vào nội dung",
+    "imageUrl": "Thêm từ URL",
+    "imageUrlInvalid": "Vui lòng nhập URL hợp lệ bắt đầu bằng http:// hoặc https://",
+    "imageUrlNotImage": "URL không phải là ảnh. Tiếp tục?",
+    "imageUrlAdded": "Đã thêm ảnh từ URL",
+    "imageSizeErrror": "Kích thước hình ảnh vượt quá 5MB. Vui lòng chọn hình ảnh nhỏ hơn.",
+    "errorAddImageUrl": "Không thể thêm ảnh từ URL:",
+    "failedToLoadImage": "Không thể tải ảnh. Vui lòng kiểm tra URL và thử lại.",
+    "errorProcessingDroppedImage": "Xử lý ảnh thả thất bại:"
+  },
+  "BlogEditor": {
+    "errorTitleRequired": "Tiêu đề là bắt buộc",
+    "errorTitleTooLong": "Tiêu đề không được vượt quá 100 ký tự",
+    "errorContentTooShort": "Nội dung phải có ít nhất 10 ký tự",
+    "errorThumbnailRequired": "Ảnh bìa là bắt buộc",
+    "errorFormIncomplete": "Vui lòng điền đầy đủ các trường bắt buộc",
+    "successDraft": "Đã gửi yêu cầu tạo blog! Bài viết sẽ được quản trị viên xem xét.",
+    "errorSaveDraft": "Lưu nháp thất bại. Vui lòng thử lại.",
+    "errorSaveDraftWithMessage": "Lưu nháp thất bại:",
+    "successSubmit": "Đã gửi bài viết xuất bản! Bài viết sẽ được quản trị viên xem xét.",
+    "errorSubmit": "Gửi bài viết thất bại. Vui lòng thử lại.",
+    "errorSubmitWithMessage": "Gửi bài viết thất bại:"
+  },
+  "staffBlogRequest": {
+    "title": "Yêu cầu bài viết của tôi",
+    "description": "Xem và theo dõi các yêu cầu bài viết đã gửi)",
+    "search_placeholder": "Tìm kiếm yêu cầu bài viết...",
+    "status_filter_label": "Trạng thái",
+    "crud_type_filter_label": "Loại yêu cầu",
+    "no_requests_found": "Không có yêu cầu bài viết nào",
+    "no_requests_filtered": "Không có yêu cầu phù hợp với bộ lọc",
+    "loading_requests": "Đang tải yêu cầu...",
+    "refresh": "Làm mới",
+    "refreshing": "Đang tải...",
+    "request_id": "Mã yêu cầu:",
+    "status_all": "Tất cả trạng thái",
+    "status_pending": "Đang chờ duyệt",
+    "status_approved": "Đã chấp thuận",
+    "status_rejected": "Đã từ chối",
+    "type_all": "Tất cả loại yêu cầu",
+    "type_create": "Tạo bài viết",
+    "type_update": "Cập nhật bài viết",
+    "type_delete": "Xóa bài viết",
+    "content_preview": "Xem trước nội dung",
+    "actions": "Hành động",
+    "requests_per_page": "Số yêu cầu mỗi trang:",
+    "showing_requests": "Hiển thị từ {{from}} đến {{to}} trong tổng số {{total}} yêu cầu",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "dialog_title_create": "Chi tiết yêu cầu tạo bài viết",
+    "dialog_title_update": "Chi tiết yêu cầu cập nhật bài viết",
+    "dialog_title_delete": "Chi tiết yêu cầu xóa bài viết",
+    "dialog_title_default": "Chi tiết yêu cầu bài viết",
+    "dialog_desc_create": "Xem lại chi tiết yêu cầu gửi bài viết mới",
+    "dialog_desc_update": "Xem lại nội dung cập nhật bài viết đã gửi",
+    "dialog_desc_delete": "Xem lại bài viết đã yêu cầu xóa",
+    "dialog_desc_default": "Xem chi tiết bài viết đã gửi yêu cầu",
+    "field_title": "Tiêu đề",
+    "field_request_status": "Trạng thái yêu cầu",
+    "field_request_type": "Loại yêu cầu",
+    "field_request_id": "Mã yêu cầu",
+    "field_blog_status": "Trạng thái bài viết",
+    "field_thumbnail": "Ảnh đại diện",
+    "field_blog_content": "Nội dung bài viết",
+    "no_content_available": "Không có nội dung",
+    "close": "Đóng",
+    "error_loading_requests": "Tải yêu cầu thất bại. Vui lòng thử lại.",
+    "showing": "Hiển thị",
+    "to": "đến",
+    "request": "Yêu cầu"
+  },
+  "eventManagement": {
+    "title": "Sự Kiện Hiến Máu",
+    "description": "Quản lý và xem tất cả các sự kiện hiến máu",
+    "refresh": "Làm mới",
+    "loading": "Đang tải...",
+    "searchPlaceholder": "Tìm kiếm sự kiện...",
+    "status": "Trạng thái",
+    "donationType": "Loại hiến máu",
+    "eventsPerPage": "Số sự kiện mỗi trang:",
+    "showingEvents": "Hiển thị {showing} trong tổng số {total} sự kiện",
+    "noEventsFound": "Không tìm thấy sự kiện nào",
+    "noEventsMatchFilters": "Không có sự kiện nào phù hợp với bộ lọc của bạn",
+    "loadingEvents": "Đang tải sự kiện...",
+    "tableHeaders": {
+      "name": "Tên",
+      "location": "Địa điểm",
+      "date": "Ngày",
+      "status": "Trạng thái",
+      "type": "Loại",
+      "capacity": "Sức chứa",
+      "timeSlots": "Khung giờ",
+      "organizer": "Tổ chức"
+    },
+    "registered": "đã đăng ký",
+    "noSlots": "Không có khung giờ",
+    "noOrganizer": "Không có tổ chức",
+    "pagination": {
+      "previous": "Trước",
+      "next": "Tiếp"
+    },
+    "statusOptions": {
+      "all": "Tất cả trạng thái",
+      "pending": "Đang chờ",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối"
+    },
+    "donationTypeOptions": {
+      "all": "Tất cả loại",
+      "wholeBlood": "Máu toàn phần",
+      "plasma": "Huyết tương",
+      "platelets": "Tiểu cầu"
+    }
+  },
+  "checkinPage": {
+    "for": "cho ",
+      "approveCheckIn": "Chấp nhận điểm danh",
+  "rejectCheckIn": "Từ chối điểm danh",
+  "confirmCheckIn": "Xác nhận điểm danh",
+  "confirmRejection": "Xác nhận từ chối",
+  "confirmCheckInMessage": "Bạn có chắc muốn điểm danh cho ",
+  "confirmRejectionMessage": "Bạn có chắc muốn từ chối điểm danh cho ",
+  "cancel": "Hủy",
+    "errorParsingHealthSurvey": "Lỗi phân tích dữ liệu khảo sát sức khỏe",
+    "getCheckinError": "Lỗi khi lấy thông tin check-in:",
+    "getDonorSuccess": "Lấy thông tin người hiến máu thành công",
+    "pleaseSelectFirst": "Vui lòng chọn sự kiện đang diễn ra trước",
+    "QRerror": "Lỗi quét mã QR",
+    "selectEvent": "Chọn sự kiện đang diễn ra",
+    "ongoingEvents": "Các sự kiện hiến máu đang diễn ra",
+    "noOngoingEvents": "Không tìm thấy sự kiện hiến máu đang diễn ra",
+    "noActiveEvents": "Hiện không có sự kiện hiến máu nào đang hoạt động để check-in.",
+    "qrScanner": "Máy quét mã QR",
+    "scannerInstruction": "Hướng camera vào mã QR để quét",
+    "selectEventPrompt": "Vui lòng chọn một sự kiện ở trên để bắt đầu quét mã QR",
+    "scannerError": "Lỗi khi quét",
+    "qrScanned": "Đã quét mã QR",
+    "manualCheckin": "Check-in bằng CMND/CCCD",
+    "personalId": "Số định danh cá nhân",
+    "enterPersonalId": "Nhập CMND/CCCD thủ công",
+    "retrievingInfo": "Đang lấy thông tin...",
+    "getDonorInfo": "Lấy thông tin người hiến máu",
+    "useIfNoQR": "Sử dụng nếu không thể quét mã QR",
+    "personalDetails": "Thông tin cá nhân",
+    "gender": "Giới tính",
+    "question1": "1. Anh/chị đã từng hiến máu trước đây chưa?",
+    "answer1_yes": "Có, tôi đã từng hiến máu",
+    "answer1_no": "Không, đây là lần đầu tiên",
+    "experienceDetails": "Chi tiết kinh nghiệm:",
+    "question2": "2. Hiện tại anh/chị có đang mắc bệnh gì không?",
+    "answer2_yes": "Có, tôi đang có vấn đề sức khỏe",
+    "answer2_no": "Không, tôi hoàn toàn khỏe mạnh",
+    "currentHealth": "Tình trạng sức khỏe hiện tại:",
+    "question3": "3. Anh/chị đã từng mắc các bệnh nghiêm trọng nào không?",
+    "answer3_yes": "Có, tôi đã từng mắc bệnh nghiêm trọng",
+    "answer3_no": "Không, tôi chưa từng mắc bệnh nghiêm trọng",
+    "pastDiseases": "Các bệnh đã từng mắc:",
+    "question4": "4. Trong 3 tháng gần đây, anh/chị có thực hiện các hoạt động sau không?",
+    "answer4_yes": "Có (phẫu thuật, tiêm vaccine, xăm mình, v.v.)",
+    "answer4_no": "Không có hoạt động đặc biệt nào",
+    "recentActivities": "Các hoạt động đã thực hiện:",
+    "registrationTime": "Thời gian đăng ký",
+    "noSurveyInfo": "Không có thông tin khảo sát sức khỏe",
+    "approveCheckin": "Phê duyệt check-in",
+    "rejectCheckin": "Từ chối check-in",
+    "processing": "Đang xử lý...",
+    "title": "Check-in Người Hiến Máu",
+    "loading": "Đang tải thông tin...",
+    "plsWait": "Vui lòng chờ trong giây lát",
+    "error": {
+      "title": "Đã xảy ra lỗi",
+      "invalidToken": "Token hoặc ID sự kiện không hợp lệ",
+      "notFound": "Không tìm thấy thông tin đăng ký",
+      "expiredToken": "Token không hợp lệ hoặc đã hết hạn",
+      "serverError": "Lỗi server",
+      "generic": "Có lỗi xảy ra khi tải thông tin",
+      "plsCheckQR": "Vui lòng kiểm tra lại mã QR"
+    },
+    "backButton": "Quay lại",
+    "donorInfo": {
+      "title": "Thông Tin Người Hiến Máu",
+      "name": "Họ và Tên",
+      "phone": "Số Điện Thoại",
+      "personalId": "CMND/CCCD",
+      "dateOfBirth": "Ngày Sinh",
+      "address": "Địa Chỉ",
+      "status": "Trạng thái"
+    },
+    "currentStatus": "Trạng thái hiện tại:",
+    "status": {
+      "approved": "Đã phê duyệt",
+      "rejected": "Đã từ chối",
+      "pending": "Đang chờ xử lý",
+      "checkedIn": "Đã check-in",
+      "unknown": "Không xác định"
+    },
+    "healthSurvey": {
+      "title": "Thông Tin Khảo Sát Sức Khỏe",
+      "experience": "Kinh nghiệm hiến máu:",
+      "experienceYes": "Đã từng hiến máu",
+      "experienceNo": "Lần đầu tiên",
+      "currentHealth": "Tình trạng sức khỏe hiện tại:",
+      "healthyStatus": "Khỏe mạnh",
+      "unhealthyStatus": "Có vấn đề sức khỏe",
+      "pastDiseases": "Bệnh đã từng mắc:",
+      "hasPastDiseases": "Đã từng mắc bệnh nghiêm trọng",
+      "noPastDiseases": "Chưa từng mắc bệnh nghiêm trọng",
+      "recentActivities": "Hoạt động gần đây:",
+      "hasRecentActivities": "Có hoạt động đặc biệt",
+      "noRecentActivities": "Không có hoạt động đặc biệt"
+    },
+    "checkInActions": {
+      "checkSuccess": "Đã check-in thành công!",
+      "checking": "Đang check-in với:",
+      "title": "Thao Tác Check-in",
+      "approveButton": "Phê Duyệt Check-in",
+      "rejectButton": "Từ Chối Check-in",
+      "alreadyApproved": "Người hiến máu này đã được phê duyệt check-in.",
+      "alreadyRejected": "Người hiến máu này đã bị từ chối check-in.",
+      "pendingDescription": "Vui lòng xem xét thông tin và khảo sát sức khỏe của người hiến máu trước khi quyết định.",
+      "approveSuccess": "Đã phê duyệt check-in thành công! Người hiến máu đã được check-in.",
+      "rejectSuccess": "Đã từ chối check-in thành công! Người hiến máu đã được thông báo.",
+      "approveError": "Không thể phê duyệt. Vui lòng thử lại.",
+      "rejectError": "Không thể từ chối. Vui lòng thử lại."
+    }
+  },
+"StockView":{
+  "filters": {
+    "title": "Bộ lọc",
+    "description": "Lọc các đơn vị máu theo tiêu chí cụ thể",
+    "search_placeholder": "Tìm kiếm đơn vị máu...",
+    "bloodType": "Tất cả nhóm máu",
+    "componentType": "Tất cả thành phần",
+    "expiryStatus": "Tất cả trạng thái hạn dùng",
+    "expiry": {
+      "expired": "Đã hết hạn",
+      "critical": "Cảnh báo (≤7 ngày)",
+      "warning": "Cảnh báo sớm (≤30 ngày)",
+      "good": "An toàn (>30 ngày)"
+    }
+  },
+  "add": {
+    "button": "Thêm đơn vị máu",
+    "title": "Thêm đơn vị máu",
+    "bloodType": { "label": "Nhóm máu" },
+    "componentType": { "label": "Thành phần" },
+    "quantity": { "label": "Số lượng" },
+    "expiryDate": {
+      "label": "Ngày hết hạn",
+      "placeholder": "Chọn ngày hết hạn"
+    },
+    "submit": "Thêm",
+    "error": {
+      "missingFields": "Vui lòng điền đầy đủ các trường bắt buộc, bao gồm ngày hết hạn.",
+      "generic": "Thêm đơn vị máu thất bại. Vui lòng thử lại.",
+      "optimisticLock": "Thêm thất bại: Dữ liệu kho đã bị thay đổi hoặc xóa. Vui lòng tải lại và thử lại."
+    },
+    "success": "Thêm đơn vị máu thành công!",
+    "fallback": { "success": "Thêm đơn vị máu tạm thời thành công!" }
+  },
+  "table": {
+    "title": "Kho dự trữ máu",
+    "total": "Tổng số đơn vị: {{count}}",
+    "headers": {
+      "bloodType": "Nhóm máu",
+      "component": "Thành phần",
+      "quantity": "Số lượng",
+      "volume": "Thể tích (ml)",
+      "expiryDate": "Ngày hết hạn",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "no_results": "Không tìm thấy đơn vị máu nào phù hợp với tiêu chí lọc.",
+    "actions": {
+      "delete": "Xóa"
+    }
+  },
+  "status": {
+    "expired": "Đã hết hạn",
+    "critical": "Nguy cấp",
+    "warning": "Cảnh báo",
+    "good": "Tốt"
+  },
+  "loading": "Đang tải dữ liệu kho máu...",
+  "delete": {
+    "success": "Xóa đơn vị máu thành công!",
+    "error": "Xóa đơn vị máu thất bại. Vui lòng thử lại."
   }
-  }
+},
+"sidebar": {
+  "dashboard": "Bảng điều khiển",
+  "blogManagement": "Quản lý Blog",
+  "newBlog": "Blog mới",
+  "blogList": "Danh sách Blog",
+  "createBlog": "Tạo Blog",
+  "blogRequests": "Yêu cầu Blog",
+  "donationEvents": "Sự kiện hiến máu",
+  "newEvent": "Sự kiện mới",
+  "eventList": "Danh sách sự kiện",
+  "createEvent": "Tạo sự kiện",
+  "checkIn": "Điểm danh",
+  "eventRequests": "Yêu cầu sự kiện",
+  "bloodRequests": "Yêu cầu máu khẩn cấp",
+  "newRequest": "Yêu cầu mới",
+  "requestList": "Danh sách yêu cầu",
+  "createRequest": "Tạo yêu cầu",
+  "bloodStock": "Kho máu",
+  "stockView": "Xem kho"
+},
+"blogRequest": {
+    "full_name": "Họ tên",
+    "blood_group": "Nhóm máu",
+    "priority_level": "Mức độ ưu tiên",
+    "status": "Trạng thái",
+    "action": "Hành động",
+    "emergency": "Khẩn cấp",
+    "high": "Ưu tiên",
+    "normal": "Bình thường",
+    "pending": "Chờ xử lý",
+    "processing": "Đang xử lý",
+    "cancelled": "Đã hủy",
+    "completed": "Hoàn thành",
+    "details": "Chi tiết",
+    "process": "Xử lý",
+    "cancel": "Hủy",
+    "no_requests": "Không có yêu cầu nào",
+    "enough_blood": "Có đủ máu",
+    "lack_blood": "Thiếu máu",
+    "request_completed": "Đã hoàn thành",
+    "request_detail": "Chi tiết yêu cầu máu",
+    "request_detail_desc": "Thông tin chi tiết về yêu cầu hiến máu",
+    "patient_info": "Thông tin bệnh nhân",
+    "request_info": "Thông tin yêu cầu",
+    "phone": "Số điện thoại",
+    "id_card": "CCCD",
+    "patient_blood_group": "Nhóm máu bệnh nhân",
+    "address": "Địa chỉ",
+    "required_blood_group": "Nhóm máu cần",
+    "priority": "Mức độ ưu tiên",
+    "current_status": "Trạng thái",
+    "needed_date": "Ngày cần",
+    "components_needed": "Thành phần máu cần thiết",
+    "disease_status": "Tình trạng bệnh lý",
+    "additional_info": "Thông tin bổ sung",
+    "medical_info": "Thông tin y tế",
+    "notes": "Ghi chú",
+    "unit": "Đơn vị"
+  },
+  "eventRequestForStaff": {
+    "title": "Yêu Cầu Sự Kiện Của Tôi",
+    "description": "Xem và theo dõi các yêu cầu tổ chức hiến máu của bạn)",
+    "refresh": "Làm mới",
+    "loading": "Đang tải...",
+    "searchPlaceholder": "Tìm kiếm yêu cầu sự kiện...",
+    "status": "Trạng thái",
+    "requestType": "Loại yêu cầu",
+    "requestsPerPage": "Yêu cầu mỗi trang:",
+    "table": {
+      "eventName": "Tên sự kiện",
+      "status": "Trạng thái",
+      "crudType": "Loại yêu cầu",
+      "location": "Địa điểm",
+      "dateTime": "Ngày & Giờ",
+      "actions": "Hành động",
+      "loading": "Đang tải các yêu cầu...",
+      "noRequests": "Không có yêu cầu sự kiện nào",
+      "noFilteredRequests": "Không có yêu cầu nào phù hợp với bộ lọc",
+      "requestId": "Mã yêu cầu: #"
+    },
+    "pagination": {
+      "showing": "Hiển thị từ {from} đến {to} trong tổng số {total} yêu cầu",
+      "previous": "Trước",
+      "next": "Sau"
+    },
+    "dialog": {
+      "titleCreate": "Chi Tiết Yêu Cầu Tạo Mới Sự Kiện",
+      "titleUpdate": "Chi Tiết Yêu Cầu Cập Nhật Sự Kiện",
+      "titleDelete": "Chi Tiết Yêu Cầu Xóa Sự Kiện",
+      "titleDefault": "Chi Tiết Yêu Cầu Sự Kiện",
+      "descriptionCreate": "Xem chi tiết yêu cầu tạo mới sự kiện của bạn",
+      "descriptionUpdate": "Xem các thay đổi được đề xuất đối với sự kiện của bạn",
+      "descriptionDelete": "Xem sự kiện mà bạn đã yêu cầu xóa",
+      "descriptionDefault": "Xem chi tiết đầy đủ yêu cầu sự kiện của bạn",
+      "requestStatus": "Trạng thái yêu cầu",
+      "requestType": "Loại yêu cầu",
+      "requestId": "Mã yêu cầu",
+      "section": {
+        "eventInfo": "Thông Tin Sự Kiện",
+        "eventName": "Tên sự kiện",
+        "hospital": "Bệnh viện",
+        "donationDate": "Ngày hiến máu",
+        "donationType": "Loại hiến máu",
+        "address": "Địa chỉ",
+        "city": "Thành phố",
+        "timeSlots": "Khung giờ",
+        "maxParticipants": "Số người tham gia tối đa",
+        "timeSlotDetails": "Chi Tiết Các Khung Giờ",
+        "slot": "Khung giờ ",
+        "available": "Có sẵn",
+        "duration": "Thời lượng: ",
+        "summary": "Tổng Quan",
+        "totalSlots": "Tổng số khung giờ:",
+        "startTime": "Giờ bắt đầu:",
+        "endTime": "Giờ kết thúc:",
+        "description": "Mô Tả",
+        "organizerInfo": "Thông Tin Đơn Vị Tổ Chức",
+        "organizationName": "Tên đơn vị",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "comparison": "So Sánh Thay Đổi",
+        "original": "Sự Kiện Gốc",
+        "updated": "Sự Kiện Đã Cập Nhật",
+        "name": "Tên",
+        "date": "Ngày",
+        "time": "Thời gian",
+        "location": "Địa điểm"
+      },
+      "close": "Đóng"
+    },
+    "errors": {
+      "fetchFailed": "Không thể tải danh sách yêu cầu. Vui lòng thử lại.",
+      "viewFailed": "Không thể tải chi tiết yêu cầu"
+    }
+  },
   
-  
-     
+  "createBloodRequest": {
+     "selectRequiredDate": "Vui lòng chọn ngày cần thiết",
+    "profileCreatedAndSelected": "Hồ sơ mới đã được tạo và chọn"
+,
+    "pageTitle": "Tạo Yêu Cầu Truyền Máu",
+    "profileSearch": {
+      "label": "Tìm kiếm Hồ sơ Bệnh nhân",
+      "placeholder": "Nhập tên hoặc số CMND",
+      "noResults": "Không tìm thấy hồ sơ nào",
+      "error": "Tìm kiếm hồ sơ thất bại. Vui lòng thử lại.",
+      "createNew": "Tạo Hồ sơ Mới"
+    },
+    "newProfile": {
+      "title": "Tạo Hồ sơ Bệnh nhân Mới",
+      "name": "Họ và Tên",
+      "personalId": "Số CMND/CCCD",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ",
+      "city": "Tỉnh/Thành phố",
+      "district": "Quận/Huyện",
+      "ward": "Phường/Xã",
+      "bloodType": "Nhóm máu",
+      "gender": "Giới tính",
+      "dateOfBirth": "Ngày sinh",
+      "submit": "Tạo Hồ sơ"
+    },
+    "bloodRequest": {
+      "requiredDate": "Ngày cần máu",
+      "urgency": {
+        "label": "Mức độ Khẩn cấp",
+        "critical": "Cấp cứu",
+        "urgent": "Khẩn cấp",
+        "normal": "Bình thường",
+        "timeframes": {
+          "critical": "Trong vòng 2 giờ",
+          "urgent": "Trong vòng 24 giờ",
+          "normal": "Trong vòng 3 ngày"
+        }
+      },
+      "bloodType": "Nhóm máu",
+      "components": {
+        "label": "Thành phần máu",
+        "whole": "Máu toàn phần",
+        "redCells": "Hồng cầu",
+        "plasma": "Huyết tương",
+        "platelets": "Tiểu cầu"
+      },
+      "medicalConditions": {
+        "label": "Tình trạng y tế",
+        "trauma": "Chấn thương/Phẫu thuật cấp cứu",
+        "anemia": "Thiếu máu nặng",
+        "bleeding": "Chảy máu tích cực",
+        "cardiac": "Phẫu thuật tim",
+        "cancer": "Điều trị ung thư",
+        "transplant": "Ghép tạng",
+        "planned": "Phẫu thuật dự kiến",
+        "disorder": "Rối loạn máu",
+        "pregnancy": "Biến chứng thai kỳ"
+      },
+      "additionalInfo": "Thông tin y tế bổ sung",
+      "notes": "Ghi chú bổ sung"
+    },
+    "submit": "Gửi Yêu Cầu Truyền Máu",
+    "confirmDialog": {
+      "title": "Xác nhận Yêu Cầu Truyền Máu",
+      "message": "Bạn có chắc chắn muốn gửi yêu cầu truyền máu này không?",
+      "confirm": "Xác nhận",
+      "cancel": "Hủy"
+    },
+    "success": "Tạo yêu cầu truyền máu thành công!",
+    "error": {
+      "noProfile": "Vui lòng chọn hồ sơ bệnh nhân hoặc tạo hồ sơ mới",
+      "submission": "Gửi yêu cầu thất bại. Vui lòng thử lại."
+    },
+    "criticalNeeds": {
+  "severeInjury": "Chấn thương nghiêm trọng cần can thiệp phẫu thuật ngay lập tức",
+  "lowHemoglobin": "Mức hemoglobin thấp nghiêm trọng",
+  "ongoingBloodLoss": "Mất máu liên tục từ bên trong hoặc bên ngoài cơ thể",
+  "heartSurgery": "Phẫu thuật tim cần sử dụng các chế phẩm máu",
+  "chemoDisorders": "Rối loạn máu do hóa trị gây ra",
+  "organTransplant": "Quy trình ghép tạng lớn",
+  "electiveSurgery": "Thủ thuật phẫu thuật theo yêu cầu (tự chọn)",
+  "chronicConditions": "Các bệnh mãn tính liên quan đến máu",
+  "maternalComplications": "Biến chứng ở mẹ hoặc thai nhi cần truyền máu"
 }
+,
+
+  "patientProfile": {
+    "search": {
+      "title": "Tìm kiếm hồ sơ bệnh nhân *",
+      "placeholder": "Tìm kiếm theo tên, số điện thoại hoặc CMND...",
+      "noResults": "Không tìm thấy hồ sơ. Bạn có muốn tạo hồ sơ mới?",
+      "createNew": "Tạo hồ sơ mới",
+      "change": "Thay đổi"
+    },
+    "newProfile": {
+      "title": "Tạo hồ sơ bệnh nhân mới",
+      "cancel": "Hủy bỏ",
+      "fields": {
+        "name": "Họ và tên *",
+        "personalId": "CMND/CCCD *",
+        "phone": "Số điện thoại *",
+        "gender": "Giới tính",
+        "male": "Nam",
+        "female": "Nữ",
+        "dob": "Ngày sinh",
+        "bloodType": "Nhóm máu",
+        "address": "Địa chỉ",
+        "city": "Thành phố/Tỉnh",
+        "district": "Quận/Huyện",
+        "ward": "Phường/Xã"
+      },
+      "createButton": "Tạo hồ sơ"
+    },
+    "selectedProfile": {
+      "id": "CMND/CCCD:",
+      "phone": "Điện thoại:",
+      "address": "Địa chỉ:",
+      "bloodType": "Nhóm máu:"
+    }
+  },
+    "components": {
+      "label": "Thành phần máu & Thể tích *"
+    },
+    "bloodType": {
+      "label": "Nhóm máu yêu cầu *"
+    },
+    "medicalConditions": {
+      "label": "Tình trạng bệnh *",
+      "description": "Chọn các tình trạng bệnh liên quan. Mức độ khẩn cấp sẽ được tự động tính toán dựa trên lựa chọn của bạn và ngày yêu cầu."
+    },
+    "urgency": {
+      "label": "Mức độ khẩn cấp *",
+      "description": "Mức độ khẩn cấp được tự động tính toán dựa trên tình trạng bệnh và ngày yêu cầu. Bạn có thể ghi đè nếu cần.",
+      "autoSelected": "Tự động chọn",
+      "levels": {
+        "HIGH": {
+          "label": "Khẩn cấp",
+          "timeframe": "Trong vòng 4 giờ"
+        },
+        "MEDIUM": {
+          "label": "Ưu tiên",
+          "timeframe": "Trong vòng 24 giờ"
+        },
+        "LOW": {
+          "label": "Bình thường",
+          "timeframe": "Trong vòng 72 giờ"
+        }
+      }
+    },
+    "notes": {
+      "medicalInfo": {
+        "label": "Thông tin y tế bổ sung *",
+        "placeholder": "Mô tả bất kỳ thông tin y tế bổ sung, triệu chứng hoặc yêu cầu đặc biệt..."
+      },
+      "additional": {
+        "label": "Ghi chú thêm",
+        "placeholder": "Bất kỳ thông tin liên quan khác..."
+      }
+    },
+    "buttons": {
+      "cancel": "Hủy bỏ",
+      "submit": "Gửi yêu cầu máu"
+    }
+  },
+  "confirmationDialog": {
+    "title": "Xác nhận yêu cầu máu",
+    "description": "Vui lòng xem lại chi tiết yêu cầu máu trước khi gửi. Thao tác này sẽ tạo yêu cầu máu khẩn cấp.",
+    "details": {
+      "patientName": "Tên bệnh nhân:",
+      "personalId": "CMND/CCCD:",
+      "phone": "Điện thoại:",
+      "address": "Địa chỉ:",
+      "patientBloodType": "Nhóm máu bệnh nhân:",
+      "newProfileNote": "* Đây là hồ sơ mới sẽ được tạo",
+      "bloodTypeRequested": "Nhóm máu yêu cầu:",
+      "requiredDate": "Ngày yêu cầu:",
+      "urgency": "Mức độ khẩn cấp:",
+      "componentsRequested": "Thành phần yêu cầu:",
+      "medicalConditions": "Tình trạng bệnh:",
+      "additionalMedicalInfo": "Thông tin y tế bổ sung:"
+    },
+    "buttons": {
+      "cancel": "Hủy bỏ",
+      "confirm": "Xác nhận & Gửi yêu cầu",
+      "creating": "Đang tạo yêu cầu..."
+    }
+  }
+}
+  
+
+
+
+

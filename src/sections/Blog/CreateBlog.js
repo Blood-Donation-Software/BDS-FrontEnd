@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/context/language_context'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -17,21 +18,21 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { 
-  Bold, 
-  Italic, 
-  Strikethrough, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Code, 
-  Undo, 
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
+  Undo,
   Redo,
   Save,
   Eye,
@@ -72,7 +73,7 @@ const MenuBar = ({ editor }) => {
       command: () => editor.chain().focus().toggleItalic().run(),
       isActive: editor.isActive('italic'),
       title: 'Italic'
-    },    {
+    }, {
       icon: UnderlineIcon,
       command: () => editor.chain().focus().toggleUnderline().run(),
       isActive: editor.isActive('underline'),
@@ -160,7 +161,8 @@ const MenuBar = ({ editor }) => {
     {
       label: 'H3',
       command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
-      isActive: editor.isActive('heading', { level: 3 })    }
+      isActive: editor.isActive('heading', { level: 3 })
+    }
   ]
 
   // Handle link insertion
@@ -212,24 +214,24 @@ const MenuBar = ({ editor }) => {
           const reader = new FileReader()
           reader.onload = (e) => {
             const imageUrl = e.target.result
-            
+
             // Insert image into editor
-            editor.chain().focus().setImage({ 
+            editor.chain().focus().setImage({
               src: imageUrl,
               alt: file.name,
               title: file.name
             }).run()
-            
+
             // Dismiss loading toast and show success
             toast.dismiss(loadingToast)
             toast.success('Image uploaded and added to blog content')
           }
-          
+
           reader.onerror = () => {
             toast.dismiss(loadingToast)
             toast.error('Failed to read image file')
           }
-          
+
           reader.readAsDataURL(file)
         } catch (error) {
           console.error('Error processing image:', error)
@@ -260,13 +262,14 @@ const MenuBar = ({ editor }) => {
           if (!confirm) return
         }
 
-        editor.chain().focus().setImage({ 
+        editor.chain().focus().setImage({
           src: url,
           alt: 'Image from URL',
           title: 'Image from URL'
         }).run()
-        
-        toast.success('Image added from URL')      } catch (error) {
+
+        toast.success('Image added from URL')
+      } catch (error) {
         console.error('Error adding image from URL:', error)
         toast.error('Failed to add image from URL')
       }
@@ -379,7 +382,7 @@ const MenuBar = ({ editor }) => {
           >
             <Link2 className="h-4 w-4" />
           </Button>
-          
+
           {/* Image dropdown with upload and URL options */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -412,6 +415,7 @@ const MenuBar = ({ editor }) => {
 
 export default function CreateBlog() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -440,13 +444,13 @@ export default function CreateBlog() {
       const reader = new FileReader()
       reader.onload = (e) => {
         const imageUrl = e.target.result
-        
+
         // Get the position where the image was dropped
         const coordinates = view.posAtCoords({
           left: event.clientX,
           top: event.clientY,
         })
-        
+
         if (coordinates) {
           view.dispatch(
             view.state.tr.insert(coordinates.pos, view.state.schema.nodes.image.create({
@@ -456,16 +460,16 @@ export default function CreateBlog() {
             }))
           )
         }
-        
+
         toast.dismiss(loadingToast)
         toast.success('Image dropped and added to blog content')
       }
-      
+
       reader.onerror = () => {
         toast.dismiss(loadingToast)
         toast.error('Failed to process dropped image')
       }
-      
+
       reader.readAsDataURL(file)
     } catch (error) {
       toast.dismiss(loadingToast)
@@ -487,7 +491,7 @@ export default function CreateBlog() {
       const reader = new FileReader()
       reader.onload = (e) => {
         const imageUrl = e.target.result
-        
+
         // Insert at current cursor position
         const { from } = view.state.selection
         view.dispatch(
@@ -497,16 +501,16 @@ export default function CreateBlog() {
             title: 'Pasted image',
           }))
         )
-        
+
         toast.dismiss(loadingToast)
         toast.success('Pasted image added to blog content')
       }
-      
+
       reader.onerror = () => {
         toast.dismiss(loadingToast)
         toast.error('Failed to process pasted image')
       }
-      
+
       reader.readAsDataURL(file)
     } catch (error) {
       toast.dismiss(loadingToast)
@@ -541,12 +545,12 @@ export default function CreateBlog() {
       handleDrop: (view, event, slice, moved) => {
         if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
           const file = event.dataTransfer.files[0]
-          
+
           // Check if it's an image
           if (file.type.startsWith('image/')) {
             // Prevent default drop behavior
             event.preventDefault()
-            
+
             // Handle the image upload
             handleDroppedImage(file, view, event)
             return true
@@ -557,7 +561,7 @@ export default function CreateBlog() {
       handlePaste: (view, event, slice) => {
         const items = Array.from(event.clipboardData?.items || [])
         const imageItem = items.find(item => item.type.startsWith('image/'))
-        
+
         if (imageItem) {
           event.preventDefault()
           const file = imageItem.getAsFile()
@@ -595,15 +599,15 @@ export default function CreateBlog() {
         toast.error('Please select an image file')
         return
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('Image size should be less than 5MB')
         return
       }
-      
+
       setThumbnail(file)
-      
+
       // Create preview
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -657,9 +661,9 @@ export default function CreateBlog() {
 
       const result = await createBlogRequest(blogData, thumbnail)
       toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
-      
+
       // Redirect to blog list or dashboard
-      router.push('/blog')
+      router.push('/staffs/blog/requests')
     } catch (error) {
       console.error('Error saving draft:', error)
       if (error.response?.data) {
@@ -689,9 +693,9 @@ export default function CreateBlog() {
 
       const result = await createBlogRequest(blogData, thumbnail)
       toast.success('Blog submitted for publication! It will be reviewed by administrators.')
-      
+
       // Redirect to blog list or dashboard
-      router.push('/blog')
+      router.push('/staffs/blog/requests')
     } catch (error) {
       console.error('Error submitting blog:', error)
       if (error.response?.data) {
@@ -721,29 +725,17 @@ export default function CreateBlog() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            {t?.createBlog?.back}
           </Button>
-          <h1 className="text-3xl font-bold">Create New Blog Post</h1>
+          <h1 className="text-3xl font-bold">{t?.createBlog?.title}</h1>
         </div>
-          <div className="flex gap-2">
-          <Button variant="outline" onClick={previewBlog}>
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={saveDraft}
-            disabled={isLoading}
-          >
-            <Save className="h-4 w-4 mr-2" />
-            Save as Draft
-          </Button>
-          <Button 
+        <div className="flex gap-2">
+          <Button
             onClick={submitForPublication}
             disabled={isLoading}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            {isLoading ? 'Submitting...' : 'Submit for Publication'}
+            {isLoading ? t?.createBlog?.submitting : t?.createBlog?.submit}
           </Button>
         </div>
       </div>
@@ -755,10 +747,10 @@ export default function CreateBlog() {
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
+                <Label htmlFor="title">{t?.createBlog?.titleLabel}</Label>
                 <Input
                   id="title"
-                  placeholder="Enter your blog title..."
+                  placeholder={t?.createBlog?.titlePlaceholder}
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
                   className={errors.title ? 'border-red-500' : ''}
@@ -775,13 +767,13 @@ export default function CreateBlog() {
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Label htmlFor="thumbnail">Thumbnail Image *</Label>
+                <Label htmlFor="thumbnail">{t?.createBlog?.thumbnailLabel}</Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                   {thumbnailPreview ? (
                     <div className="relative">
-                      <img 
-                        src={thumbnailPreview} 
-                        alt="Thumbnail preview" 
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail preview"
                         className="w-full h-48 object-cover rounded-lg"
                       />
                       <Button
@@ -799,10 +791,10 @@ export default function CreateBlog() {
                       <div className="mt-4">
                         <label htmlFor="thumbnail" className="cursor-pointer">
                           <span className="mt-2 block text-sm font-medium text-gray-900">
-                            Click to upload thumbnail
+                            {t?.createBlog?.thumbnailClick}
                           </span>
                           <span className="mt-1 block text-sm text-gray-500">
-                            PNG, JPG, GIF up to 5MB
+                            {t?.createBlog?.thumbnailNote}
                           </span>
                         </label>
                         <input
@@ -826,19 +818,20 @@ export default function CreateBlog() {
             </CardContent>
           </Card>
 
-          {/* Editor */}          <Card>
+          {/* Editor */}
+          <Card>
             <CardHeader>
-              <CardTitle>Content *</CardTitle>
+              <CardTitle>{t?.createBlog?.contentLabel}</CardTitle>
               <CardDescription>
-                Write your blog content. You can add images by clicking the image button, drag and drop files, or paste images directly into the editor.
+                {t?.createBlog?.contentDesc || 'Write your blog content. You can add images by clicking the image button, drag and drop files, or paste images directly into the editor.'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className={`border rounded-lg ${errors.content ? 'border-red-500' : 'border-gray-200'}`}>
                 <div className="p-4">
                   <MenuBar editor={editor} />
-                  <EditorContent 
-                    editor={editor} 
+                  <EditorContent
+                    editor={editor}
                     className="min-h-[400px] focus-within:outline-none"
                   />
                 </div>
@@ -856,13 +849,13 @@ export default function CreateBlog() {
           {/* Publication Status */}
           <Card>
             <CardHeader>
-              <CardTitle>Publication</CardTitle>
+              <CardTitle>{t?.createBlog?.publication}</CardTitle>
             </CardHeader>
             <CardContent>
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Your blog will be submitted for review. Administrators will approve or reject your submission.
+                  {t?.createBlog?.publicationNote}
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -871,25 +864,25 @@ export default function CreateBlog() {
           {/* Quick Stats */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Stats</CardTitle>
+              <CardTitle>{t?.createBlog?.quickStats}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Title Length:</span>
+                <span>{t?.createBlog?.titleLength}</span>
                 <span className={formData.title.length > 80 ? 'text-orange-500' : 'text-green-600'}>
                   {formData.title.length}/100
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Content Length:</span>
+                <span>{t?.createBlog?.contentLength}</span>
                 <span className="text-green-600">
                   {editor ? editor.getText().length : 0} characters
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Thumbnail:</span>
+                <span>{t?.createBlog?.thumbnail}</span>
                 <span className={thumbnail ? 'text-green-600' : 'text-red-500'}>
-                  {thumbnail ? 'Uploaded' : 'Required'}
+                  {thumbnail ? t?.createBlog?.uploaded : t?.createBlog?.required}
                 </span>
               </div>
             </CardContent>
@@ -898,15 +891,13 @@ export default function CreateBlog() {
           {/* Guidelines */}
           <Card>
             <CardHeader>
-              <CardTitle>Guidelines</CardTitle>
+              <CardTitle>{t?.createBlog?.guidelines}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-gray-600">
               <ul className="list-disc pl-4 space-y-1">
-                <li>Title should be clear and descriptive</li>
-                <li>Content must be at least 10 characters</li>
-                <li>Use appropriate formatting for readability</li>
-                <li>Thumbnail image should be relevant to content</li>
-                <li>All submissions are subject to review</li>
+                {t?.createBlog?.guidelinesList?.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </CardContent>
           </Card>
