@@ -2,7 +2,8 @@
 
 import axiosInstance, { endpoint } from "@/utils/axios";
 import { createContext, useState, useEffect, useContext } from "react";
-import { getProfile, getAccount, updateProfile, uploadAvatar } from '@/apis/user';
+import { getProfile, getAccount, updateProfile, uploadAvatar, getProfileByProfileId } from '@/apis/user';
+import { set } from "lodash";
 
 export const UserContext = createContext(null);
 
@@ -27,7 +28,11 @@ export default function UserProvider({ children }) {
     const [isLoading, setIsLoading] = useState(true);
     const [account, setAccount] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [userRole, setUserRole] = useState(ROLES.GUEST);    
+    const [userRole, setUserRole] = useState(ROLES.GUEST);
+    const [selectedPersonalId, setSelectedPersonalId] = useState(null);
+    const [selectedProfile, setSelectedProfile] = useState(null);
+
+    // Fetch user profile and account data
     const fetchUserProfile = async () => {
         try{
             setIsLoading(true);
@@ -55,7 +60,27 @@ export default function UserProvider({ children }) {
 
     useEffect(() => {
         fetchUserProfile();
-    }, []);    // Role checking functions
+    }, []);    
+
+    const fetchProfileByPersonalId = async () => {
+        try {
+            const profileData = await getProfileByPersonalId(selectedPersonalId);
+            setSelectedProfile(profileData);
+        } catch (error) {
+            console.error("Error fetching profile by ID:", error);
+            setSelectedProfile(null);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedPersonalId) {
+            fetchProfileByPersonalId();
+        } else {
+            setSelectedProfile(null);
+        }
+    }, [selectedPersonalId]);
+
+    // Role checking functions
     const hasRole = (requiredRole) => {
         return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole];
     };

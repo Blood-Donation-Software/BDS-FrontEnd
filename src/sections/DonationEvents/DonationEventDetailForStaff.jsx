@@ -155,7 +155,7 @@ export default function StaffEventDetailPage() {
     }
 
     setFilteredReportDonors(filtered)
-    
+
     // Update pagination
     setReportPagination(prev => ({
       ...prev,
@@ -185,7 +185,7 @@ export default function StaffEventDetailPage() {
       toast.success('Delete request has been submitted successfully!')
       setDeleteDialog(false)
       // Navigate back to events list
-      router.push('/staffs/donation-event')
+      router.push('/staffs/donation-event/list')
     } catch (error) {
       console.error('Error deleting event:', error)
       toast.error('Failed to submit delete request. Please try again.')
@@ -245,7 +245,7 @@ export default function StaffEventDetailPage() {
   const handleReportFinishedEvent = async () => {
     try {
       setReportLoading(true)
-      
+
       // Get all donors for the event
       const response = await getEventDonors(params.id, 0, 1000) // Get all donors
       const allDonors = response.content || []
@@ -261,7 +261,7 @@ export default function StaffEventDetailPage() {
 
       setReportDonors(initialReportDonors)
       setFilteredReportDonors(initialReportDonors)
-      
+
       // Initialize pagination
       setReportPagination({
         page: 0,
@@ -269,11 +269,11 @@ export default function StaffEventDetailPage() {
         totalElements: initialReportDonors.length,
         totalPages: Math.ceil(initialReportDonors.length / 10)
       })
-      
+
       // Reset filters
       setReportFilter('ALL')
       setReportSearchTerm('')
-      
+
       setReportModal(true)
     } catch (error) {
       console.error('Error fetching donors for report:', error)
@@ -284,8 +284,8 @@ export default function StaffEventDetailPage() {
   }
   // Handle volume change for individual donor
   const handleVolumeChange = (donorId, volume) => {
-    setReportDonors(prev => 
-      prev.map(donor => 
+    setReportDonors(prev =>
+      prev.map(donor =>
         donor.id === donorId ? { ...donor, volume: parseFloat(volume) || 0 } : donor
       )
     )
@@ -327,16 +327,16 @@ export default function StaffEventDetailPage() {
 
       // Record the donations
       await recordDonations(params.id, donationRecords)
-      
+
       toast.success(`Successfully recorded donations for ${reportDonors.length} donors`)
-      
+
       // Close modal and refresh event data
       setReportModal(false)
-      
+
       // Refresh event details
       const response = await getEventById(params.id)
       setEvent(response)
-      
+
     } catch (error) {
       console.error('Error submitting donation report:', error)
       if (error.response?.data?.message) {
@@ -373,7 +373,7 @@ export default function StaffEventDetailPage() {
         <Button
           variant="outline"
           className="mt-4"
-          onClick={() => router.push('/staffs/donation-event')}
+          onClick={() => router.push('/staffs/donation-event/list')}
         >
           Back to Events
         </Button>
@@ -463,7 +463,7 @@ export default function StaffEventDetailPage() {
           </Badge>
           <Button
             variant="outline"
-            onClick={() => router.push('/staffs/donation-event')}
+            onClick={() => router.push('/staffs/donation-event/list')}
           >
             Back to Events
           </Button>
@@ -502,7 +502,8 @@ export default function StaffEventDetailPage() {
                 <h3 className="font-medium">Donation Type</h3>
                 <p>{donationTypeMap[event.donationType] || event.donationType}</p>
               </div>
-            </div>            <div className="flex items-start gap-4">
+            </div>
+            <div className="flex items-start gap-4">
               <User className="h-5 w-5 mt-1 text-muted-foreground" />
               <div>
                 <h3 className="font-medium">Registration Status</h3>
@@ -546,20 +547,20 @@ export default function StaffEventDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>Event Management</CardTitle>
-          </CardHeader>          
+          </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full" onClick={handleEditEvent}>
+            {event.status === 'AVAILABLE' &&  <Button className="w-full" onClick={handleEditEvent}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Event Details
-            </Button>            
+            </Button>}
             <Button variant="outline" className="w-full" onClick={handleViewDonors}>
               <Users className="h-4 w-4 mr-2" />
               View Donor List
             </Button>
 
-            {event.status === 'AVAILABLE' && (event.registeredMemberCount || 0) > 0 && (
-              <Button 
-                className="w-full bg-green-600 hover:bg-green-700" 
+            {event.status === 'AVAILABLE' && (event.registeredMemberCount || 0) > 0 && format(new Date(), 'dd/MM/yyyy') > event.donationDate && (
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700"
                 onClick={handleReportFinishedEvent}
                 disabled={reportLoading}
               >
@@ -567,7 +568,7 @@ export default function StaffEventDetailPage() {
                 {reportLoading ? 'Loading...' : 'Report Finished Event'}
               </Button>
             )}
-            
+
             {(event.status === 'PENDING' || event.status === 'APPROVED') && (
               <Button
                 variant="destructive"
@@ -617,7 +618,8 @@ export default function StaffEventDetailPage() {
         </Card>
       </div>
 
-      {/* Delete Event Confirmation Dialog */}      <AlertDialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+      {/* Delete Event Confirmation Dialog */}
+      <AlertDialog open={deleteDialog} onOpenChange={setDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Submit Delete Request</AlertDialogTitle>
@@ -646,7 +648,8 @@ export default function StaffEventDetailPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>      {/* Donor List Modal */}
+      </AlertDialog>
+      {/* Donor List Modal */}
       <Dialog open={donorListModal} onOpenChange={setDonorListModal}>
         <DialogContent className="min-w-2/3 max-h-[80vh] overflow-hidden top-[25vh]">
           <DialogHeader>
@@ -670,7 +673,8 @@ export default function StaffEventDetailPage() {
                   <p className="text-sm">Registered donors will appear here once they sign up for this event</p>
                 </div>
               ) : (
-              <>                {/* Search bar for donors */}
+              <>
+                {/* Search bar for donors */}
                 <div className="mb-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
@@ -700,7 +704,7 @@ export default function StaffEventDetailPage() {
                       <TableHead>Age</TableHead>
                       <TableHead>Status</TableHead>
                     </TableRow>
-                  </TableHeader>                  
+                  </TableHeader>
                   <TableBody>
                     {filteredDonors.map((donor) => (
                       <TableRow key={donor.id}>
@@ -741,10 +745,13 @@ export default function StaffEventDetailPage() {
                             {donor.status || 'Registered'}
                           </Badge>
                         </TableCell>
+                        <TableCell>
+                          
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>                
+                </Table>
                 {/* Pagination for donors - hide when searching */}
                 {!donorSearchTerm && donorsPagination.totalPages > 1 && (
                   <div className="flex items-center justify-between px-2 py-4 border-t">
@@ -801,9 +808,11 @@ export default function StaffEventDetailPage() {
                   </div>
                 )}
               </>
-            )}          </div>
+            )}
+          </div>
         </DialogContent>
-      </Dialog>      {/* Report Donation Modal */}
+      </Dialog>
+      {/* Report Donation Modal */}
       <Dialog open={reportModal} onOpenChange={setReportModal}>
         <DialogContent className="min-w-4/5 max-h-[80vh] overflow-hidden top-[20vh]">
           <DialogHeader>
@@ -815,7 +824,7 @@ export default function StaffEventDetailPage() {
               Enter the donation volume for each donor (in ml). You can filter by volume status and paginate through the list.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="overflow-auto">
             {reportDonors.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
@@ -846,8 +855,8 @@ export default function StaffEventDetailPage() {
                       <SelectItem value="HAS_VOLUME">Volume Entered</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Select 
-                    value={reportPagination.size.toString()} 
+                  <Select
+                    value={reportPagination.size.toString()}
                     onValueChange={handleReportPageSizeChange}
                   >
                     <SelectTrigger className="w-24">
@@ -938,7 +947,7 @@ export default function StaffEventDetailPage() {
                       ))}
                   </TableBody>
                 </Table>
-                
+
                 {/* Pagination Controls */}
                 {reportPagination.totalPages > 1 && (
                   <div className="flex items-center justify-between px-2 py-4 border-t">
@@ -993,7 +1002,7 @@ export default function StaffEventDetailPage() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Summary and Action Buttons */}
                 <div className="flex justify-between items-center pt-4 border-t">
                   <div className="text-sm text-muted-foreground">
@@ -1003,14 +1012,14 @@ export default function StaffEventDetailPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={() => setReportModal(false)}
                       disabled={reportLoading}
                     >
                       Cancel
                     </Button>
-                    <Button 
+                    <Button
                       onClick={handleSubmitReport}
                       disabled={reportLoading}
                       className="bg-green-600 hover:bg-green-700"

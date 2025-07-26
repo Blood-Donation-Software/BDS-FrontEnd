@@ -16,7 +16,8 @@ import {
     AlertCircle,
     QrCode,
     UserCheck,
-    UserX
+    UserX,
+    XCircle
 } from 'lucide-react';
 import { getCheckinInfo, checkInDonor } from '@/apis/bloodDonation';
 import { toast } from 'sonner';

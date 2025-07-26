@@ -29,9 +29,8 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       await axiosInstance.post("/api/auth/reset-password", {
-        email,
         newPassword: password,
-        verificationCode: code,
+        code,
       });
       toast.success(t?.system?.password_reset_success);
       router.push("/login");

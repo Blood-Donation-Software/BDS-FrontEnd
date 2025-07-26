@@ -183,7 +183,7 @@ export default function EventManagement() {
           )}
 
           <div className="flex flex-row mb-4 space-x-4">
-            <div className="relative w-2xl">
+            <div className="relative w-2xl flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search events..."

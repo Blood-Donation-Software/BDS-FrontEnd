@@ -366,6 +366,7 @@ export default function EditDonationEventPage() {
     eventForm.setValue("totalMemberCount", totalCapacity);
   }, [
     eventForm,
+    watchedTimeSlots,
     ...(watchedTimeSlots?.map(slot => slot.maxCapacity) || [])
   ]);
 
@@ -482,7 +483,7 @@ export default function EditDonationEventPage() {
       }
 
       const response = await updateEventRequest(params.id, eventData)
-      toast.success("Blood donation event updated successfully!")
+      toast.success("Blood donation event updation submitted!")
       router.push(`/staffs/donation-event/${params.id}`)
     } catch (error) {
       console.error('Error updating event:', error)

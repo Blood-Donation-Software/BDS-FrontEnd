@@ -6,7 +6,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MoreVertical, Plus, Search, ArrowUpDown } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { MoreVertical, Plus, Search, ArrowUpDown, CalendarIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { addToStock, checkStock, deleteStock } from '@/apis/bloodStock'
@@ -35,7 +37,7 @@ const componentTypeMap = {
   WHOLE_BLOOD: "Whole Blood",
   PLASMA: "Plasma",
   PLATELETS: "Platelets",
-  DOUBLE_RED_CELLS: "Double Red Cells"
+  RED_BLOOD_CELLS: "Red Blood Cells"
 }
 
 const componentTypeOptions = Object.entries(componentTypeMap).map(([value, label]) => ({
@@ -62,7 +64,7 @@ export default function BloodStockManagement() {
     bloodType: '',
     componentType: '',
     quantity: 1,
-    expiryDate: ''
+    expiryDate: null
   })
 
   // Fetch data on component mount
@@ -89,7 +91,7 @@ export default function BloodStockManagement() {
     // Apply filters
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase()
-      result = result.filter(unit => 
+      result = result.filter(unit =>
         bloodTypeMap[unit.bloodType].toLowerCase().includes(searchTerm) ||
         componentTypeMap[unit.componentType].toLowerCase().includes(searchTerm)
       )
@@ -108,8 +110,8 @@ export default function BloodStockManagement() {
       result = result.filter(unit => {
         const expiryDate = new Date(unit.expiryDate)
         const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
-        
-        switch(filters.expiryStatus) {
+
+        switch (filters.expiryStatus) {
           case 'expired': return diffDays < 0
           case 'critical': return diffDays >= 0 && diffDays <= 7
           case 'warning': return diffDays > 7 && diffDays <= 30
@@ -176,6 +178,13 @@ export default function BloodStockManagement() {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault()
+    
+    // Validate that all required fields are filled
+    if (!addForm.bloodType || !addForm.componentType || !addForm.quantity || !addForm.expiryDate) {
+      toast.error('Please fill in all required fields including expiry date.')
+      return
+    }
+    
     try {
       // Try to add to backend (if addToStock exists)
       if (typeof addToStock === 'function') {
@@ -183,7 +192,7 @@ export default function BloodStockManagement() {
           bloodType: addForm.bloodType,
           componentType: addForm.componentType,
           volume: Number(addForm.quantity),
-          expiryDate: addForm.expiryDate
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd')
         })
         toast.success('Blood unit added successfully!')
       } else {
@@ -193,7 +202,7 @@ export default function BloodStockManagement() {
           bloodType: addForm.bloodType,
           componentType: addForm.componentType,
           quantity: Number(addForm.quantity),
-          expiryDate: addForm.expiryDate,
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd'),
           volume: Number(addForm.quantity) * 450
         }
         setBloodStock([newUnit, ...bloodStock])
@@ -204,7 +213,7 @@ export default function BloodStockManagement() {
         bloodType: '',
         componentType: '',
         quantity: 1,
-        expiryDate: ''
+        expiryDate: null
       })
     } catch (error) {
       if (error?.message?.includes('Row was updated or deleted by another transaction')) {
@@ -219,99 +228,112 @@ export default function BloodStockManagement() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div></div>
-        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setAddDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Blood Unit
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Blood Unit</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleAddSubmit} className="space-y-5">
-              <div className='space-y-3'>
-                <Label htmlFor="bloodType">Blood Type</Label>
-                <Select value={addForm.bloodType} onValueChange={(v) => handleAddSelect('bloodType', v)}>
-                  <SelectTrigger id="bloodType">
-                    <SelectValue placeholder="Select blood type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bloodTypeOptions.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className='space-y-3'>
-                <Label htmlFor="componentType">Component Type</Label>
-                <Select value={addForm.componentType} onValueChange={(v) => handleAddSelect('componentType', v)}>
-                  <SelectTrigger id="componentType">
-                    <SelectValue placeholder="Select component" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {componentTypeOptions.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className='space-y-3'>
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input
-                  id="quantity"
-                  name="quantity"
-                  type="number"
-                  min={1}
-                  value={addForm.quantity}
-                  onChange={handleAddChange}
-                  required
-                />
-              </div>
-              <div className='space-y-3'>
-                <Label htmlFor="expiryDate">Expiry Date</Label>
-                <Input
-                  id="expiryDate"
-                  name="expiryDate"
-                  type="date"
-                  value={addForm.expiryDate}
-                  onChange={handleAddChange}
-                  required
-                />
-              </div>
-              <DialogFooter>
-                <Button type="submit">Add</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-
       {/* Filters */}
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-          <CardDescription>Filter blood units by specific criteria</CardDescription>
+        <CardHeader className="flex justify-between">
+          <div>
+            <CardTitle>Filters</CardTitle>
+            <CardDescription>Filter blood units by specific criteria</CardDescription>
+          </div>
+          <div className="flex justify-between items-center">
+            <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Blood Unit
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Blood Unit</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAddSubmit} className="space-y-5">
+                  <div className='space-y-3'>
+                    <Label htmlFor="bloodType">Blood Type</Label>
+                    <Select value={addForm.bloodType} onValueChange={(v) => handleAddSelect('bloodType', v)}>
+                      <SelectTrigger id="bloodType">
+                        <SelectValue placeholder="Select blood type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {bloodTypeOptions.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className='space-y-3'>
+                    <Label htmlFor="componentType">Component Type</Label>
+                    <Select value={addForm.componentType} onValueChange={(v) => handleAddSelect('componentType', v)}>
+                      <SelectTrigger id="componentType">
+                        <SelectValue placeholder="Select component" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {componentTypeOptions.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className='space-y-3'>
+                    <Label htmlFor="quantity">Quantity</Label>
+                    <Input
+                      id="quantity"
+                      name="quantity"
+                      type="number"
+                      min={1}
+                      value={addForm.quantity}
+                      onChange={handleAddChange}
+                      required
+                    />
+                  </div>
+                  <div className='space-y-3'>
+                    <Label htmlFor="expiryDate">Expiry Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {addForm.expiryDate ? format(addForm.expiryDate, "PPP") : "Select expiry date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={addForm.expiryDate}
+                          onSelect={(date) => setAddForm(prev => ({ ...prev, expiryDate: date }))}
+                          disabled={(date) => date < new Date().setHours(0, 0, 0, 0)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Add</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">            <div className="relative">
+          <div className="flex md:flex-row flex-col gap-4 items-center">
+            <div className="relative flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search blood units..."
                 className="pl-8"
                 value={filters.search}
-                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               />
             </div>
-            
-            <Select value={filters.bloodType} onValueChange={(v) => setFilters({...filters, bloodType: v})}>
+
+            <Select value={filters.bloodType} onValueChange={(v) => setFilters({ ...filters, bloodType: v })}>
               <SelectTrigger>
                 <SelectValue placeholder="All blood types" />
               </SelectTrigger>
@@ -325,7 +347,7 @@ export default function BloodStockManagement() {
               </SelectContent>
             </Select>
 
-            <Select value={filters.componentType} onValueChange={(v) => setFilters({...filters, componentType: v})}>
+            <Select value={filters.componentType} onValueChange={(v) => setFilters({ ...filters, componentType: v })}>
               <SelectTrigger>
                 <SelectValue placeholder="All components" />
               </SelectTrigger>
@@ -339,7 +361,7 @@ export default function BloodStockManagement() {
               </SelectContent>
             </Select>
 
-            <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({...filters, expiryStatus: v})}>
+            <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({ ...filters, expiryStatus: v })}>
               <SelectTrigger>
                 <SelectValue placeholder="All expiry status" />
               </SelectTrigger>
@@ -367,35 +389,35 @@ export default function BloodStockManagement() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead 
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('bloodType')}
                 >
                   Blood Type
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead 
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('componentType')}
                 >
                   Component
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead 
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('quantity')}
                 >
                   Quantity
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead 
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('volume')}
                 >
                   Volume (ml)
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead 
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('expiryDate')}
                 >

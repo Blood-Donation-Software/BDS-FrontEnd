@@ -95,7 +95,6 @@ export default function LoginPage() {
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
             <span>{t?.auth?.loginWithGoogle}</span>
           </button>
-
           
         </div>
         <p className="text-sm text-center mb-2">

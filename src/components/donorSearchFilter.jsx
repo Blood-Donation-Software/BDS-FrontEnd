@@ -1,6 +1,9 @@
-import { Search, User, Droplet } from 'lucide-react';
+import { Search, User, Droplet, MapPin } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -9,7 +12,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function DonorSearchFilter({ searchTerm, setSearchTerm, filters, setFilters }) {
+export default function DonorSearchFilter({ 
+  searchTerm, 
+  setSearchTerm, 
+  filters, 
+  setFilters, 
+  distanceEnabled, 
+  setDistanceEnabled,
+  loadingDistance 
+}) {
   return (
     <Card className="mb-6">
       <CardContent className="p-6 space-y-4">
@@ -81,6 +92,51 @@ export default function DonorSearchFilter({ searchTerm, setSearchTerm, filters, 
               <SelectItem value="unavailable">Chưa thể hiến</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Distance Filter Section */}
+        <div className="border-t pt-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
+              <MapPin className="h-4 w-4 text-blue-500" />
+              <Label htmlFor="distance-filter" className="text-sm font-medium">
+                Lọc theo khoảng cách
+              </Label>
+              {loadingDistance && (
+                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-500"></div>
+              )}
+            </div>
+            <Switch
+              id="distance-filter"
+              checked={distanceEnabled}
+              onCheckedChange={setDistanceEnabled}
+              disabled={loadingDistance}
+            />
+          </div>
+          
+          {distanceEnabled && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm text-gray-600">
+                  Khoảng cách tối đa: {filters.maxDistance} km
+                </Label>
+              </div>
+              <Slider
+                value={[filters.maxDistance]}
+                onValueChange={(value) => setFilters({...filters, maxDistance: value[0]})}
+                max={100}
+                min={1}
+                step={1}
+                className="w-full"
+                disabled={loadingDistance}
+              />
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>1 km</span>
+                <span>50 km</span>
+                <span>100 km</span>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

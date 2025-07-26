@@ -68,24 +68,23 @@ export default function AccountManagement() {
         return baseClasses;
     };
 
-    const handleStatus = async (account) => {
-        setLoadingId(account.id);
-        try {
-            const newStatus = account.status === 'ENABLE' ? 'DISABLE' : 'ENABLE';
-            // Gọi API cập nhật trạng thái
-            await updateStatus(account.id, newStatus);
-            // Cập nhật lại state với trạng thái mới
-            setAccounts(prev =>
-                prev.map(a =>
-                    a.id === account.id ? { ...a, status: newStatus } : a
-                )
-            );
-        } catch (e) {
-            alert('Có lỗi xảy ra!');
-        } finally {
-            setLoadingId(null);
-        }
-    };
+const handleStatus = async (account) => {
+    setLoadingId(account.id);
+    try {
+        // Đổi sang enum đúng với backend, ví dụ: "ENABLED"/"DISABLED"
+        const newStatus = account.status === 'ENABLE' ? 'DISABLE' : 'ENABLE';
+        await updateStatus(account.id, newStatus);
+        setAccounts(prev =>
+            prev.map(a =>
+                a.id === account.id ? { ...a, status: newStatus } : a
+            )
+        );
+    } catch (e) {
+        alert(e);
+    } finally {
+        setLoadingId(null);
+    }
+};
 
     return (
         <div className="p-5">

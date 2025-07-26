@@ -13,6 +13,12 @@ export const getAllEvents = (page = 0, size = 10, sortBy = 'id', ascending = tru
         .then(res => res.data);
 }
 
+// Get ongoing donation events (for staff check-in)
+export const getOngoingDonationEvents = () => {
+    return axiosInstance.get(endpoint.bloodDonation.ongoingEvents)
+        .then(res => res.data);
+}
+
 // Get donation events by date range
 export const getEventsByDateRange = (startDate, endDate, page = 0, size = 10, sortBy = 'id', ascending = true) => {
     const params = { page, size, sortBy, ascending };
@@ -80,6 +86,22 @@ export const registerForEvent = (eventId, timeSlotId, jsonForm) => {
     }).then(res => res.data);
 }
 
+// Register offline for event (for staff)
+export const registerForEventOffline = (eventId, personalId, jsonForm) => {
+    return axiosInstance.post(endpoint.eventRegistration.registerOffline(eventId), jsonForm, {
+        params: { personalId },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.data);
+}
+
+// Register guest for event (for staff)  
+export const registerGuestForEvent = (eventId, profileWithFormData) => {
+    return axiosInstance.post(`${endpoint.eventRegistration.registerOffline(eventId).replace('/registerOffline', '/register-guest')}`, profileWithFormData)
+        .then(res => res.data);
+}
+
 // Cancel event registration
 export const cancelEventRegistration = (eventId) => {
     return axiosInstance.post(endpoint.eventRegistration.cancel(eventId))
@@ -120,4 +142,10 @@ export const recordDonations = (eventId, donationRecords) => {
     };
     return axiosInstance.post(endpoint.bloodDonation.recordDonation(eventId), bulkRecordDto)
         .then(res => res.data);
+}
+
+export const findDonorByPersonalID = (eventId, personal_id) => {
+    return axiosInstance.get(endpoint.checkin.findByPersonalId(eventId), {
+        params: { personal_id }
+    }).then(res => res.data);
 }

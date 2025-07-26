@@ -17,6 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 import vietnamProvinces from '@/data/vietnam-provinces.json'
@@ -142,6 +143,8 @@ export default function CreateDonationEventPage() {
   const [organizers, setOrganizers] = useState([])
   const [activeTab, setActiveTab] = useState("event")
   const [organizersLoading, setOrganizersLoading] = useState(true)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [pendingEventData, setPendingEventData] = useState(null)
   // Event form
   const eventForm = useForm({
     resolver: zodResolver(donationEventSchema),
@@ -319,52 +322,59 @@ export default function CreateDonationEventPage() {
     return conflicts
   }
   const onSubmitEvent = async (data) => {
-    setIsSubmitting(true)
-    try {
-      // Get the selected organizer details if organizerId is provided
-      let organizerDetails = null
-      if (data.organizerId && data.organizerId !== "") {
-        const selectedOrganizer = organizers.find(org => org.id.toString() === data.organizerId)
-        if (selectedOrganizer) {
-          organizerDetails = {
-            id: selectedOrganizer.id,
-            organizationName: selectedOrganizer.organizationName,
-            contactPersonName: selectedOrganizer.contactPersonName,
-            email: selectedOrganizer.email,
-            phoneNumber: selectedOrganizer.phoneNumber,
-            address: selectedOrganizer.address,
-            ward: selectedOrganizer.ward,
-            district: selectedOrganizer.district,
-            city: selectedOrganizer.city,
-            description: selectedOrganizer.description,
-            websiteUrl: selectedOrganizer.websiteUrl
-          }
+    // Prepare the event data but don't submit yet
+    let organizerDetails = null
+    if (data.organizerId && data.organizerId !== "") {
+      const selectedOrganizer = organizers.find(org => org.id.toString() === data.organizerId)
+      if (selectedOrganizer) {
+        organizerDetails = {
+          id: selectedOrganizer.id,
+          organizationName: selectedOrganizer.organizationName,
+          contactPersonName: selectedOrganizer.contactPersonName,
+          email: selectedOrganizer.email,
+          phoneNumber: selectedOrganizer.phoneNumber,
+          address: selectedOrganizer.address,
+          ward: selectedOrganizer.ward,
+          district: selectedOrganizer.district,
+          city: selectedOrganizer.city,
+          description: selectedOrganizer.description,
+          websiteUrl: selectedOrganizer.websiteUrl
         }
       }
+    }
 
-      // Format the data for the backend
-      const eventData = {
-        name: data.name,
-        hospital: data.hospital,
-        address: data.address,
-        ward: data.ward,
-        district: data.district,
-        city: data.city,
-        donationDate: format(data.donationDate, 'dd-MM-yyyy'),
-        totalMemberCount: data.totalMemberCount,
-        donationType: data.donationType,
-        organizerId: data.organizerId && data.organizerId !== "" ? parseInt(data.organizerId) : null,
-        organizer: organizerDetails,
-        timeSlotDtos: data.timeSlots.map(slot => ({
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          maxCapacity: slot.maxCapacity
-        }))
-      }
+    const eventData = {
+      name: data.name,
+      hospital: data.hospital,
+      address: data.address,
+      ward: data.ward,
+      district: data.district,
+      city: data.city,
+      donationDate: format(data.donationDate, 'dd-MM-yyyy'),
+      totalMemberCount: data.totalMemberCount,
+      donationType: data.donationType,
+      organizerId: data.organizerId && data.organizerId !== "" ? parseInt(data.organizerId) : null,
+      organizer: organizerDetails,
+      timeSlotDtos: data.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        maxCapacity: slot.maxCapacity
+      }))
+    }
 
-      const response = await createEvent(eventData)
+    // Store the data and show confirmation dialog
+    setPendingEventData(eventData)
+    setShowConfirmDialog(true)
+  }
+
+  const confirmSubmitEvent = async () => {
+    setIsSubmitting(true)
+    setShowConfirmDialog(false)
+    
+    try {
+      const response = await createEvent(pendingEventData)
       toast.success("Blood donation event request submitted successfully!")
-      router.push(`/blood-donation-events/my-requests`)
+      router.push(`/staffs/donation-event/requests`)
     } catch (error) {
       console.error('Error creating event:', error)
 
@@ -411,7 +421,13 @@ export default function CreateDonationEventPage() {
       }
     } finally {
       setIsSubmitting(false)
+      setPendingEventData(null)
     }
+  }
+
+  const cancelEventCreation = () => {
+    setShowConfirmDialog(false)
+    setPendingEventData(null)
   }
 
   const onSubmitOrganizer = async (data) => {
@@ -549,18 +565,6 @@ export default function CreateDonationEventPage() {
 
                   {/* Organizer Selection */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.organizer?.title}</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setActiveTab("organizer")}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t?.createEvent?.eventInfo?.fields?.organizer?.addButton}
-                      </Button>
-                    </div>
 
                     <FormField
                       control={eventForm.control}
@@ -630,7 +634,8 @@ export default function CreateDonationEventPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">                      
+                      <FormField
                         control={eventForm.control}
                         name="city"
                         render={({ field }) => (
@@ -749,8 +754,8 @@ export default function CreateDonationEventPage() {
                       name="totalMemberCount"
                       render={({ field }) => {
                         return (
-                          <FormItem>
-                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.capacity}</FormLabel>
+                          <FormItem className="mt-7">
+                            <FormLabel>Total Capacity (Auto-calculated) *</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -1069,7 +1074,8 @@ export default function CreateDonationEventPage() {
                       )}
                     />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">                      <FormField
+                    <div className="flex flex-col md:flex-row gap-4">                      
+                      <FormField
                         control={organizerForm.control}
                         name="city"
                         render={({ field }) => (
@@ -1169,6 +1175,69 @@ export default function CreateDonationEventPage() {
           </Form>
         </TabsContent>
       </Tabs>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelEventCreation()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm Event Creation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to create this blood donation event? Please review the details before confirming.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {pendingEventData && (
+            <div className="space-y-2 py-4">
+              <div><strong>Event Name:</strong> {pendingEventData.name}</div>
+              <div><strong>Hospital:</strong> {pendingEventData.hospital}</div>
+              <div><strong>Date:</strong> {pendingEventData.donationDate}</div>
+              <div><strong>Location:</strong> {pendingEventData.address}, {pendingEventData.ward}, {pendingEventData.district}, {pendingEventData.city}</div>
+              <div><strong>Total Capacity:</strong> {pendingEventData.totalMemberCount} people</div>
+              <div><strong>Donation Type:</strong> {pendingEventData.donationType}</div>
+              {pendingEventData.timeSlotDtos && pendingEventData.timeSlotDtos.length > 0 && (
+                <div>
+                  <strong>Time Slots:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {pendingEventData.timeSlotDtos.map((slot, index) => (
+                      <li key={index}>
+                        {slot.startTime} - {slot.endTime} (Max: {slot.maxCapacity} people)
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {pendingEventData.organizer && (
+                <div><strong>Organizer:</strong> {pendingEventData.organizer.organizationName}</div>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelEventCreation}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmSubmitEvent}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Event...
+                </>
+              ) : (
+                'Confirm & Create Event'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/input-otp';
 import { Card, CardContent } from '@/components/ui/card';
 
-import { verifyOtp, resendOtp } from '@/apis/auth'; // Make sure to implement resendOtp
+import { verifyOtp, resendOtp, verifyPassword } from '@/apis/auth'; // Make sure to implement resendOtp
 
 // export  function VerifyReset(){
 //   const router = useRouter();
@@ -78,8 +78,8 @@ export default function VerifyRegister() {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [cooldown, setCooldown] = useState(0);
- 
-const params = useParams();
+
+  const params = useParams();
   useEffect(() => {
     const emailFromQuery = searchParams.get('email');
     if (emailFromQuery) {
@@ -98,28 +98,29 @@ const params = useParams();
   }, [cooldown]);
 
   const handleVerify = async () => {
-  if (!email || otp.length !== 6) {
-    toast.warning('Vui lòng nhập mã OTP hợp lệ');
-    return;
-  }
-
-  try {
-    const result = await verifyOtp(otp);
-    const isReset = searchParams.get('reset') === '1';
-    if (result === 'User registered successfully' || result === 'OTP verified successfully') {
-      toast.success('Xác thực thành công!');
-      if (isReset) {
-        router.push(`/reset-password?email=${encodeURIComponent(email)}&code=${otp}`);
-      } else {
-        router.push('/login');
-      }
-    } else {
-      toast.error('Mã OTP không đúng hoặc đã hết hạn');
+    if (!email || otp.length !== 6) {
+      toast.warning('Vui lòng nhập mã OTP hợp lệ');
+      return;
     }
-  } catch (err) {
-    toast.error('Đã xảy ra lỗi khi xác thực OTP');
-  }
-};
+
+    try {
+      const isReset = searchParams.get('reset') === '1';
+      const result = isReset ? await verifyPassword(otp) : await verifyOtp(otp);
+      // const result = await verifyPassword(otp);
+      if (result === 'User registered successfully' || result === 'Verify password reset code successfully') {
+        toast.success('Xác thực thành công!');
+        if (isReset) {
+          router.push(`/reset-password?email=${encodeURIComponent(email)}&code=${otp}`);
+        } else {
+          router.push('/login');
+        }
+      } else {
+        toast.error('Mã OTP không đúng hoặc đã hết hạn');
+      }
+    } catch (err) {
+      toast.error('Đã xảy ra lỗi khi xác thực OTP:' + (err?.message || ''));
+    }
+  };
   const handleResendOtp = async () => {
     if (!email) return;
     try {
