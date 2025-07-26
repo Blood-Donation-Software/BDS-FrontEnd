@@ -1,9 +1,12 @@
+'use client';
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiMapPin, FiPhone, FiMail } from "react-icons/fi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/language_context";
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-[#151C27] text-[#e3e9f3] pt-10 pb-4 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between gap-8">
@@ -17,7 +20,7 @@ export default function Footer() {
             <span className="text-white font-bold text-lg">Hopewell</span>
           </div>
           <p className="text-sm mb-4">
-            Hệ thống kết nối người hiến máu và người cần máu, đảm bảo nguồn máu an toàn, đầy đủ và kịp thời.
+            {t?.footer?.about}
           </p>
           <div className="flex gap-4 text-xl">
             <a href="#" aria-label="Facebook" className="hover:text-red-500 transition"><FaFacebookF /></a>
@@ -27,21 +30,21 @@ export default function Footer() {
         </div>
         {/* Quick Links */}
         <div className="flex-1 min-w-[180px]">
-          <h4 className="font-semibold text-white mb-2">Liên kết nhanh</h4>
+          <h4 className="font-semibold text-white mb-2">{t?.footer?.quick_links}</h4>
           <ul className="space-y-1 text-sm">
-            <li><a href="#" className="hover:text-red-400 transition">Đăng ký hiến máu</a></li>
-            <li><a href="#" className="hover:text-red-400 transition">Yêu cầu khẩn cấp</a></li>
-            <li><a href="#" className="hover:text-red-400 transition">Tra cứu tương thích</a></li>
-            <li><a href="#" className="hover:text-red-400 transition">Blog</a></li>
+            <li><a href="#" className="hover:text-red-400 transition">{t?.footer?.register_donate}</a></li>
+            <li><a href="#" className="hover:text-red-400 transition">{t?.footer?.emergency_request}</a></li>
+            <li><a href="#" className="hover:text-red-400 transition">{t?.footer?.compatibility_lookup}</a></li>
+            <li><a href="#" className="hover:text-red-400 transition">{t?.footer?.blogt}</a></li>
           </ul>
         </div>
         {/* Contact */}
         <div className="flex-1 min-w-[230px]">
-          <h4 className="font-semibold text-white mb-2">Liên hệ</h4>
+          <h4 className="font-semibold text-white mb-2">{t?.footer?.contact}</h4>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <FiMapPin className="text-red-500 mt-1" />
-              <span>123 Đường Y Tế, Quận Bình Thạnh, TP. Hồ Chí Minh</span>
+              <span>{t?.footer?.address}</span>
             </li>
             <li className="flex items-center gap-2">
               <FiPhone className="text-red-500" />
@@ -55,21 +58,21 @@ export default function Footer() {
         </div>
         {/* Newsletter */}
         <div className="flex-1 min-w-[230px]">
-          <h4 className="font-semibold text-white mb-2">Nhận thông tin</h4>
+          <h4 className="font-semibold text-white mb-2">{t?.footer?.newsletter}</h4>
           <p className="text-sm mb-3">
-            Đăng ký nhận thông tin mới nhất về các chiến dịch hiến máu và các tin tức khẩn cấp.
+            {t?.footer?.subscribe_info}
           </p>
           <form className="flex">
             <Input
               type="email"
-              placeholder="Email của bạn"
+              placeholder={t?.footer?.placeholder_email}
               className="flex-1 rounded-l-md px-4 py-2 bg-[#232B39] text-white border-0 outline-none text-sm placeholder-[#B6C6E3] rounded-none"
             />
             <Button
               type="submit"
               className="bg-[#ee4040] hover:bg-[#e43a3a] text-white font-semibold px-5 rounded-r-md rounded-none transition"
             >
-              Gửi
+              {t?.footer?.submit}
             </Button>
           </form>
         </div>
@@ -77,11 +80,11 @@ export default function Footer() {
       {/* Divider */}
       <div className="border-t border-[#232B39] my-7"></div>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-xs text-[#B6C6E3] px-2">
-        <div>© 2025 Hopewell. Tất cả quyền được bảo lưu.</div>
+        <div>{t?.footer?.rights_reverved}</div>
         <div className="flex items-center gap-1">
-          <span>Xây dựng với</span>
+          <span>{t?.footer?.built_with}</span>
           <span className="text-red-500 text-base">♥</span>
-          <span>bởi Hopewell Team</span>
+          <span>{t?.footer?.by_team}</span>
         </div>
       </div>
     </footer>

@@ -5,18 +5,20 @@ import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader,
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Activity, Droplet, Heart, Table, Zap } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useLanguage } from "@/context/language_context";
 
 export default function BloodLookUp() {
   const [selectedComponent, setSelectedComponent] = useState()
   const [selectedType, setselectedType] = useState()
   const [active, setActive] = useState(false)
+  const {t} = useLanguage();
   const [tab, setTab] = useState('donate'); // 'donate' hoặc 'receive'
   // Blood component data
   const bloodComponents = [
-    { id: 1, name: "Whole Blood", icon: <Droplet className="h-6 w-6" /> },
-    { id: 2, name: "Red Blood Cells", icon: <Heart className="h-6 w-6" /> },
-    { id: 3, name: "Platelets", icon: <Activity className="h-6 w-6" /> },
-    { id: 4, name: "Plasma", icon: <Zap className="h-6 w-6" /> },
+    { id: 1, name: t?.blood_components?.whole_blood?.name, icon: <Droplet className="h-6 w-6" /> },
+    { id: 2, name: t?.blood_components?.red_blood_cells?.name, icon: <Heart className="h-6 w-6" /> },
+    { id: 3, name: t?.blood_components?.platelets?.name, icon: <Activity className="h-6 w-6" /> },
+    { id: 4, name: t?.blood_components?.plasma?.name, icon: <Zap className="h-6 w-6" /> },
   ];
 
   // Blood types data
@@ -75,31 +77,31 @@ export default function BloodLookUp() {
   const bloodComponentInfo = [
     {
       id: 1,
-      name: "Whole Blood",
+      name: t?.blood_components?.whole_blood?.name,
       icon: <Droplet className="h-6 w-6" />,
       description:
-        "Máu toàn phần chứa tất cả các thành phần của máu, bao gồm hồng cầu, bạch cầu, tiểu cầu và huyết tương.",
+        t?.blood_components?.whole_blood?.description,
     },
     {
       id: 2,
-      name: "Red Blood Cells",
+      name: t?.blood_components?.red_blood_cells?.name,
       icon: <Heart className="h-6 w-6" />,
       description:
-        "Hồng cầu vận chuyển oxy từ phổi đến các mô trong cơ thể. Quan trọng trong điều trị thiếu máu.",
+        t?.blood_components?.red_blood_cells?.description,
     },
     {
       id: 3,
-      name: "Platelets",
+      name: t?.blood_components?.platelets?.name,
       icon: <Activity className="h-6 w-6" />,
       description:
-        "Tiểu cầu giúp máu đông lại và ngăn chặn chảy máu. Thường được sử dụng trong điều trị ung thư.",
+        t?.blood_components?.platelets?.description,
     },
     {
       id: 4,
-      name: "Plasma",
+      name: t?.blood_components?.plasma?.name,
       icon: <Zap className="h-6 w-6" />,
       description:
-        "Huyết tương là phần lỏng của máu, chứa các protein và chất dinh dưỡng. Quan trọng trong điều trị bỏng và sốc.",
+       t?.blood_components?.platelets?.description,
     },
   ];
 
@@ -139,10 +141,10 @@ export default function BloodLookUp() {
         <div className="relative min-h-[874px] px-9 py-8">
           <header className="flex flex-col items-center mb-16">
             <h1 className="font-bold text-5xl text-slate-800 text-center tracking-[0] leading-[72px] [font-family:'Inter-Bold',Helvetica]">
-              Tra cứu tương thích nhóm máu
+              {t?.blood_compatibility?.title}
             </h1>
             <p className="font-normal text-xl text-slate-500 text-center tracking-[0] leading-[30px] mt-4 [font-family:'Inter-Regular',Helvetica]">
-              Kiểm tra khả năng tương thích giữa các nhóm máu và thành phần máu
+              {t?.blood_compatibility?.subtitle}
             </p>
           </header>
 
@@ -151,7 +153,7 @@ export default function BloodLookUp() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
                   <h2 className="font-semibold text-xl text-slate-800 mb-4 [font-family:'Inter-SemiBold',Helvetica]">
-                    1. Chọn thành phần máu
+                    {t?.blood_compatibility?.step1}
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {bloodComponents.slice(0, 2).map((component) => (
@@ -181,7 +183,7 @@ export default function BloodLookUp() {
 
                 <div>
                   <h2 className="font-semibold text-xl text-slate-800 mb-4 [font-family:'Inter-SemiBold',Helvetica]">
-                    2. Chọn nhóm máu của bạn
+                    {t?.blood_compatibility?.step2}
                   </h2>
                   <div className="grid grid-cols-4 gap-4">
                     {bloodTypes.slice(0, 4).map((bloodType) => (
@@ -224,7 +226,7 @@ export default function BloodLookUp() {
                       }`}
                     onClick={() => setTab('donate')}
                   >
-                    Có thể hiến cho
+                    {t?.blood_compatibility?.donate_tab}
                   </button>
                   <button
                     className={`flex-1 py-3 rounded-r-xl font-semibold text-lg transition-all ${tab === 'receive'
@@ -233,7 +235,7 @@ export default function BloodLookUp() {
                       }`}
                     onClick={() => setTab('receive')}
                   >
-                    Có thể nhận từ
+                    {t?.blood_compatibility?.receive_tab}
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-6 justify-center min-h-[120px]">
@@ -247,19 +249,19 @@ export default function BloodLookUp() {
                         className="bg-white rounded-xl shadow-md px-10 py-6 flex flex-col items-center min-w-[120px] border border-red-100"
                       >
                         <span className="text-3xl font-bold text-red-500 mb-2">{type}</span>
-                        <span className="text-gray-500 font-medium">Tương thích</span>
+                        <span className="text-gray-500 font-medium">{t?.blood_compatibility_compatible_label}</span>
                       </div>
                     ))
                   ) : (
-                    <span className="text-gray-400 text-lg py-8">Vui lòng chọn nhóm máu để xem kết quả</span>
+                    <span className="text-gray-400 text-lg py-8">{t?.blood_compatibility?.select_blood_type_notice}</span>
                   )}
                 </div>
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h3 className="font-semibold text-blue-800 mb-2">Thông tin quan trọng:</h3>
+                  <h3 className="font-semibold text-blue-800 mb-2">{t?.blood_compatibility?.info_section_title}</h3>
                   <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• O- là nhóm máu cho (có thể hiến cho tất cả các nhóm máu)</li>
-                    <li>• AB+ là nhóm máu nhận (có thể nhận từ tất cả các nhóm máu)</li>
-                    <li>• Rh âm có thể hiến cho Rh dương, nhưng ngược lại thì không</li>
+                    <li>{t?.blood_compatibility?.info_1}</li>
+                    <li>{t?.blood_compatibility?.info_2}</li>
+                    <li>{t?.blood_compatibility?.info_3}</li>
                   </ul>
                 </div>
               </CardContent>
@@ -272,7 +274,7 @@ export default function BloodLookUp() {
             <Card className="shadow-[0px_4px_24px_#0000000d]">
               <CardContent className="p-8">
                 <h2 className="font-semibold text-2xl text-slate-800 mb-6 [font-family:'Inter-SemiBold',Helvetica]">
-                  Thông tin thành phần máu
+                  {t?.blood_compatibility?.blood_component_info_title}
                 </h2>
 
                 {bloodComponentInfo.slice(0, 2).map((info) => (

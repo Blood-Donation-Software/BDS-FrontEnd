@@ -23,58 +23,59 @@ import { cn } from "@/lib/utils"
 import vietnamProvinces from '@/data/vietnam-provinces.json'
 import { createEvent } from '@/apis/bloodDonation'
 import { getActiveOrganizers, createOrganizer, checkEmailExists } from '@/apis/organizer'
-
+import { useLanguage } from '@/context/language_context'
+const {t} = useLanguage()
 // Sort provinces alphabetically
 const sortedProvinces = vietnamProvinces.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }))
 // Zod validation schemas
 const timeSlotSchema = z.object({
   startTime: z.string()
-    .min(1, "Start time is required")
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format"),
+    .min(1, t?.createEvent?.error?.startTime_required)
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, t?.createEvent?.error?.startTime_invalidFormat),
   endTime: z.string()
     .min(1, "End time is required")
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format"),
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, t?.createEvent?.error?.startTime_required),
   maxCapacity: z.number()
-    .min(1, "Capacity must be at least 1")
-    .max(100, "Capacity cannot exceed 100")
+    .min(1, t?.createEvent?.error?.maxCapacity_min)
+    .max(100, t?.createEvent?.error?.maxCapacity_max)
 }).refine((data) => {
   const start = new Date(`1970-01-01T${data.startTime}:00`)
   const end = new Date(`1970-01-01T${data.endTime}:00`)
   return end > start
 }, {
-  message: "End time must be after start time",
+  message: t?.createEvent?.error?.endTime_afterStart,
   path: ["endTime"]
 })
 
 const donationEventSchema = z.object({
   name: z.string()
-    .min(5, "Event name must be at least 5 characters")
-    .max(200, "Event name cannot exceed 200 characters"),
+    .min(5, t?.createEvent?.error?.event_name_min)
+    .max(200, t?.createEvent?.error?.event_name_max),
   hospital: z.string()
-    .min(3, "Hospital/Location must be at least 3 characters")
-    .max(200, "Hospital/Location cannot exceed 200 characters"),
+    .min(3, t?.createEvent?.error?.event_hospital_min)
+    .max(200, t?.createEvent?.error?.event_hospital_max),
   address: z.string()
-    .min(10, "Address must be at least 10 characters")
-    .max(300, "Address cannot exceed 300 characters"),
-  city: z.string().min(1, "City is required"),
-  district: z.string().min(1, "District is required"),
-  ward: z.string().min(1, "Ward is required"),
+    .min(10, t?.createEvent?.error?.event_address_min)
+    .max(300, t?.createEvent?.error?.event_address_max),
+  city: z.string().min(1, t?.createEvent?.error?.event_city_required),
+  district: z.string().min(1, t?.createEvent?.error?.event_district_required),
+  ward: z.string().min(1, t?.createEvent?.error?.event_ward_required),
   donationDate: z.date({
-    required_error: "Donation date is required"
+    required_error: t?.createEvent?.error?.event?.donationDate_required
   }).refine((date) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return date >= today
-  }, "Donation date must be today or in the future"), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
-    required_error: "Please select a donation type"
+  }, t?.createEvent?.error?.event_donationDate_future), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
+    required_error: t?.createEvent?.error?.event_donationType_required
   }),
   totalMemberCount: z.number()
-    .min(1, "Total capacity must be at least 1")
-    .max(10000, "Total capacity cannot exceed 10000"),
+    .min(1, t?.createEvent?.error?.event_totalMemberCount_min)
+    .max(10000, t?.createEvent?.error?.event_totalMemberCount_max),
   organizerId: z.string().optional(),
   timeSlots: z.array(timeSlotSchema)
-    .min(1, "At least one time slot is required")
-    .max(10, "Maximum 10 time slots allowed")
+    .min(1, t?.createEvent?.error?.timesSlots_min)
+    .max(10, t?.createEvent?.error?.timesSlots_max)
     .refine((timeSlots) => {
       // Check for overlapping time slots
       for (let i = 0; i < timeSlots.length; i++) {
@@ -95,36 +96,36 @@ const donationEventSchema = z.object({
       }
       return true
     }, {
-      message: "Time slots cannot overlap with each other"
+      message: t?.createEvent?.error?.timeSlots_noOverlap,
     })
 })
 
 const organizerSchema = z.object({
   organizationName: z.string()
-    .min(2, "Organization name must be at least 2 characters")
-    .max(200, "Organization name cannot exceed 200 characters"),
+    .min(2, t?.createEvent?.error?.organizer_organizationName_min)
+    .max(200, t?.createEvent?.error?.organizer_organizationName_max),
   contactPersonName: z.string()
-    .min(2, "Contact person name must be at least 2 characters")
-    .max(100, "Contact person name cannot exceed 100 characters"),
+    .min(2, t?.createEvent?.error?.organizer_contactPersonName_min)
+    .max(100, t?.createEvent?.error?.organizer_contactPersonName_max),  
   email: z.string()
-    .email("Please provide a valid email address"),
+    .email(t?.createEvent?.error?.organizer_email_invalid),
   phoneNumber: z.string()
-    .regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits")
+    .regex(/^[0-9]{10}$/, t?.createEvent?.error?.organizer_phoneNumber_invalid)
     .optional()
     .or(z.literal("")),
   address: z.string()
-    .max(300, "Address cannot exceed 300 characters")
+    .max(300, t?.createEvent?.error?.organizer_address_max)
     .optional()
     .or(z.literal("")),
   ward: z.string().optional().or(z.literal("")),
   district: z.string().optional().or(z.literal("")),
   city: z.string().optional().or(z.literal("")),
   description: z.string()
-    .max(1000, "Description cannot exceed 1000 characters")
+    .max(1000, t?.createEvent?.error?.organizer_description_max)
     .optional()
     .or(z.literal("")),
   websiteUrl: z.string()
-    .url("Please provide a valid website URL")
+    .url(t?.createEvent?.error?.organizer_websiteUrl_invalid)
     .optional()
     .or(z.literal(""))
 })
@@ -492,20 +493,20 @@ export default function CreateDonationEventPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Create New Blood Donation Event Request</h1>
-          <p className="text-muted-foreground mt-2">Submit a request for a new blood donation campaign</p>
+          <h1 className="text-3xl font-bold">{t?.createEvent?.title}</h1>
+          <p className="text-muted-foreground mt-2">{t?.createEvent?.description}</p>
         </div>
       </div>
-
+      
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2" key={activeTab}>
           <TabsTrigger value="event" className="flex items-center gap-2">
             <Droplet className="h-4 w-4" />
-            Create Request
+            {T?.createEvent?.tabs?.event}
           </TabsTrigger>
           <TabsTrigger value="organizer" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            Add Organizer
+            {T?.createEvent?.tabs?.organizer}
           </TabsTrigger>
         </TabsList>
 
@@ -517,7 +518,7 @@ export default function CreateDonationEventPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Droplet className="h-6 w-6 text-red-500" />
-                    <span>Event Information</span>
+                    <span>{t?.createEvent?.eventInfo?.title}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -528,9 +529,9 @@ export default function CreateDonationEventPage() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Event Name *</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.name}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Blood Donation Drive 2025" {...field} />
+                            <Input placeholder={t?.createEvent?.eventInfo?.fields?.namePlaceholder} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -542,11 +543,11 @@ export default function CreateDonationEventPage() {
                       name="donationType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Donation Type *</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.donationType}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select donation type" />
+                                <SelectValue placeholder={t?.createEvent?.eventInfo?.fields?.donationTypePlaceholder} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -570,16 +571,16 @@ export default function CreateDonationEventPage() {
                       name="organizerId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Select Organizer</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.organizer?.selectPlaceHolder}</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value} disabled={organizersLoading}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder={organizersLoading ? "Loading organizers..." : "Select an organizer (optional)"} />
+                                <SelectValue placeholder={organizersLoading ? t?.createEvent?.eventInfo?.fields?.organinzer?.loadingPrganizers : t?.createEvent?.eventInfo?.fields?.organinzer?.selecttPlaceholder} />
                               </SelectTrigger>
                             </FormControl>                            <SelectContent>
-                              <SelectItem value="*">No organizer</SelectItem>
+                              <SelectItem value="*">{t?.createEvent?.eventInfo?.fields?.organizer?.noOrganizers}</SelectItem>
                               {organizers.length === 0 ? (
-                                <SelectItem value="none" disabled>No organizers found</SelectItem>
+                                <SelectItem value="none" disabled>{t?.createEvent?.eventInfo?.fields?.organizer?.noOrganizers}</SelectItem>
                               ) : (
                                 organizers.map((organizer) => (
                                   <SelectItem key={organizer.id} value={organizer.id.toString()}>
@@ -601,7 +602,7 @@ export default function CreateDonationEventPage() {
 
                   {/* Location Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Location Details</h3>
+                    <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.location?.title}</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
@@ -609,9 +610,9 @@ export default function CreateDonationEventPage() {
                         name="hospital"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Hospital/Venue Name *</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.hospital}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Community Center, Hospital, etc." {...field} />
+                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.hospitalPlaceholder} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -623,9 +624,9 @@ export default function CreateDonationEventPage() {
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Street Address *</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.address}</FormLabel>
                             <FormControl>
-                              <Input placeholder="123 Main Street" {...field} />
+                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.addressPlaceholder} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -639,11 +640,11 @@ export default function CreateDonationEventPage() {
                         name="city"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Province/City *</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.city}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select province" />
+                                  <SelectValue placeholder={t?.createEvent?.eventInfo?.fields?.location?.cityPlaceholder} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -664,11 +665,11 @@ export default function CreateDonationEventPage() {
                         name="district"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>District *</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.district}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedCity}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedCity ? "Select district" : "Select province first"} />
+                                  <SelectValue placeholder={watchedCity ? t?.createEvent?.eventInfo?.fields?.location?.disctictPlaceholder : t?.createEvent?.eventInfo?.fields?.location?.selectProvinceFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getDistricts().map((district) => (
@@ -688,16 +689,16 @@ export default function CreateDonationEventPage() {
                         name="ward"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Ward *</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.ward}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedDistrict}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedDistrict ? "Select ward" : "Select district first"} />
+                                  <SelectValue placeholder={watchedDistrict ? t?.createEvent?.organizerInfo?.fields?.address?.wardPlaceholder : t?.createEvent?.organizerInfo?.fields?.address?.selectDisctrictFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getWards().map((ward) => (
                                   <SelectItem key={ward.name} value={ward.name}>
-                                    {ward.name}
+                                    {ward.name} 
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -718,7 +719,7 @@ export default function CreateDonationEventPage() {
                       name="donationDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Event Date *</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.field?.date}</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
@@ -730,7 +731,7 @@ export default function CreateDonationEventPage() {
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  {field.value ? format(field.value, "PPP") : <span>{t?.createEvent?.eventInfo?.fields?.datePlaceholder}</span>}
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
@@ -765,7 +766,7 @@ export default function CreateDonationEventPage() {
                             </FormControl>
                             <FormMessage />
                             <p className="text-sm text-muted-foreground">
-                              This is automatically calculated from the sum of all time slot capacities
+                              {t?.createEvent?.eventInfo?.fields?.capacityNote}
                             </p>
                           </FormItem>
                         );
@@ -777,9 +778,9 @@ export default function CreateDonationEventPage() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-semibold">Time Slots</h3>
+                        <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.timeSlot?.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                          Total Capacity: {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} people
+                         {t?.createEvent?.eventInfo?.fields?.timeSlots?.totalCapa} {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}
                         </p>
                       </div>
                       <Button
@@ -790,7 +791,7 @@ export default function CreateDonationEventPage() {
                         disabled={fields.length >= 10}
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Time Slot
+                        {t?.createEvent?.eventInfo?.fields?.timeSlots?.addButton}
                       </Button>
                     </div>
                     <div className="space-y-4">
@@ -814,7 +815,7 @@ export default function CreateDonationEventPage() {
                                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                   </svg>
-                                  This time slot conflicts with another time slot
+                                  {t?.createEvent?.eventInfo?.fields?.timeSlots?.conflictWarning}
                                 </div>
                               </div>
                             )}
@@ -823,7 +824,7 @@ export default function CreateDonationEventPage() {
                               name={`timeSlots.${index}.startTime`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Start Time</FormLabel>
+                                  <FormLabel>{t?.createEvent?.eventInfo?.fields?.timeSlots?.startTime}</FormLabel>
                                   <FormControl>
                                     <div className="relative">
                                       <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -844,7 +845,7 @@ export default function CreateDonationEventPage() {
                               name={`timeSlots.${index}.endTime`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>End Time</FormLabel>
+                                  <FormLabel>{t?.createEvent?.eventInfo?.fields?.timeSlots?.endTime}</FormLabel>
                                   <FormControl>
                                     <div className="relative">
                                       <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -865,7 +866,7 @@ export default function CreateDonationEventPage() {
                               name={`timeSlots.${index}.maxCapacity`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Max Capacity</FormLabel>
+                                  <FormLabel>{t?.createEvent?.eventInfo?.fields?.timeSlots?.maxCapacity}</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -890,12 +891,12 @@ export default function CreateDonationEventPage() {
                                 disabled={fields.length <= 1}
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Remove                            </Button>
+                                      {  t?.createEvent?.eventInfo?.fields?.timeSlots?.remove  }              </Button>
                             </div>
                           </div>)
                       })}
                     </div>
-
+ 
                     {/* Time Slots Summary */}
                     <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="flex justify-between items-center text-sm">
@@ -905,7 +906,7 @@ export default function CreateDonationEventPage() {
                               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                             </svg>
                             <span className="font-medium">
-                              {getConflictingSlots(watchedTimeSlots).size} conflicting slots detected
+                              {getConflictingSlots(watchedTimeSlots).size} {t?.createEvent?.eventInfo?.fields?.timeSlots?.sumary}
                             </span>
                           </div>
                         )}
@@ -920,16 +921,16 @@ export default function CreateDonationEventPage() {
                     onClick={() => router.push('/blood-donation-events')}
                     disabled={isSubmitting}
                   >
-                    Cancel
+                    {t?.createEvent?.buttons?.cancel}
                   </Button>
                   <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Submitting Request...
+                        {t?.createEvent?.buttons?.submitting}
                       </>
                     ) : (
-                      'Submit Request'
+                      t?.createEvent?.buttons?.submit
                     )}
                   </Button>
                 </CardFooter>
@@ -946,7 +947,7 @@ export default function CreateDonationEventPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-6 w-6 text-blue-500" />
-                    <span>Add New Organizer</span>
+                    <span>{t?.createEvent?.organizerInfo?.title}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -957,9 +958,9 @@ export default function CreateDonationEventPage() {
                       name="organizationName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Organization Name *</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.info?.orgName}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Red Cross Vietnam" {...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.orgNamePlaceholder} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -971,9 +972,9 @@ export default function CreateDonationEventPage() {
                       name="contactPersonName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Contact Person Name *</FormLabel>
+                          <FormLabel>{t?.createEvent?.oragninfo?.fields?.contactPersonName}</FormLabel>
                           <FormControl>
-                            <Input placeholder="John Doe" {...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.contactPersonPlaceholder} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -987,9 +988,9 @@ export default function CreateDonationEventPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email Address *</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.email}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="contact@organization.org" {...field} />
+                            <Input type="email" placeholder= {t?.createEvent?.organizerInfo?.fields?.emailPlaceholder}{...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1001,9 +1002,9 @@ export default function CreateDonationEventPage() {
                       name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.phone}</FormLabel>
                           <FormControl>
-                            <Input placeholder="0123456789" {...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.phonePlaceholder} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1016,13 +1017,13 @@ export default function CreateDonationEventPage() {
                     name="websiteUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Website URL (Optional)</FormLabel>
+                        <FormLabel>{t?.createEvent?.organizerInfo?.fields?.website}</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
                               className="pl-10"
-                              placeholder="https://www.organization.org"
+                              placeholder={t?.createEvent?.organizerInfo?.fields?.websitePlaceholder}
                               {...field}
                             />
                           </div>
@@ -1037,10 +1038,10 @@ export default function CreateDonationEventPage() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description (Optional)</FormLabel>
+                        <FormLabel>{t?.createEvent?.organizerInfo?.fields?.description}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Brief description of the organization and its mission..."
+                            placeholder={t?.createEvent?.organizerInfo?.fields?.descriptionPlaceholder}
                             rows={3}
                             {...field}
                           />
@@ -1056,7 +1057,7 @@ export default function CreateDonationEventPage() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <MapPin className="h-5 w-5" />
-                      Address Information (Optional)
+                      {t?.createEvent?.organizerInfo?.fields?.address?.title}
                     </h3>
 
                     <FormField
@@ -1064,9 +1065,9 @@ export default function CreateDonationEventPage() {
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Street Address</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.street}</FormLabel>
                           <FormControl>
-                            <Input placeholder="123 Organization Street" {...field} />
+                            <Input placeholder= {t?.createEvent?.organizerInfo?.fields?.address?.streetPlaceholder}{...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1079,11 +1080,11 @@ export default function CreateDonationEventPage() {
                         name="city"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Province/City</FormLabel>
+                            <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.city}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select province" />
+                                  <SelectValue placeholder={t?.createEvent?.organizerInfo?.fields?.address?.city} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -1104,11 +1105,11 @@ export default function CreateDonationEventPage() {
                         name="district"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>District</FormLabel>
+                            <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.district}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedOrganizerCity}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedOrganizerCity ? "Select district" : "Select province first"} />
+                                  <SelectValue placeholder={watchedOrganizerCity ? t?.createEvent?.organizerInfo?.fields?.address?.districtPlaceholder :t?.createEvent?.organizerInfo?.fields?.address?.selectProvinceFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getOrganizerDistricts().map((district) => (
@@ -1128,11 +1129,11 @@ export default function CreateDonationEventPage() {
                         name="ward"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Ward</FormLabel>
+                            <FormLabel>{t?.createEvent?.organizerInfo?.fields?.location?.ward}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value} disabled={!watchedOrganizerDistrict}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder={watchedOrganizerDistrict ? "Select ward" : "Select district first"} />
+                                  <SelectValue placeholder={watchedOrganizerDistrict ? t?.createEvent?.organizerInfo?.fields?.location?.wardPlaceholder :t?.createEvent?.organizerInfo?.fields?.location?.selectDisctrictFirst} />
                                 </SelectTrigger>
                               </FormControl>                              <SelectContent>
                                 {getOrganizerWards().map((ward) => (
@@ -1156,16 +1157,16 @@ export default function CreateDonationEventPage() {
                     onClick={() => setActiveTab("event")}
                     disabled={isCreatingOrganizer}
                   >
-                    Back to Event
+                    {t?.createEvent?.organizerInfo?.buttons?.back}
                   </Button>
                   <Button type="submit" disabled={isCreatingOrganizer}>
                     {isCreatingOrganizer ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating Organizer...
+                        {t?.createEvent?.buttons?.creatingOrganizer}
                       </>
                     ) : (
-                      'Create Organizer'
+                      t?.createEvent?.buttons?.createOrganizer
                     )}
                   </Button>
                 </CardFooter>

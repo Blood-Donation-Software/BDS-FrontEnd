@@ -16,9 +16,11 @@ import { logout } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner'
 import Avatar from '@/components/ui/avatar';
+import { useLanguage } from '@/context/language_context' 
 import { Droplet } from 'lucide-react'
 
 export default function Header() {
+  const {t} = useLanguage();
   const { account, isLoading, loggedIn, profile, setProfile, setAccount, setLoggedIn } = useUserProfile();
   const router = useRouter();
 
@@ -29,10 +31,10 @@ export default function Header() {
       setAccount(null);
       setLoggedIn(false);
       router.push('/login');
-      toast.success("Đăng xuất thanh công!");
+      toast.success(t?.notifications?.logout?.success);
     } catch (error) {
-      toast.error("Đăng xuất thất bại, vui lòng thử lại sau!");
-      toast.error(error?.response?.data?.message || "Lỗi không xác định");
+      toast.error(t?.notifications?.logout?.error);
+      toast.error(error?.response?.data?.message || t?.notifications?.logout?.unknownError);
     }
   }
 
@@ -58,7 +60,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
                 <Link href="/" className="font-semibold text-lg px-4 py-2 rounded-md hover:bg-gray-100 transition-colors">
-                  Trang chủ
+                  {t?.header?.home}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -66,7 +68,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
                 <Link href="/about" className="font-semibold px-4 py-2 text-lg rounded-md hover:bg-gray-100 transition-colors">
-                  Giới thiệu
+                  {t?.header?.about}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -74,16 +76,16 @@ export default function Header() {
             {/* Hiến máu dropdown */}
             <NavigationMenu>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-lg font-semibold">Hiến máu</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-lg font-semibold">{t?.header?.donate_blood}</NavigationMenuTrigger>
                 <NavigationMenuContent className="min-w-[250px] px-4 py-2 bg-white rounded-md shadow-md space-y-2">
                   <NavigationMenuLink asChild>
                     <Link href="/emergency-cases" className="block px-2 py-1 hover:bg-gray-100 rounded">
-                      Các trường hợp khẩn cấp
+                      {t?.header?.emergencyCases}
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
                     <Link href="/donation-events" className="block px-2 py-1 hover:bg-gray-100 rounded">
-                      Các buổi hiến máu
+                      {t?.header?.donationEvents}
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuContent>
@@ -94,7 +96,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
                 <Link href="/blog" className="font-semibold px-4 py-2 rounded-md text-lg hover:bg-gray-100 transition-colors">
-                  Blog
+                  {t?.header?.blog}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -102,7 +104,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
                 <Link href="/blood-compatibility" className="font-semibold px-4 py-2 rounded-md text-lg hover:bg-gray-100 transition-colors">
-                  Tra cứu tương thích
+                  {t?.header?.bloodCompatibility}
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -158,7 +160,7 @@ export default function Header() {
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Thông tin cá nhân
+                    {t?.dropDownMenu?.profile}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -182,7 +184,7 @@ export default function Header() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    Cài đặt
+                    {t?.dropDownMenu?.settings}
                   </Link>
                 </DropdownMenuItem>
                 <div className="border-t border-gray-100 my-1"></div>
@@ -190,7 +192,7 @@ export default function Header() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Đăng xuất
+                  {t?.auth?.logout}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -198,12 +200,12 @@ export default function Header() {
             <>
               <Link href="/login">
                 <Button variant="ghost" className="text-black text-lg rounded-full font-semibold px-6">
-                  Đăng nhập
+                  {t?.auth?.login}
                 </Button>
               </Link>
               <Link href="/register">
                 <Button className="bg-red-600 hover:bg-red-700 text-white text-lg font-semibold px-6 rounded-full">
-                  Đăng ký
+                  {t?.auth?.register}
                 </Button>
               </Link>
             </>

@@ -1,3 +1,5 @@
+import en from '@/data/locales/en';
+import vie from '@/data/locales/vie';
 export const convertBloodType = (bloodType) => {
   if(!bloodType) return null  ;
   const [type, rh] = bloodType.split('_');
