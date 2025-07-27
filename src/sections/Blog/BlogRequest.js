@@ -49,7 +49,7 @@ const formatCrudType = (crudType) => {
 }
 
 export default function BlogRequest() {
-  const {t} = useLanguage()
+  const { t } = useLanguage()
   const [requests, setRequests] = useState([])
   const [filteredRequests, setFilteredRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -72,20 +72,20 @@ export default function BlogRequest() {
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
- 
-const statusOptions = [
-  { value: 'ALL', label: t.eventRequest.AllStatuses },
-  { value: 'PENDING', label: t.eventRequest.Pending },
-  { value: 'APPROVED', label: t.eventRequest.Approved },
-  { value: 'REJECTED', label: t.eventRequest.Rejected }
-]
 
-const crudTypeOptions = [
-  { value: 'ALL', label: t.eventRequest.AllRequestTypes },
-  { value: 'CREATE', label: t.eventRequest.CreateBlog },
-  { value: 'UPDATE', label: t.eventRequest.UpdateBlog },
-  { value: 'DELETE', label: t.eventRequest.DeleteBlog }
-]
+  const statusOptions = [
+    { value: 'ALL', label: t.eventRequest.AllStatuses },
+    { value: 'PENDING', label: t.eventRequest.Pending },
+    { value: 'APPROVED', label: t.eventRequest.Approved },
+    { value: 'REJECTED', label: t.eventRequest.Rejected }
+  ]
+
+  const crudTypeOptions = [
+    { value: 'ALL', label: t.eventRequest.AllRequestTypes },
+    { value: 'CREATE', label: t.eventRequest.CreateBlog },
+    { value: 'UPDATE', label: t.eventRequest.UpdateBlog },
+    { value: 'DELETE', label: t.eventRequest.DeleteBlog }
+  ]
   // Fetch pending blog requests from API
   const fetchRequests = async (page = 0, size = 10) => {
     try {
@@ -113,146 +113,146 @@ const crudTypeOptions = [
       setLoading(false)
     }
   }
+}
+
+useEffect(() => {
+  fetchRequests(pagination.page, pagination.size)
+}, [])
+
+useEffect(() => {
+  fetchRequests(pagination.page, pagination.size)
+}, [sortConfig])
+useEffect(() => {
+  let result = [...requests]
+
+  // Search filter
+  if (filters.search) {
+    const term = filters.search.toLowerCase()
+    result = result.filter(req => {
+      if (!req) return false
+
+      return (
+        req.blog?.title?.toLowerCase().includes(term) ||
+        req.blog?.content?.toLowerCase().includes(term) ||
+        req.id?.toString().includes(term) ||
+        req.blog?.authorId?.toString().includes(term)
+      )
+    })
   }
 
-  useEffect(() => {
-    fetchRequests(pagination.page, pagination.size)
-  }, [])
+  // Status filter
+  if (filters.status && filters.status !== 'ALL') {
+    result = result.filter(req => req && req.status === filters.status)
+  }
 
-  useEffect(() => {
-    fetchRequests(pagination.page, pagination.size)
-  }, [sortConfig])
-  useEffect(() => {
-    let result = [...requests]
+  // CRUD Type filter
+  if (filters.crudType && filters.crudType !== 'ALL') {
+    result = result.filter(req => req && req.crudType === filters.crudType)
+  }
 
-    // Search filter
-    if (filters.search) {
-      const term = filters.search.toLowerCase()
-      result = result.filter(req => {
-        if (!req) return false
+  setFilteredRequests(result)
+}, [requests, filters])
 
-        return (
-          req.blog?.title?.toLowerCase().includes(term) ||
-          req.blog?.content?.toLowerCase().includes(term) ||
-          req.id?.toString().includes(term) ||
-          req.blog?.authorId?.toString().includes(term)
-        )
-      })
+const handleSort = (key) => {
+  let direction = 'asc'
+  if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc'
+  setSortConfig({ key, direction })
+}
+
+const handlePageChange = (newPage) => {
+  setPagination(prev => ({ ...prev, page: newPage }))
+  fetchRequests(newPage, pagination.size)
+}
+
+const handlePageSizeChange = (newSize) => {
+  const size = parseInt(newSize)
+  setPagination(prev => ({ ...prev, size, page: 0 }))
+  fetchRequests(0, size)
+}
+
+const handleRefresh = () => {
+  fetchRequests(pagination.page, pagination.size)
+}
+
+// Handle blog request approval/rejection
+const handleVerifyRequest = async (requestId, action) => {
+  try {
+    setActionLoading(true)
+
+
+    if (action === 'APPROVE') {
+      await approveBlogRequest(requestId)
+      toast.success(t.blogRequest.BlogRequestApprovedSuccessfully)
+    } else if (action === 'REJECT') {
+      await rejectBlogRequest(requestId)
+      toast.success(t.blogRequest.BlogRequestRejectedSuccessfully)
     }
 
-    // Status filter
-    if (filters.status && filters.status !== 'ALL') {
-      result = result.filter(req => req && req.status === filters.status)
+
+    // Refresh the list
+    await fetchRequests(pagination.page, pagination.size)
+  } catch (error) {
+    console.error(t.blogRequest.FailedToVerifyBlogRequest, error)
+    const errorMessage = error.response?.data?.message || error.message
+    toast.error(t.blogRequest.FailedToVerifyBlogRequest.replace('{action}', action.toLowerCase()).replace('{errorMessage}', errorMessage))
+  } finally {
+    setActionLoading(false)
+  }
+}
+
+// Handle view blog request details
+const handleViewRequest = async (request) => {
+  try {
+    // For now, use the request data directly
+    // In the future, you might want to fetch full details with getBlogRequestById
+    setSelectedRequest(request)
+    setViewDialogOpen(true)
+  } catch (error) {
+    console.error(t.blogRequest.FailedToLoadBlogRequestDetails, error)
+    toast.error(t.blogRequest.FailedToLoadBlogRequestDetails)
+  }
+}
+// Format date for display
+const formatDate = (dateString) => {
+  if (!dateString) return 'Unknown'
+  try {
+    // Handle both ISO and local date formats
+    if (dateString.includes('T') || dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return format(parseISO(dateString), 'MMM dd, yyyy')
     }
-
-    // CRUD Type filter
-    if (filters.crudType && filters.crudType !== 'ALL') {
-      result = result.filter(req => req && req.crudType === filters.crudType)
-    }
-
-    setFilteredRequests(result)
-  }, [requests, filters])
-
-  const handleSort = (key) => {
-    let direction = 'asc'
-    if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc'
-    setSortConfig({ key, direction })
+    return format(new Date(dateString), 'MMM dd, yyyy')
+  } catch (error) {
+    return dateString
   }
+}
 
-  const handlePageChange = (newPage) => {
-    setPagination(prev => ({ ...prev, page: newPage }))
-    fetchRequests(newPage, pagination.size)
-  }
-
-  const handlePageSizeChange = (newSize) => {
-    const size = parseInt(newSize)
-    setPagination(prev => ({ ...prev, size, page: 0 }))
-    fetchRequests(0, size)
-  }
-
-  const handleRefresh = () => {
-    fetchRequests(pagination.page, pagination.size)
-  }
-
-  // Handle blog request approval/rejection
-  const handleVerifyRequest = async (requestId, action) => {
-    try {
-      setActionLoading(true)
-
-
-      if (action === 'APPROVE') {
-        await approveBlogRequest(requestId)
-        toast.success(t.blogRequest.BlogRequestApprovedSuccessfully)
-      } else if (action === 'REJECT') {
-        await rejectBlogRequest(requestId)
-        toast.success(t.blogRequest.BlogRequestRejectedSuccessfully)
-      }
-
-
-      // Refresh the list
-      await fetchRequests(pagination.page, pagination.size)
-    } catch (error) {
-      console.error(t.blogRequest.FailedToVerifyBlogRequest, error)
-      const errorMessage = error.response?.data?.message || error.message
-      toast.error(t.blogRequest.FailedToVerifyBlogRequest.replace('{action}', action.toLowerCase()).replace('{errorMessage}', errorMessage))
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  // Handle view blog request details
-  const handleViewRequest = async (request) => {
-    try {
-      // For now, use the request data directly
-      // In the future, you might want to fetch full details with getBlogRequestById
-      setSelectedRequest(request)
-      setViewDialogOpen(true)
-    } catch (error) {
-      console.error(t.blogRequest.FailedToLoadBlogRequestDetails, error)
-      toast.error(t.blogRequest.FailedToLoadBlogRequestDetails)
-    }
-  }
-  // Format date for display
-  const formatDate = (dateString) => {
-    if (!dateString) return 'Unknown'
-    try {
-      // Handle both ISO and local date formats
-      if (dateString.includes('T') || dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        return format(parseISO(dateString), 'MMM dd, yyyy')
-      }
-      return format(new Date(dateString), 'MMM dd, yyyy')
-    } catch (error) {
-      return dateString
-    }
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="mb-6">
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                {t.blogRequest.BlogRequests}
-              </CardTitle>
-              <CardDescription>
-                {t.blogRequest.ReviewAndManageBlogSubmissions} ({pagination.totalElements} {t.blogRequest.TotalRequests} )
-              </CardDescription>
-            </div>
-            <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
-              {loading ? t.blogRequest.Loading : t.blogRequest.Refresh}
-            </Button>
+return (
+  <div className="container mx-auto px-4 py-8">
+    <Card className="mb-6">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              {t.blogRequest.BlogRequests}
+            </CardTitle>
+            <CardDescription>
+              {t.blogRequest.ReviewAndManageBlogSubmissions} ({pagination.totalElements} {t.blogRequest.TotalRequests} )
+            </CardDescription>
           </div>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}          
-          <div className="flex flex-row mb-4 space-x-4">
-          )}          
+          <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
+            {loading ? t.blogRequest.Loading : t.blogRequest.Refresh}
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+        <div className="flex flex-row mb-4 space-x-4">
+
           <div className="flex flex-row mb-4 space-x-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -317,38 +317,38 @@ const crudTypeOptions = [
             </div>
           </div>
 
-          <Table>            
+          <Table>
             <TableHeader>
-            <TableRow>
-              <TableHead>
-                <Button variant="ghost" onClick={() => handleSort('blog.title')}>
-                  {t.blogRequest.Title} <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button variant="ghost" onClick={() => handleSort('blog.authorId')}>
-                  {t.blogRequest.Author} <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button variant="ghost" onClick={() => handleSort('status')}>
-                  {t.blogRequest.Status} <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button variant="ghost" onClick={() => handleSort('crudType')}>
-                  {t.blogRequest.RequestType} <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                {t.blogRequest.ContentPreview}
-              </TableHead>
-              <TableHead>
-                {t.blogRequest.Actions}
-              </TableHead>  
-            </TableRow>
-          </TableHeader>            
-          <TableBody>
+              <TableRow>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => handleSort('blog.title')}>
+                    {t.blogRequest.Title} <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => handleSort('blog.authorId')}>
+                    {t.blogRequest.Author} <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => handleSort('status')}>
+                    {t.blogRequest.Status} <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => handleSort('crudType')}>
+                    {t.blogRequest.RequestType} <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  {t.blogRequest.ContentPreview}
+                </TableHead>
+                <TableHead>
+                  {t.blogRequest.Actions}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
@@ -455,8 +455,8 @@ const crudTypeOptions = [
                                 </AlertDialogContent>
                               </AlertDialog>
                             </>
-                          )}                      
-                          </div>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   )
@@ -519,13 +519,14 @@ const crudTypeOptions = [
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+          </div>
+      </CardContent>
+    </Card>
 
-      {/* View Blog Request Dialog */}
-      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="min-w-4xl  max-h-[80vh] overflow-auto">          
-          <DialogHeader>
+    {/* View Blog Request Dialog */}
+    <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+      <DialogContent className="min-w-4xl  max-h-[80vh] overflow-auto">
+        <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             {selectedRequest?.crudType === 'CREATE' && t.blogRequest.NewBlogRequestDetails}
@@ -541,8 +542,8 @@ const crudTypeOptions = [
           </DialogDescription>
         </DialogHeader>
 
-          {selectedRequest && (
-            <div className="space-y-6">
+        {selectedRequest && (
+          <div className="space-y-6">
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -578,104 +579,102 @@ const crudTypeOptions = [
                   <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog?.status || 'N/A'}</p>
                 </div>
               </div>
-              </div>
-
-              {/* Thumbnail */}
-              {selectedRequest.blog?.thumbnail && (
-                <div>
-                  <label className="text-sm font-medium text-gray-500">{t.blogRequest.Thumbnail}</label>
-                  <div className="mt-2">
-                    <img
-                      src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
-                      alt="Blog thumbnail"
-                      src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
-                      alt="Blog thumbnail"
-                      className="w-full max-w-sm h-48 object-cover rounded-lg border"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Content */}
-              <div>
-                <label className="text-sm font-medium text-gray-500">{t.blogRequest.BlogContent}</label>
-                <div
-                  className="mt-2 prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
-                  dangerouslySetInnerHTML={{ __html: selectedRequest.blog?.content || 'No content available' }}
-                />
-              </div>
             </div>
-          )}
 
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-              {t.blogRequest.Close}
-            </Button>
-            {selectedRequest?.status === 'PENDING' && (
-              <div className="flex gap-2">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">
-                      {t.blogRequest.Reject}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>{t.blogRequest.RejectBlogRequest}</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {t.blogRequest.AreYouSureYouWantToRejectThisBlogRequest}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                      <AlertDialogAction
-                        onClick={() => {
-                          handleVerifyRequest(selectedRequest.id, 'REJECT')
-                          setViewDialogOpen(false)
-                        }}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        {t.blogRequest.Reject}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      {t.blogRequest.Approve}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>{t.blogRequest.ApproveBlogRequest}</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {t.blogRequest.AreYouSureYouWantToApproveThisBlogRequest}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{t.blogRequest.cancel}</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          handleVerifyRequest(selectedRequest.id, 'APPROVE')
-                          setViewDialogOpen(false)
-                        }}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        {t.blogRequest.Approve}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>              
+            {/* Thumbnail */}
+            {selectedRequest.blog?.thumbnail && (
+              <div>
+                <label className="text-sm font-medium text-gray-500">{t.blogRequest.Thumbnail}</label>
+                <div className="mt-2">
+                  <img
+                    src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
+                    alt="Blog thumbnail"
+                    src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
+                    alt="Blog thumbnail"
+                    className="w-full max-w-sm h-48 object-cover rounded-lg border"
+                  />
                 </div>
-                </AlertDialog>              
-                </div>
+              </div>
             )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+
+            {/* Content */}
+            <div>
+              <label className="text-sm font-medium text-gray-500">{t.blogRequest.BlogContent}</label>
+              <div
+                className="mt-2 prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
+                dangerouslySetInnerHTML={{ __html: selectedRequest.blog?.content || 'No content available' }}
+              />
+            </div>
+          </div>
+        )}
+
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+            {t.blogRequest.Close}
+          </Button>
+          {selectedRequest?.status === 'PENDING' && (
+            <div className="flex gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="text-red-600 border-red-600 hover:bg-red-50">
+                    {t.blogRequest.Reject}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t.blogRequest.RejectBlogRequest}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t.blogRequest.AreYouSureYouWantToRejectThisBlogRequest}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      
+                      onClick={() => {
+                        handleVerifyRequest(selectedRequest.id, 'REJECT')
+                        setViewDialogOpen(false)
+                      }}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      {t.blogRequest.Reject}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="bg-green-600 hover:bg-green-700">
+                    {t.blogRequest.Approve}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t.blogRequest.ApproveBlogRequest}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t.blogRequest.AreYouSureYouWantToApproveThisBlogRequest}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t.blogRequest.cancel}</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        handleVerifyRequest(selectedRequest.id, 'APPROVE')
+                        setViewDialogOpen(false)
+                      }}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {t.blogRequest.Approve}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+            
+            )}
+    </DialogFooter>
+  </DialogContent>
+      </Dialog >
+    </div >
   )
-}
