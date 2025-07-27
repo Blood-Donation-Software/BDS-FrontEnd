@@ -2,6 +2,7 @@
 
 import { createRequest } from "@/apis/bloodrequest";
 import { searchProfiles } from "@/apis/profile";
+import { searchProfiles } from "@/apis/profile";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, CheckCircle, Clock, CalendarIcon, Loader2, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertTriangle, CheckCircle, Clock, CalendarIcon, Loader2, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from "react";
 import React, { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -62,14 +69,52 @@ export default function CreateBloodRequest() {
   // New profile creation states
   const [showNewProfileForm, setShowNewProfileForm] = useState(false);
   const [newProfile, setNewProfile] = useState({
+    profileId: null,
+    selectedProfile: null,
+    requiredDate: null,
+    urgency: "",
+    bloodType: "",
+    componentRequests: [],
+    medicalConditions: [],
+    additionalMedicalInformation: "",
+    additionalNotes: ""
+  });
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingRequestData, setPendingRequestData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Profile search states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  
+  // New profile creation states
+  const [showNewProfileForm, setShowNewProfileForm] = useState(false);
+  const [newProfile, setNewProfile] = useState({
     name: "",
+    personalId: "",
     personalId: "",
     phone: "",
     address: "",
     ward: "",
     district: "",
     city: "",
+    ward: "",
+    district: "",
+    city: "",
     bloodType: "",
+    gender: "",
+    dateOfBirth: null
+  });
+
+  // Location selection state
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+  const [availableDistricts, setAvailableDistricts] = useState([]);
+  const [availableWards, setAvailableWards] = useState([]);
     gender: "",
     dateOfBirth: null
   });
@@ -241,6 +286,104 @@ export default function CreateBloodRequest() {
   const handleProfileSelect = (profile) => {
     setBloodRequests(prev => ({
       ...prev,
+      profileId: profile.id,
+      selectedProfile: profile,
+      // Auto-select blood type if profile has one
+      bloodType: profile.bloodType || prev.bloodType
+    }));
+    setSearchQuery(`${profile.name} - ${profile.personalId}`);
+    setShowSearchResults(false);
+  };
+
+  // Clear selected profile
+  const clearSelectedProfile = () => {
+    setBloodRequests(prev => {
+      // Only reset blood type if it was auto-selected from the profile
+      const shouldResetBloodType = prev.selectedProfile && 
+                                   prev.selectedProfile.bloodType === prev.bloodType;
+      
+      return {
+        ...prev,
+        profileId: null,
+        selectedProfile: null,
+        // Reset blood type only if it was auto-selected
+        bloodType: shouldResetBloodType ? "" : prev.bloodType
+      };
+    });
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSearchResults(false);
+  };
+
+  const handleDate = (date) => {
+    setBloodRequests((prev) => {
+      const updated = {
+        ...prev,
+        requiredDate: date,
+      };
+      // Auto-calculate urgency after setting date
+      return calculateUrgency(updated);
+    });
+  };
+
+  const handleMedicalCondition = (conditionId) => {
+    setBloodRequests((prev) => {
+      const condition = medicalConditions.find(c => c.id === conditionId);
+      const isSelected = prev.medicalConditions.some(c => c.id === conditionId);
+      
+      let updatedConditions;
+      if (isSelected) {
+        updatedConditions = prev.medicalConditions.filter(c => c.id !== conditionId);
+      } else {
+        updatedConditions = [...prev.medicalConditions, condition];
+      }
+      
+      const updated = {
+        ...prev,
+        medicalConditions: updatedConditions
+      };
+      
+      // Auto-calculate urgency after medical condition change
+      return calculateUrgency(updated);
+    });
+  };
+
+  const calculateUrgency = (requestData) => {
+    const { medicalConditions, requiredDate } = requestData;
+    
+    // Only auto-calculate urgency if both required date and medical conditions are selected
+    if (!requiredDate || medicalConditions.length === 0) {
+      return requestData; // Don't auto-calculate urgency
+    }
+    
+    // Check if any high-priority conditions are selected
+    const hasHighPriorityCondition = medicalConditions.some(c => c.urgencyLevel === "HIGH");
+    
+    // Calculate days until required date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reqDate = new Date(requiredDate);
+    reqDate.setHours(0, 0, 0, 0);
+    const daysUntilRequired = Math.ceil((reqDate - today) / (1000 * 60 * 60 * 24));
+    
+    let autoUrgency = requestData.urgency;
+    
+    // Auto-calculate urgency based on conditions and timing
+    if (hasHighPriorityCondition || daysUntilRequired <= 0) {
+      autoUrgency = "HIGH";
+    } else if (medicalConditions.some(c => c.urgencyLevel === "MEDIUM") || daysUntilRequired <= 1) {
+      autoUrgency = "MEDIUM";
+    } else if (daysUntilRequired <= 3) {
+      autoUrgency = "MEDIUM";
+    } else {
+      // If only low-priority conditions or longer timeframe
+      autoUrgency = autoUrgency || "LOW";
+    }
+    
+    return {
+      ...requestData,
+      urgency: autoUrgency
+    };
       profileId: profile.id,
       selectedProfile: profile,
       // Auto-select blood type if profile has one
@@ -1096,8 +1239,14 @@ export default function CreateBloodRequest() {
                 <Button
                   key={bloodType.id}
                   variant={bloodType.value === bloodRequest.bloodType ? "default" : "outline"}
+                  variant={bloodType.value === bloodRequest.bloodType ? "default" : "outline"}
                   type="button"
                   onClick={() => handleBloodType(bloodType.value)}
+                  className={`h-16 rounded-xl border-2 font-semibold text-lg transition-all ${
+                    bloodType.value === bloodRequest.bloodType
+                      ? "bg-red-600 text-white border-red-600"
+                      : "bg-neutral-50 border-gray-200 text-gray-700 hover:bg-red-50 hover:border-red-200"
+                  }`}
                   className={`h-16 rounded-xl border-2 font-semibold text-lg transition-all ${
                     bloodType.value === bloodRequest.bloodType
                       ? "bg-red-600 text-white border-red-600"
@@ -1174,6 +1323,8 @@ export default function CreateBloodRequest() {
                     flex flex-col items-center justify-center h-[84px] 
                     rounded-xl border-2 ${urgency.borderColor} ${urgency.hoverColor} cursor-pointer
                     ${urgency.value === bloodRequest.urgency ? 'ring-2 ring-offset-2 ring-red-500' : ''}`}
+                    rounded-xl border-2 ${urgency.borderColor} ${urgency.hoverColor} cursor-pointer
+                    ${urgency.value === bloodRequest.urgency ? 'ring-2 ring-offset-2 ring-red-500' : ''}`}
                   onClick={() => handleUrgency(urgency.value)}
                 >
                   <div className="flex items-center">
@@ -1209,8 +1360,10 @@ export default function CreateBloodRequest() {
                 placeholder={t?.createBloodRequest?.notes?.additional?.placeholder}     
                 className="min-h-[100px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 onChange={handleBloodRequest}
+                onChange={handleBloodRequest}
               />
             </div>
+          </div>
           </div>
 
           {/* Submit */}
@@ -1220,6 +1373,92 @@ export default function CreateBloodRequest() {
           </div>
         </form>
       </CardContent>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelRequestCreation()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm Blood Request</DialogTitle>
+            <DialogDescription>
+              Please review the blood request details before submitting. This will create an emergency blood request.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {pendingRequestData && (
+            <div className="space-y-2 py-4">
+              {bloodRequest.selectedProfile && (
+                <>
+                  <div><strong>Patient Name:</strong> {bloodRequest.selectedProfile.name}</div>
+                  <div><strong>Personal ID:</strong> {bloodRequest.selectedProfile.personalId}</div>
+                  <div><strong>Phone:</strong> {bloodRequest.selectedProfile.phone}</div>
+                  {bloodRequest.selectedProfile.address && (
+                    <div><strong>Address:</strong> {bloodRequest.selectedProfile.address}, {bloodRequest.selectedProfile.ward}, {bloodRequest.selectedProfile.district}, {bloodRequest.selectedProfile.city}</div>
+                  )}
+                  {bloodRequest.selectedProfile.bloodType && (
+                    <div><strong>Patient Blood Type:</strong> {convertBloodType(bloodRequest.selectedProfile.bloodType)}</div>
+                  )}
+                  {bloodRequest.selectedProfile.isNew && (
+                    <div className="text-sm text-blue-600 font-medium">* This is a new profile that will be created</div>
+                  )}
+                </>
+              )}
+              <div><strong>Blood Type Requested:</strong> {bloodRequest.bloodType}</div>
+              <div><strong>Required Date:</strong> {bloodRequest.requiredDate ? format(bloodRequest.requiredDate, "PPP") : "Not specified"}</div>
+              <div><strong>Urgency:</strong> {bloodRequest.urgency}</div>
+              {bloodRequest.componentRequests && bloodRequest.componentRequests.length > 0 && (
+                <div>
+                  <strong>Components Requested:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {bloodRequest.componentRequests.map((comp, index) => (
+                      <li key={index}>
+                        {comp.componentType.replace(/_/g, ' ')} - Volume: {comp.volume}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bloodRequest.medicalConditions && bloodRequest.medicalConditions.length > 0 && (
+                <div>
+                  <strong>Medical Conditions:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {bloodRequest.medicalConditions.map((condition, index) => (
+                      <li key={index}>{condition.condition}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bloodRequest.additionalMedicalInformation && (
+                <div><strong>Additional Medical Info:</strong> {bloodRequest.additionalMedicalInformation}</div>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelRequestCreation}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmSubmitRequest}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Request...
+                </>
+              ) : (
+                'Confirm & Submit Request'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelRequestCreation()}>

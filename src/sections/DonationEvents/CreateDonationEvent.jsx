@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { toast } from 'sonner'
 import { cn } from "@/lib/utils"
 import vietnamProvinces from '@/data/vietnam-provinces.json'
@@ -143,6 +144,8 @@ export default function CreateDonationEventPage() {
   const [organizers, setOrganizers] = useState([])
   const [activeTab, setActiveTab] = useState("event")
   const [organizersLoading, setOrganizersLoading] = useState(true)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const [pendingEventData, setPendingEventData] = useState(null)
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [pendingEventData, setPendingEventData] = useState(null)
   // Event form
@@ -342,7 +345,45 @@ export default function CreateDonationEventPage() {
         }
       }
     }
+    // Prepare the event data but don't submit yet
+    let organizerDetails = null
+    if (data.organizerId && data.organizerId !== "") {
+      const selectedOrganizer = organizers.find(org => org.id.toString() === data.organizerId)
+      if (selectedOrganizer) {
+        organizerDetails = {
+          id: selectedOrganizer.id,
+          organizationName: selectedOrganizer.organizationName,
+          contactPersonName: selectedOrganizer.contactPersonName,
+          email: selectedOrganizer.email,
+          phoneNumber: selectedOrganizer.phoneNumber,
+          address: selectedOrganizer.address,
+          ward: selectedOrganizer.ward,
+          district: selectedOrganizer.district,
+          city: selectedOrganizer.city,
+          description: selectedOrganizer.description,
+          websiteUrl: selectedOrganizer.websiteUrl
+        }
+      }
+    }
 
+    const eventData = {
+      name: data.name,
+      hospital: data.hospital,
+      address: data.address,
+      ward: data.ward,
+      district: data.district,
+      city: data.city,
+      donationDate: format(data.donationDate, 'dd-MM-yyyy'),
+      totalMemberCount: data.totalMemberCount,
+      donationType: data.donationType,
+      organizerId: data.organizerId && data.organizerId !== "" ? parseInt(data.organizerId) : null,
+      organizer: organizerDetails,
+      timeSlotDtos: data.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        maxCapacity: slot.maxCapacity
+      }))
+    }
     const eventData = {
       name: data.name,
       hospital: data.hospital,
@@ -374,6 +415,7 @@ export default function CreateDonationEventPage() {
     try {
       const response = await createEvent(pendingEventData)
       toast.success("Blood donation event request submitted successfully!")
+      router.push(`/staffs/donation-event/requests`)
       router.push(`/staffs/donation-event/requests`)
     } catch (error) {
       console.error('Error creating event:', error)
@@ -422,7 +464,13 @@ export default function CreateDonationEventPage() {
     } finally {
       setIsSubmitting(false)
       setPendingEventData(null)
+      setPendingEventData(null)
     }
+  }
+
+  const cancelEventCreation = () => {
+    setShowConfirmDialog(false)
+    setPendingEventData(null)
   }
 
   const cancelEventCreation = () => {

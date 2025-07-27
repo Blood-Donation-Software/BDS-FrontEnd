@@ -16,23 +16,7 @@ export const convertBloodType = (bloodType) => {
       return bloodType;
   }
   return `${type}${rhSign}`;
-
 }
-
-
-
-export async function getDictionary(lang) {
-  switch (lang) {
-    case 'en':
-      return (await import('@/data/locales/en.json')).default;
-    case 'vie':
-      return (await import('@/data/locales/vie.json')).default;
-    default:
-      return (await import('@/data/locales/en.json')).default;
-  }
-
-}
-
 
 export const convertDonationRegistrationStatus = (status) => {
   switch (status) {

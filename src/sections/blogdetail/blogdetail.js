@@ -82,6 +82,10 @@ export default function BlogDetail() {
           src={`${BASE_URL}/${blog.thumbnail}`}
           alt="Blog thumbnail"
           className="w-full object-cover rounded-lg border"
+        <img
+          src={`${BASE_URL}/${blog.thumbnail}`}
+          alt="Blog thumbnail"
+          className="w-full object-cover rounded-lg border"
         />
       </div>
 
@@ -103,6 +107,10 @@ export default function BlogDetail() {
             >
               <div className="bg-white rounded-lg shadow-md overflow-hidden max-w-xs w-full mx-auto">
                 <div className="relative h-32 w-full">
+                  <img
+                    src={`${BASE_URL}/${blog.thumbnail}`}
+                    alt="Blog thumbnail"
+                    className="object-cover rounded-lg border"
                   <img
                     src={`${BASE_URL}/${blog.thumbnail}`}
                     alt="Blog thumbnail"

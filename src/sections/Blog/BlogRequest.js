@@ -12,6 +12,7 @@ import { ArrowUpDown, Search, Calendar, User, FileText, Eye, Check, X, BookOpen 
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import { getPendingBlogRequests, approveBlogRequest, rejectBlogRequest } from '@/apis/blog'
+import { getPendingBlogRequests, approveBlogRequest, rejectBlogRequest } from '@/apis/blog'
 import { BASE_URL } from '@/global-config'
 import { useLanguage } from '@/context/language_context'
 
@@ -112,6 +113,7 @@ const crudTypeOptions = [
       setLoading(false)
     }
   }
+  }
 
   useEffect(() => {
     fetchRequests(pagination.page, pagination.size)
@@ -177,6 +179,7 @@ const crudTypeOptions = [
     try {
       setActionLoading(true)
 
+
       if (action === 'APPROVE') {
         await approveBlogRequest(requestId)
         toast.success(t.blogRequest.BlogRequestApprovedSuccessfully)
@@ -184,6 +187,7 @@ const crudTypeOptions = [
         await rejectBlogRequest(requestId)
         toast.success(t.blogRequest.BlogRequestRejectedSuccessfully)
       }
+
 
       // Refresh the list
       await fetchRequests(pagination.page, pagination.size)
@@ -246,6 +250,8 @@ const crudTypeOptions = [
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
               {error}
             </div>
+          )}          
+          <div className="flex flex-row mb-4 space-x-4">
           )}          
           <div className="flex flex-row mb-4 space-x-4">
             <div className="relative flex-1">
@@ -537,6 +543,7 @@ const crudTypeOptions = [
 
           {selectedRequest && (
             <div className="space-y-6">
+            <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">{t.blogRequest.Title}</label>
@@ -571,6 +578,7 @@ const crudTypeOptions = [
                   <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog?.status || 'N/A'}</p>
                 </div>
               </div>
+              </div>
 
               {/* Thumbnail */}
               {selectedRequest.blog?.thumbnail && (
@@ -578,6 +586,8 @@ const crudTypeOptions = [
                   <label className="text-sm font-medium text-gray-500">{t.blogRequest.Thumbnail}</label>
                   <div className="mt-2">
                     <img
+                      src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
+                      alt="Blog thumbnail"
                       src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
                       alt="Blog thumbnail"
                       className="w-full max-w-sm h-48 object-cover rounded-lg border"
@@ -596,6 +606,7 @@ const crudTypeOptions = [
               </div>
             </div>
           )}
+
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
@@ -618,6 +629,7 @@ const crudTypeOptions = [
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
                       <AlertDialogAction
                         onClick={() => {
                           handleVerifyRequest(selectedRequest.id, 'REJECT')
@@ -656,6 +668,8 @@ const crudTypeOptions = [
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
+                </AlertDialog>              
+                </div>
                 </AlertDialog>              
                 </div>
             )}

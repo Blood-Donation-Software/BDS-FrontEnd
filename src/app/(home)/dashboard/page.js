@@ -18,9 +18,12 @@ import {
     TrendingUp,
     Clock,
     Award,
+    Award,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { convertDonationRegistrationStatus } from '@/utils/utils';
+import Link from 'next/link';
 import { convertDonationRegistrationStatus } from '@/utils/utils';
 import Link from 'next/link';
 
@@ -66,6 +69,7 @@ function Dashboard() {
             setLoading(true);
             setError(null);
             const response = await getDonationHistory(page, pageSize, 'registrationDate', false);
+
 
             setDonationHistory(response.content || []);
             setTotalPages(response.totalPages || 0);
@@ -135,6 +139,7 @@ function Dashboard() {
                         </div>
                     </div>
 
+
                     {/* User Welcome */}
                     <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                         <div className="flex items-center gap-4">
@@ -198,6 +203,7 @@ function Dashboard() {
                                     <p className="text-purple-100 text-sm">{t?.dashboard?.StatisticsCard?.latest}</p>
                                     <p className="text-lg font-semibold">
                                         {stats.mostRecentDonation
+                                        {stats.mostRecentDonation
                                             ? formatDate(stats.mostRecentDonation.registrationDate)
                                             : 'Chưa có'
                                         }
@@ -242,11 +248,65 @@ function Dashboard() {
                         ) : (
                             <>
                                 <div className="divide-y divide-gray-100 cursor-pointer">
+                                <div className="divide-y divide-gray-100 cursor-pointer">
                                     {donationHistory.map((donation, index) => {
+                                        const status = statusMap[donation.registrationStatus] ||
                                         const status = statusMap[donation.registrationStatus] ||
                                             { label: donation.registrationStatus, color: 'bg-gray-100 text-gray-800' };
 
+
                                         return (
+                                            <Link href={`/donation-events/${donation.donationId}/register/success`} key={donation.registrationId || index}>
+                                                <div key={donation.registrationId || index} className="p-6 hover:bg-gray-50 transition-colors">
+                                                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                                                        <div className="flex-1">
+                                                            <div className="flex items-start justify-between mb-3">
+                                                                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                                                                    {donation.donationName || 'Sự kiện hiến máu'}
+                                                                </h3>
+                                                                <Badge className={`${status.color} border-0 ml-4`}>
+                                                                    {status.label}
+                                                                </Badge>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-600">
+                                                                <div className="flex items-center">
+                                                                    <Calendar className="h-4 w-4" />
+                                                                    <span>Đăng ký: {formatDate(donation.registrationDate)}</span>
+                                                                </div>
+
+                                                                {donation.donationDate && (
+                                                                    <div className="flex items-center">
+                                                                        <Clock className="h-4 w-4" />
+                                                                        <span>Hiến máu: {formatDate(donation.donationDate)}</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {donation.donationDate && (
+                                                                    <div className="flex items-center">
+                                                                        <Clock className="h-4 w-4" />
+                                                                        <span>Trạng thái: {convertDonationRegistrationStatus(donation.registrationDonationRegistrationStatus)}</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {donation.donationLocation && (
+                                                                    <div className="flex items-center">
+                                                                        <MapPin className="h-4 w-4" />
+                                                                        <span className="truncate">{donation.donationLocation}</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {donation.donationVolume && (
+                                                                    <div className="flex items-center">
+                                                                        <TrendingUp className="h-4 w-4" />
+                                                                        <span>{donation.donationVolume} ml</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
                                             <Link href={`/donation-events/${donation.donationId}/register/success`} key={donation.registrationId || index}>
                                                 <div key={donation.registrationId || index} className="p-6 hover:bg-gray-50 transition-colors">
                                                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -307,6 +367,7 @@ function Dashboard() {
                                     <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-100">
                                         <div className="text-sm text-gray-600">
                                             Hiển thị {currentPage * pageSize + 1} - {Math.min((currentPage + 1) * pageSize, totalElements)}
+                                            Hiển thị {currentPage * pageSize + 1} - {Math.min((currentPage + 1) * pageSize, totalElements)}
                                             {' '}trong tổng số {totalElements} kết quả
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -321,9 +382,11 @@ function Dashboard() {
                                                 Trước
                                             </Button>
 
+
                                             <span className="text-sm text-gray-600 px-3">
                                                 Trang {currentPage + 1} / {totalPages}
                                             </span>
+
 
                                             <Button
                                                 variant="outline"

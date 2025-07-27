@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CheckCircle, AlertCircle, Archive, Clock, PlusCircle, ArrowUpDown, Eye, User, Calendar, FileText, Activity } from "lucide-react"
@@ -69,19 +70,87 @@ export default function BloodRequest() {
   const manualRequests = sortRequests(bloodRequests?.filter(request => 
     !request.automation && request.status !== 'FULFILLED'
   )) || []
+  const [sortConfig, setSortConfig] = useState({ key: 'urgency', direction: 'desc' })
+  const [selectedRequest, setSelectedRequest] = useState(null)
+  const [showDetailDialog, setShowDetailDialog] = useState(false)
+
+  // Sorting function
+  const sortRequests = (requests) => {
+    if (!requests) return []
+    
+    const sortedRequests = [...requests]
+    sortedRequests.sort((a, b) => {
+      // Urgency priority: HIGH > MEDIUM > LOW
+      const urgencyOrder = { HIGH: 3, MEDIUM: 2, LOW: 1 }
+      
+      if (sortConfig.key === 'urgency') {
+        const aValue = urgencyOrder[a.urgency] || 0
+        const bValue = urgencyOrder[b.urgency] || 0
+        
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1
+        }
+        return 0
+      }
+      return 0
+    })
+    
+    return sortedRequests
+  }
+
+  // Categorize and sort requests
+  const requestsWithStock = sortRequests(bloodRequests?.filter(request => 
+    request.status === 'PROCESSING'
+  )) || []
+  
+  const requestsWithoutStock = sortRequests(bloodRequests?.filter(request => 
+    request.status === 'PENDING'
+  )) || []
+  
+  const fulfilledRequests = sortRequests(bloodRequests?.filter(request => 
+    request.status === 'FULFILLED'
+  )) || []
+
+  const manualRequests = sortRequests(bloodRequests?.filter(request => 
+    !request.automation && request.status !== 'FULFILLED'
+  )) || []
 
   const getUrgencyBadge = (urgency) => {
     const baseClasses = "px-2 py-1 rounded text-xs font-medium flex items-center gap-1"
     if (urgency === 'HIGH') {
+    const baseClasses = "px-2 py-1 rounded text-xs font-medium flex items-center gap-1"
+    if (urgency === 'HIGH') {
       return `${baseClasses} bg-red-100 text-red-800`
     } else if (urgency === 'MEDIUM') {
+    } else if (urgency === 'MEDIUM') {
       return `${baseClasses} bg-orange-100 text-orange-800`
+    } else if (urgency === 'LOW') {
     } else if (urgency === 'LOW') {
       return `${baseClasses} bg-blue-100 text-blue-800`
     }
     return baseClasses
   }
 
+  const getStatus = (status) => {
+    switch(status) {
+      case 'PENDING': return 'Chờ xử lý'
+      case 'PROCESSING': return 'Đang xử lý'
+      case 'FAILED': return 'Đã hủy'
+      case 'FULFILLED': return 'Hoàn thành'
+      default: return status
+    }
+  }
+
+  const getUrgencyIcon = (urgency) => {
+    switch(urgency) {
+      case 'HIGH': return <AlertCircle className="h-3 w-3" />
+      case 'MEDIUM': return <Clock className="h-3 w-3" />
+      case 'LOW': return <CheckCircle className="h-3 w-3" />
+      default: return null
+    }
   const getStatus = (status) => {
     switch(status) {
       case 'PENDING': return 'Chờ xử lý'
@@ -143,6 +212,9 @@ export default function BloodRequest() {
         {requests.length > 0 ? (
           requests.map((request) => (
             <TableRow key={request.id}>
+              <TableCell className="font-medium">{request.profile.name}</TableCell>
+              <TableCell>{convertBloodType(request.bloodType)}</TableCell>
+              <TableCell>
               <TableCell className="font-medium">{request.profile.name}</TableCell>
               <TableCell>{convertBloodType(request.bloodType)}</TableCell>
               <TableCell>

@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const { account, profile } = useUserProfile();
   const [settings, setSettings] = useState({
     marketingEmails: profile?.status === 'AVAILABLE' ? true : false,
+    marketingEmails: profile?.status === 'AVAILABLE' ? true : false,
     language: 'vi',
     timezone: 'Asia/Ho_Chi_Minh'
   });
@@ -144,6 +145,7 @@ export default function SettingsPage() {
                       onCheckedChange={(checked) => handleSettingChange('marketingEmails', checked)}
                     />
                   </div>
+                  
                   
                 </CardContent>
               </Card>

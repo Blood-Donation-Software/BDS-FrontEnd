@@ -1,5 +1,6 @@
 'use client'
 import { loginGoogle, register } from '@/apis/auth';
+import { loginGoogle, register } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -43,6 +44,7 @@ export default function RegisterPage() {
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
       reader.onloadend = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
@@ -151,6 +153,7 @@ export default function RegisterPage() {
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
+          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50" onClick={handleLoginGoogle}>
           <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50" onClick={handleLoginGoogle}>
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
             <span>{t?.auth?.registerWithGoogle}</span>

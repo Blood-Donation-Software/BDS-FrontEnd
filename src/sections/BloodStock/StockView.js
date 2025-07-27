@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { MoreVertical, Plus, Search, ArrowUpDown, CalendarIcon } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { MoreVertical, Plus, Search, ArrowUpDown, CalendarIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { addToStock, checkStock, deleteStock } from '@/apis/bloodStock'
@@ -39,6 +42,7 @@ const componentTypeMap = {
   PLASMA: "Plasma",
   PLATELETS: "Platelets",
   RED_BLOOD_CELLS: "Red Blood Cells"
+  RED_BLOOD_CELLS: "Red Blood Cells"
 }
 
 const componentTypeOptions = Object.entries(componentTypeMap).map(([value, label]) => ({
@@ -67,6 +71,7 @@ export default function BloodStockManagement() {
     componentType: '',
     quantity: 1,
     expiryDate: null
+    expiryDate: null
   })
 
   // Fetch data on component mount
@@ -94,6 +99,7 @@ export default function BloodStockManagement() {
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase()
       result = result.filter(unit =>
+      result = result.filter(unit =>
         bloodTypeMap[unit.bloodType].toLowerCase().includes(searchTerm) ||
         componentTypeMap[unit.componentType].toLowerCase().includes(searchTerm)
       )
@@ -112,6 +118,8 @@ export default function BloodStockManagement() {
       result = result.filter(unit => {
         const expiryDate = new Date(unit.expiryDate)
         const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
+
+        switch (filters.expiryStatus) {
 
         switch (filters.expiryStatus) {
           case 'expired': return diffDays < 0
@@ -195,6 +203,7 @@ export default function BloodStockManagement() {
           componentType: addForm.componentType,
           volume: Number(addForm.quantity),
           expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd')
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd')
         })
         toast.success(t?.StockView?.add?.success)
       } else {
@@ -204,6 +213,7 @@ export default function BloodStockManagement() {
           bloodType: addForm.bloodType,
           componentType: addForm.componentType,
           quantity: Number(addForm.quantity),
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd'),
           expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd'),
           volume: Number(addForm.quantity) * 450
         }
@@ -215,6 +225,7 @@ export default function BloodStockManagement() {
         bloodType: '',
         componentType: '',
         quantity: 1,
+        expiryDate: null
         expiryDate: null
       })
     } catch (error) {
@@ -326,14 +337,19 @@ export default function BloodStockManagement() {
         <CardContent>
           <div className="flex md:flex-row flex-col gap-4 items-center">
             <div className="relative flex-1/2">
+          <div className="flex md:flex-row flex-col gap-4 items-center">
+            <div className="relative flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={t?.StockView?.filters?.search_placeholder}
                 className="pl-8"
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               />
             </div>
+
+            <Select value={filters.bloodType} onValueChange={(v) => setFilters({ ...filters, bloodType: v })}>
 
             <Select value={filters.bloodType} onValueChange={(v) => setFilters({ ...filters, bloodType: v })}>
               <SelectTrigger>
@@ -350,6 +366,7 @@ export default function BloodStockManagement() {
             </Select>
 
             <Select value={filters.componentType} onValueChange={(v) => setFilters({ ...filters, componentType: v })}>
+            <Select value={filters.componentType} onValueChange={(v) => setFilters({ ...filters, componentType: v })}>
               <SelectTrigger>
                 <SelectValue placeholder={t?.StockView?.filters?.componentType} />
               </SelectTrigger>
@@ -363,6 +380,7 @@ export default function BloodStockManagement() {
               </SelectContent>
             </Select>
 
+            <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({ ...filters, expiryStatus: v })}>
             <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({ ...filters, expiryStatus: v })}>
               <SelectTrigger>
                 <SelectValue placeholder="All expiry status" />
@@ -392,12 +410,14 @@ export default function BloodStockManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('bloodType')}
                 >
                   {t?.StockView?.table?.headers?.bloodType}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('componentType')}
@@ -406,6 +426,7 @@ export default function BloodStockManagement() {
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
                 <TableHead
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('quantity')}
                 >
@@ -413,12 +434,14 @@ export default function BloodStockManagement() {
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
                 <TableHead
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('volume')}
                 >
                   {t?.StockView?.table?.headers?.volume}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('expiryDate')}

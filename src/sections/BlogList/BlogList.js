@@ -25,6 +25,7 @@ export default function BlogList() {
     setCurrentPage(1);
   }, [searchTerm]);
 
+
   const handleClick = (post) => {
     selectedBlogById(post.id);
     router.push(`/blog/${post.id}`);
@@ -32,7 +33,12 @@ export default function BlogList() {
 
 
   // Logic tìm kiếm theo ký tự trong tiêu đề và chỉ hiển thị blog có status ACTIVE
+  // Logic tìm kiếm theo ký tự trong tiêu đề và chỉ hiển thị blog có status ACTIVE
   const filteredPosts = blogs.filter(post => {
+    // Chỉ hiển thị blog có status là ACTIVE
+    if (post.status !== 'ACTIVE') {
+      return false;
+    }
     // Chỉ hiển thị blog có status là ACTIVE
     if (post.status !== 'ACTIVE') {
       return false;
@@ -73,6 +79,10 @@ export default function BlogList() {
             src={`${BASE_URL}/${post.thumbnail}`}
             alt="Blog thumbnail"
             className="w-full max-w-sm h-48 object-cover rounded-lg border"
+          <img
+            src={`${BASE_URL}/${post.thumbnail}`}
+            alt="Blog thumbnail"
+            className="w-full max-w-sm h-48 object-cover rounded-lg border"
           />
         </div>
         <div className="p-4 flex flex-col flex-grow">
@@ -96,6 +106,7 @@ export default function BlogList() {
             </div> */}
             <div>
               <p className="font-semibold text-sm">
+                {post.authorName || 'Tác giả'}
                 {post.authorName || 'Tác giả'}
               </p>
               {/* If you have a role field, display it here */}
