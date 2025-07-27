@@ -27,7 +27,7 @@ export function middleware(req) {
   }
 
   // Redirect về locale phù hợp
-  return NextResponse.redirect(new URL(`/${locale}${pathname}`, req.url));
+  return NextResponse.redirect(new URL(`/${locale.replace('-', '_')}${pathname}`, req.url));
 }
 
 // Chỉ áp dụng middleware cho các route gốc (không áp dụng cho static files, API, ...)

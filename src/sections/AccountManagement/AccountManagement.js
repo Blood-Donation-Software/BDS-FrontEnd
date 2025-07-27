@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { getAllAccount } from "@/apis/user";
 import { updateStatus } from "@/apis/user";
-import { createAccount } from "@/apis/user";
+import { createProfile } from "@/apis/user"; 
+import { useLanguage } from "@/context/language_context";
+
 export default function AccountManagement() {
+    const {t} = useLanguage();
     const [accounts, setAccounts] = useState([
         // { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'Donor', status: 'Active', lastLogin: '2 hours ago' },
         // { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Staff', status: 'Active', lastLogin: 'Yesterday' },
@@ -42,7 +45,7 @@ export default function AccountManagement() {
                     : []
             );
         } catch (e) {
-            alert("Không thể tải danh sách tài khoản!");
+            alert(t.accountManagement.systemMessages.cannotLoadAccounts);
             setAccounts([]);
         }
     };
@@ -110,33 +113,33 @@ const handleStatus = async (account) => {
                         value={roleFilter}
                         onChange={e => setRoleFilter(e.target.value)}
                     >
-                        <option value="">All Roles</option>
-                        <option value="ADMIN">Admin</option>
-                        <option value="STAFF">Staff</option>
-                        <option value="MEMBER">Member</option>
-                        <option value="TRANSPORTER">Transporter</option>
+                        <option value="">{t?.accountManagement?.allRoles}</option>
+                        <option value="ADMIN">{t.accountManagement.admin}</option>
+                        <option value="STAFF">{t.accountManagement.staff}</option>
+                        <option value="MEMBER">{t.accountManagement.member}</option>
+                        <option value="TRANSPORTER">{t.accountManagement.transporter}</option>
                     </select>
                     <select
                         className="py-2 px-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
                         value={statusFilter}
                         onChange={e => setStatusFilter(e.target.value)}
                     >
-                        <option value="">All Status</option>
-                        <option value="ENABLE">Enable</option>
-                        <option value="DISABLE">Disable</option>
+                        <option value="">{t.accountManagement.allStatus}</option>
+                        <option value="ENABLE">{t.accountManagement.enable}</option>
+                        <option value="DISABLE">{t.accountManagement.disable}</option>
                     </select>
 
                     <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md flex items-center space-x-2 transition-colors"
                         onClick={() => setShowAddForm(true)}>
                         <span className="text-lg">+</span>
-                        <span>Add User</span>
+                        <span>{t.accountManagement.addUser}</span>
                     </button>
                 </div>
             </div>
             <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
                 <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold">Add New User</DialogTitle>
+                        <DialogTitle className="text-lg font-semibold">{t.accountManagement.addUser}</DialogTitle>
                     </DialogHeader>
 
                     <div className="grid gap-4 py-2">
@@ -162,7 +165,7 @@ const handleStatus = async (account) => {
                             />
                         </div>
                         <div className="space-y-1">
-                            <label className="block text-sm text-gray-600">Password</label>
+                            <label className="block text-sm text-gray-600">{t.accountManagement.password}</label>
                             <input
                                 className="w-full px-3 py-2 h-10 border rounded-md focus:ring-1 focus:ring-red-500"
                                 type="password"
@@ -174,34 +177,34 @@ const handleStatus = async (account) => {
 
                         {/* Role - Hàng 3 */}
                         <div className="space-y-1">
-                            <label className="block text-sm text-gray-600">Role</label>
+                            <label className="block text-sm text-gray-600">{t.accountManagement.role}</label>
                             <select
                                 className="w-full px-3 py-2 h-10 border rounded-md focus:ring-1 focus:ring-red-500"
                                 value={newUser.role}
                                 onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                             >
-                                <option value="MEMBER">Member</option>
-                                <option value="STAFF">Staff</option>
-                                <option value="TRANSPORTER">Transporter</option>
-                                <option value="ADMIN">Admin</option>
+                                <option value="MEMBER">{t.accountManagement.member}</option>
+                                <option value="STAFF">{t.accountManagement.staff}</option>
+                                <option value="TRANSPORTER">{t.accountManagement.transporter}</option>
+                                <option value="ADMIN">{t.accountManagement.admin}</option>
                             </select>
                         </div>
 
                         {/* Status - Hàng 4 */}
                         <div className="space-y-1">
-                            <label className="block text-sm text-gray-600">Status</label>
+                            <label className="block text-sm text-gray-600">{t.accountManagement.status}</label>
                             <select
                                 className="w-full px-3 py-2 h-10 border rounded-md focus:ring-1 focus:ring-red-500"
                                 value={newUser.status}
                                 onChange={(e) => setNewUser({ ...newUser, status: e.target.value })}
                             >
-                                <option value="ENABLE">Enable</option>
-                                <option value="DISABLE">Disable</option>
+                                <option value="ENABLE">{t.accountManagement.enable}</option>
+                                <option value="DISABLE">{t.accountManagement.disable}</option>
                             </select>
                         </div>
                     </div>
                     <div className="space-y-1">
-                        <label className="block text-sm text-gray-600">Avatar (URL)</label>
+                        <label className="block text-sm text-gray-600">{t.accountManagement.avatar}</label>
                         <input
                             className="w-full px-3 py-2 h-10 border rounded-md focus:ring-1 focus:ring-red-500"
                             placeholder="Avatar URL"
@@ -226,21 +229,21 @@ const handleStatus = async (account) => {
                                         status: newUser.status,
                                         avatar: newUser.avatar
                                     };
-                                    const res = await createAccount(payload);
+                                    const res = await createProfile(payload);
                                     // Nếu trả về chuỗi, kiểm tra status hoặc nội dung
                                     if (typeof res === "string" && res.toLowerCase().includes("success")) {
                                         setShowAddForm(false);
                                         setNewUser({ email: '', password: '', role: 'MEMBER', status: 'ENABLE', avatar: '' });
                                         await fetchAccounts(); // Đảm bảo gọi lại lấy danh sách
                                     } else {
-                                        alert("Tạo tài khoản thất bại!");
+                                        alert(t.accountManagement.createAccountFailed);
                                     }
                                 } catch (e) {
-                                    alert("Tạo tài khoản thất bại!");
+                                    alert(t.accountManagement.createAccountFailed);
                                 }
                             }}
                         >
-                            Save User
+                            {t.accountManagement.saveUser}
                         </button>
                     </DialogFooter>
                 </DialogContent>
@@ -250,11 +253,11 @@ const handleStatus = async (account) => {
                 {/* Table Header */}
                 <div className="px-6 py-4 border-b border-gray-200">
                     <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-500">
-                        <div className="col-span-3">Name</div>
-                        <div className="col-span-3">Email</div>
-                        <div className="col-span-2">Role</div>
-                        <div className="col-span-2">Status</div>
-                        <div className="col-span-2">Actions</div>
+                        <div className="col-span-3">{t.accountManagement.name}</div>
+                        <div className="col-span-3">{t.accountManagement.email}</div>
+                        <div className="col-span-2">{t.accountManagement.role}</div>
+                        <div className="col-span-2">{t.accountManagement.status}</div>
+                        <div className="col-span-2">{t.accountManagement.actions}</div>
                     </div>
                 </div>
 
@@ -271,7 +274,7 @@ const handleStatus = async (account) => {
                                         </div>
                                         <div>
                                             <h3 className="text-sm font-medium text-gray-900">{account.name}</h3>
-                                            <p className="text-xs text-gray-500">Last login: {account.lastLogin}</p>
+                                            <p className="text-xs text-gray-500">{t.accountManagement.lastLogin}: {account.lastLogin}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -307,7 +310,7 @@ const handleStatus = async (account) => {
                                             onClick={() => handleStatus(account)}
                                             disabled={loadingId === account.id}
                                         >
-                                            Disable
+                                            {t.accountManagement.disable}
                                         </button>
                                     ) : (
                                         <button
@@ -315,7 +318,7 @@ const handleStatus = async (account) => {
                                             onClick={() => handleStatus(account)}
                                             disabled={loadingId === account.id}
                                         >
-                                            Enable
+                                            {t.accountManagement.enable}
                                         </button>
                                     )}
                                 </div>

@@ -10,7 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { RoleProtection, ROLES } from "@/components/auth";
 import { updatePassword } from "@/apis/user";
+import { useLanguage } from "@/context/language_context";
+
 export default function SettingsPage() {
+  const {t}= useLanguage();
   const { account, profile } = useUserProfile();
   const [settings, setSettings] = useState({
     marketingEmails: profile?.status === 'AVAILABLE' ? true : false,
@@ -38,31 +41,31 @@ export default function SettingsPage() {
     try {
       // TODO: Implement API call to save settings
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      toast.success("Cài đặt đã được lưu thành công!");
+      toast.success(t?.settingPage?.toasts?.settingSuccess);
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi lưu cài đặt!");
+      toast.error(t?.settingPage?.toasts?.settingError);
     }
     setSaving(false);
   };
 
   const changePassword = async () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error("Mật khẩu xác nhận không khớp!");
+      toast.error(t?.settingPage?.password?.errors?.mismatch);
       return;
     }
     
     if (passwordForm.newPassword.length < 6) {
-      toast.error("Mật khẩu mới phải có ít nhất 6 ký tự!");
+      toast.error(t?.settingPage?.password?.errors?.length);
       return;
     }
 
     setSaving(true);
     try {
       await updatePassword(passwordForm.oldPassword, passwordForm.newPassword);
-      toast.success("Mật khẩu đã được thay đổi thành công!");
+      toast.success(t?.settingPage?.password?.success);
       setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Có lỗi xảy ra khi thay đổi mật khẩu!");
+      toast.error(t?.settingPage?.password?.errors?.generic);
     }
     setSaving(false);
   };
@@ -73,8 +76,8 @@ export default function SettingsPage() {
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Cài đặt</h1>
-            <p className="text-gray-600 mt-2">Quản lý cài đặt tài khoản và tùy chọn của bạn</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t?.dropDownMenu?.settings}</h1>
+            <p className="text-gray-600 mt-2">{t?.settingPage?.header?.description}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -82,36 +85,36 @@ export default function SettingsPage() {
             <div className="lg:col-span-1">
               <Card>
                 <CardHeader>
-                  <CardTitle>Thông tin tài khoản</CardTitle>
+                  <CardTitle>{t?.settingPage?.accountInfo?.title}</CardTitle>
                   <CardDescription>
-                    Thông tin cơ bản về tài khoản của bạn
+                    {t?.settingPage?.accountInfo?.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Email</Label>
+                    <Label className="text-sm font-medium text-gray-600">{t?.settingPage?.accountInfo?.fields?.email}</Label>
                     <p className="font-medium">{account?.email}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Họ tên</Label>
-                    <p className="font-medium">{profile?.name || "Chưa cập nhật"}</p>
+                    <Label className="text-sm font-medium text-gray-600">{t?.settingPage?.accountInfo?.fields?.name}</Label>
+                    <p className="font-medium">{profile?.name || t?.settingPage?.accountInfo?.fields?.notUpdated}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Vai trò</Label>                    
+                    <Label className="text-sm font-medium text-gray-600">{t?.settingPage?.accountInfo?.fields?.role}</Label>                    
                     <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
                       account?.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' :
                       account?.role === 'STAFF' ? 'bg-blue-100 text-blue-800' :
                       account?.role === 'MEMBER' ? 'bg-green-100 text-green-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
-                      {account?.role === 'ADMIN' ? 'Quản trị viên' :
-                       account?.role === 'STAFF' ? 'Nhân viên' :
-                       account?.role === 'MEMBER' ? 'Thành viên' : 'Khách'}
+                      {account?.role === 'ADMIN' ? t?.settingPage?.accountInfo?.roles?.admin :
+                       account?.role === 'STAFF' ? t?.settingPage?.accountInfo?.roles?.staff :
+                       account?.role === 'MEMBER' ? t?.settingPage?.accountInfo?.roles?.member : t?.setttingsPage?.accountInfo?.roles?.guest}
                     </span>
                   </div>
                   <Separator />
                   <div>
-                    <Label className="text-sm font-medium text-gray-600">Ngày tham gia</Label>
+                    <Label className="text-sm font-medium text-gray-600">{t?.settingPage?.accountInfo?.fields?.joinDate}</Label>
                     <p className="font-medium">{new Date().toLocaleDateString('vi-VN')}</p>
                   </div>
                 </CardContent>
@@ -123,17 +126,17 @@ export default function SettingsPage() {
               {/* Notifications */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Thông báo</CardTitle>
+                  <CardTitle>{t?.settingPage?.notifications?.title}</CardTitle>
                   <CardDescription>
-                    Quản lý cách bạn nhận thông báo
+                    {t?.settingPage?.notifications?.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="marketing-emails">Email marketing</Label>
-                      <p className="text-sm text-gray-500">Nhận email về tin tức và ưu đãi</p>
+                      <Label htmlFor="marketing-emails">{t?.settingPage?.notifications?.marketingEmails?.label}</Label>
+                      <p className="text-sm text-gray-500">{t?.settingPage?.notifications?.marketingEmails?.description}</p>
                     </div>
                     <Switch
                       id="marketing-emails"
@@ -148,45 +151,45 @@ export default function SettingsPage() {
               {/* Change Password */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Đổi mật khẩu</CardTitle>
+                  <CardTitle>{t?.settingPage?.password?.title}</CardTitle>
                   <CardDescription>
-                    Cập nhật mật khẩu để bảo mật tài khoản
+                    {t?.settingPage?.password?.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="old-password">Mật khẩu hiện tại</Label>
+                    <Label htmlFor="old-password">{t?.settingPage?.password?.fields?.current}</Label>
                     <Input
                       id="old-password"
                       name="oldPassword"
                       type="password"
                       value={passwordForm.oldPassword}
                       onChange={handlePasswordChange}
-                      placeholder="Nhập mật khẩu hiện tại"
+                      placeholder={t?.settingPage?.password?.fields?.current}
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="new-password">Mật khẩu mới</Label>
+                    <Label htmlFor="new-password">{t?.settingPage?.password?.fields?.new}</Label>
                     <Input
                       id="new-password"
                       name="newPassword"
                       type="password"
                       value={passwordForm.newPassword}
                       onChange={handlePasswordChange}
-                      placeholder="Nhập mật khẩu mới"
+                      placeholder={t?.settingPage?.password?.fields?.new}
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Xác nhận mật khẩu mới</Label>
+                    <Label htmlFor="confirm-password">{t?.settingPage?.password?.fields?.confirm}</Label>
                     <Input
                       id="confirm-password"
                       name="confirmPassword"
                       type="password"
                       value={passwordForm.confirmPassword}
                       onChange={handlePasswordChange}
-                      placeholder="Nhập lại mật khẩu mới"
+                      placeholder={t?.settingPage?.password?.fields?.confirm}
                     />
                   </div>
                   
@@ -195,7 +198,7 @@ export default function SettingsPage() {
                     disabled={saving || !passwordForm.oldPassword || !passwordForm.newPassword}
                     className="w-full"
                   >
-                    {saving ? "Đang thay đổi..." : "Đổi mật khẩu"}
+                    {saving ? t?.settingPage?.password?.changing : t?.settingPage?.password?.button}
                   </Button>
                 </CardContent>
               </Card>
@@ -203,37 +206,37 @@ export default function SettingsPage() {
               {/* Preferences */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Tùy chọn</CardTitle>
+                  <CardTitle>{t?.settingPage?.preferences?.title}</CardTitle>
                   <CardDescription>
-                    Cài đặt ngôn ngữ và múi giờ
+                    {t?.settingPage?.preferences?.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="language">Ngôn ngữ</Label>
+                      <Label htmlFor="language">{t?.settingPage?.preferences?.language?.label}</Label>
                       <select
                         id="language"
                         value={settings.language}
                         onChange={(e) => handleSettingChange('language', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="vi">Tiếng Việt</option>
-                        <option value="en">English</option>
+                        <option value="vi">{t?.settingPage?.preferences?.language?.options?.vi}</option>
+                        <option value="en">{t?.settingPage?.preferences?.language?.options?.en}</option>
                       </select>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="timezone">Múi giờ</Label>
+                      <Label htmlFor="timezone">{t?.settingPage?.preferences?.timezone?.label}</Label>
                       <select
                         id="timezone"
                         value={settings.timezone}
                         onChange={(e) => handleSettingChange('timezone', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        <option value="Asia/Ho_Chi_Minh">Việt Nam (GMT+7)</option>
-                        <option value="UTC">UTC (GMT+0)</option>
-                        <option value="America/New_York">New York (GMT-5)</option>
+                        <option value="Asia/Ho_Chi_Minh">{t?.settingPage?.preferences?.timezone?.options?.Asia_Ho_Chi_Minh}</option>
+                        <option value="UTC">{t?.settingPage?.preferences?.timezone?.options?.utc}</option>
+                        <option value="America/New_York">{t?.settingPage?.preferences?.timezone?.options?.America_New_York}</option>
                       </select>
                     </div>
                   </div>
@@ -243,7 +246,7 @@ export default function SettingsPage() {
               {/* Save Button */}
               <div className="flex justify-end">
                 <Button onClick={saveSettings} disabled={saving} size="lg">
-                  {saving ? "Đang lưu..." : "Lưu cài đặt"}
+                  {saving ? t?.settingPage?.saveButton?.saving: t?.settingPage?.saveButton?.label}
                 </Button>
               </div>
             </div>

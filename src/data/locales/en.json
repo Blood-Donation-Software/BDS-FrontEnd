@@ -113,9 +113,10 @@
   "blog": {
     "title": "Blog",
     "blog_list": "Blog List",
-    "blog_detail": "Blog Detail",
+    "blog_detail": "Blog Detail", 
     "create_blog": "Create Blog",
     "blog": "Blog",
+    "no_blogs": "It looks like there are no articles related to your search",
     "edit_blog": "Edit Blog",
     "delete_blog": "Delete Blog",
     "loading": "Loading...",
@@ -271,7 +272,12 @@
     "dashBoard": "Dashboard",
     "settings": "Settings",
     "dashboard": "Dashboard",
-    "donationHistory": "Donation History"
+    "donationHistory": "Donation History",
+    "dashReport": "Dashboard & Report",
+    "accountManagement": "Account Management",
+    "profileManager": "Profile Management",
+    "eventRequest": "Event Request",
+    "blogRequest": "Blog Request"
   },
   "system": {
     "details_info": "Please provide detailed information about your blood donation request.",
@@ -1152,6 +1158,8 @@
 },
 
  "blogRequest": {
+  "request":"requests",
+  "to":"to",
     "full_name": "Full Name",
     "blood_group": "Blood Group",
     "priority_level": "Priority Level",
@@ -1188,7 +1196,59 @@
     "additional_info": "Additional Information",
     "medical_info": "Medical Information",
     "notes": "Notes",
-    "unit": "Unit"
+    "unit": "Unit",
+    "BlogRequests": "Blog Requests",
+  "ReviewAndManageBlogSubmissions": "Review and manage blog post submissions",
+  "TotalRequests": "total",
+  "Refresh": "Refresh",
+  "Loading": "Loading...",
+  "SearchBlogRequests": "Search blog requests...",
+  "Status": "Status",
+  "RequestType": "Request Type",
+  "ShowingOf": "Showing",
+  "Of": "of",
+  "Requests": "requests",
+  "RequestsPerPage": "Requests per page:",
+  "Title": "Title",
+  "Author": "Author",
+  "ContentPreview": "Content Preview",
+  "Actions": "Actions",
+  "LoadingRequests": "Loading requests...",
+  "NoBlogRequestsFound": "No blog requests found",
+  "NoRequestsMatchFilters": "No requests match your filters",
+  "Untitled": "Untitled",
+  "RequestID": "Request ID:",
+  "NoContentAvailable": "No content available",
+  "View": "View",
+  "Approve": "Approve",
+  "Reject": "Reject",
+  "PreviousPage": "Previous page",
+  "NextPage": "Next page",
+  "ViewBlogRequest": "View Blog Request",
+  "Close": "Close",
+  "BlogTitle": "Blog Title",
+  "BlogContent": "Blog Content",
+  "ApproveRequest": "Approve Request",
+  "RejectRequest": "Reject Request",
+  "AreYouSureApprove": "Are you sure you want to approve this blog request?",
+  "AreYouSureReject": "Are you sure you want to reject this blog request?",
+  "Cancel": "Cancel",
+  "ConfirmApprove": "Yes, Approve",
+  "ConfirmReject": "Yes, Reject",
+  "AllStatuses": "All Statuses",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "AllRequestTypes": "All Request Types",
+  "CreateBlog": "Create Blog",
+  "UpdateBlog": "Update Blog",
+  "DeleteBlog": "Delete Blog",
+  "FailedToLoadBlogRequests": "Failed to load blog requests",
+  "BlogRequestApprovedSuccessfully": "Blog request approved successfully!",
+  "BlogRequestRejectedSuccessfully": "Blog request rejected successfully!",
+  "FailedToApproveBlogRequest": "Failed to approve blog request:",
+  "FailedToRejectBlogRequest": "Failed to reject blog request:",
+  "FailedToLoadBlogRequestDetails": "Failed to load blog request details"
   },
   "eventRequestForStaff": {
     "title": "My Event Requests",
@@ -1453,7 +1513,414 @@
       "confirm": "Confirm & Submit Request",
       "creating": "Creating Request..."
     }
+  },
+  "profilePage": {
+    "header": {
+      "title": "Personal Information",
+      "description": "Manage your personal information and account settings"
+    },
+    "avatarCard": {
+      "title": "No name",
+      "roleBadges": {
+        "ADMIN": "Administrator",
+        "STAFF": "Staff",
+        "MEMBER": "Member",
+        "GUEST": "Guest",
+        "UNKNOWN": "Unknown"
+      },
+      "infoFields": {
+        "email": "Email",
+        "emailPlaceholder": "No email",
+        "phone": "Phone",
+        "phonePlaceholder": "Not updated",
+        "address": "Address",
+        "addressPlaceholder": "Not updated",
+        "bloodType": "Blood Type"
+      }
+    },
+    "avatarDialog": {
+      "title": "Update Avatar",
+      "description": "Select a new image for your profile picture (max 5MB)",
+      "selectLabel": "Select Image",
+      "cancelButton": "Cancel",
+      "uploadButton": "Update",
+      "uploading": "Uploading...",
+      "error": {
+        "size": "Image size must not exceed 5MB",
+        "type": "Please select an image file",
+        "auth": "Please select an image and ensure you're logged in"
+      },
+      "success": "Avatar updated successfully!"
+    },
+    "profileForm": {
+      "title": "Detailed Information",
+      "description": "Update your personal information",
+      "buttons": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      },
+      "sections": {
+        "personalInfo": {
+          "title": "Personal Information",
+          "fields": {
+            "name": {
+              "label": "Full Name *",
+              "placeholder": "Enter full name"
+            },
+            "phone": {
+              "label": "Phone Number",
+              "placeholder": "Enter phone number"
+            },
+            "personalId": {
+              "label": "ID Number",
+              "placeholder": "Enter ID number"
+            },
+            "dateOfBirth": {
+              "label": "Date of Birth"
+            },
+            "gender": {
+              "label": "Gender",
+              "options": {
+                "male": "Male",
+                "female": "Female",
+                "other": "Other",
+                "placeholder": "Select gender"
+              }
+            },
+            "bloodType": {
+              "label": "Blood Type",
+              "options": {
+                "A_POSITIVE": "A+",
+                "A_NEGATIVE": "A-",
+                "B_POSITIVE": "B+",
+                "B_NEGATIVE": "B-",
+                "AB_POSITIVE": "AB+",
+                "AB_NEGATIVE": "AB-",
+                "O_POSITIVE": "O+",
+                "O_NEGATIVE": "O-",
+                "placeholder": "Select blood type"
+              }
+            }
+          }
+        },
+        "addressInfo": {
+          "title": "Address Information",
+          "fields": {
+            "address": {
+              "label": "Address",
+              "placeholder": "Enter address"
+            },
+            "city": {
+              "label": "City/Province",
+              "placeholder": "Select city/province"
+            },
+            "district": {
+              "label": "District",
+              "placeholder": {
+                "noCity": "Please select city/province first",
+                "select": "Select district"
+              }
+            },
+            "ward": {
+              "label": "Ward",
+              "placeholder": {
+                "noDistrict": "Please select district first",
+                "select": "Select ward"
+              }
+            }
+          }
+        },
+        "donationHistory": {
+          "title": "Donation History",
+          "fields": {
+            "lastDonation": "Last Donation Date",
+            "nextDonation": "Next Eligible Donation Date"
+          }
+        }
+      }
+    },
+    "validation": {
+      "name": {
+        "min": "Name must be at least 2 characters",
+        "max": "Name must not exceed 100 characters"
+      },
+      "phone": {
+        "invalid": "Phone number must be 10 digits"
+      },
+      "personalId": {
+        "invalid": "ID number must be 12 digits"
+      },
+      "dateOfBirth": {
+        "invalid": "Age must be between 16 and 100"
+      },
+      "address": {
+        "max": "Address must not exceed 255 characters"
+      }
+    },
+    "notifications": {
+      "success": "Profile updated successfully!",
+      "error": {
+        "default": "Update failed! Please try again",
+        "connection": "Connection error: {message}",
+        "invalidData": "Invalid data"
+      }
+    },
+    "error": {
+  "size": "Image size must not exceed 5MB",
+  "type": "Please select an image file",
+  "auth": "Please select an image and ensure you're logged in",
+      "upload": "Avatar upload error:",
+      "generic": "Error:",
+      "failed": "Failed to update avatar! Please try again"
+},
+    "loading": "Loading...",
+   "profileUpdate": {
+    "success": "Profile updated successfully!",
+    "error": {
+      "invalidData": "Invalid data",
+      "connection": "Connection error:",
+      "generic": "Update failed! Please try again"
+    }
   }
+},
+"settingPage": {
+    "header": {
+      "title": "Settings",
+      "description": "Manage your account settings and preferences"
+    },
+    "accountInfo": {
+      "title": "Account Information",
+      "description": "Basic information about your account",
+      "fields": {
+        "email": "Email",
+        "name": "Full Name",
+        "role": "Role",
+        "joinDate": "Join Date",
+        "notUpdated": "Not updated"
+      },
+      "roles": {
+        "admin": "Administrator",
+        "staff": "Staff",
+        "member": "Member",
+        "guest": "Guest"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage how you receive notifications",
+      "marketingEmails": {
+        "label": "Marketing emails",
+        "description": "Receive news and promotional emails"
+      }
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "Update your password to secure your account",
+      "fields": {
+        "current": "Current Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password"
+      },
+      "button": "Change Password",
+      "changing": "Changing...",
+      "errors": {
+        "mismatch": "Password confirmation does not match!",
+        "length": "New password must be at least 6 characters!",
+        "generic": "An error occurred while changing password!"
+      },
+      "success": "Password changed successfully!"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Language and timezone settings",
+      "language": {
+        "label": "Language",
+        "options": {
+          "vi": "Vietnamese",
+          "en": "English"
+        }
+      },
+      "timezone": {
+        "label": "Timezone",
+        "options": {
+           "Asia_Ho_Chi_Minh": "Vietnam (GMT+7)",
+          "utc": "UTC (GMT+0)",
+          "America_New_York": "New York (GMT-5)"
+        }
+      }
+    },
+    "saveButton": {
+      "label": "Save Settings",
+      "saving": "Saving..."
+    },
+    "toasts": {
+      "settingsSuccess": "Settings saved successfully!",
+      "settingsError": "An error occurred while saving settings!"
+    }
+  },
+  "RecentActivity": {
+    "title": "Recent Activity",
+    "userCreated": "New user account",
+    "wasCreated": "was created",
+    "eventRequest": "New event request  needs approval",
+    "blogApproved": "Blog post was approved",
+    "time_2h": "2 hours ago",
+    "time_5h": "5 hours ago",
+    "time_yesterday": "Yesterday"
+  } ,
+  "accountManagement": {
+    "searchPlaceholder": "Search accounts...",
+    "allRoles": "All Roles",
+    "admin": "Admin",
+    "staff": "Staff",
+    "member": "Member",
+    "transporter": "Transporter",
+    "allStatus": "All Status",
+    "enable": "Enable",
+    "disable": "Disable",
+    "addUser": "Add User",
+    "addNewUser": "Add New User",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "status": "Status",
+    "avatarUrl": "Avatar (URL)",
+    "saveUser": "Save User",
+    "name": "Name",
+    "lastLogin": "Last login:",
+    "actions": "Actions",
+    "systemMessages": {
+      "cannotLoadAccounts": "Cannot load account list!",
+      "fillEmailPassword": "Please enter email and password",
+      "createUserFailed": "Failed to create account!",
+      "createUserSuccess": "Account created successfully!"
+    }
+  },
+  "profileManagement":{
+    "viewDetails": "View Details",
+  "EditProfile": "Edit Profile",
+  "CreateProfile": "Create Profile",
+  "UpdateProfileInformationBelow": "Update the profile information below.",
+  "CreateProfileWithInformationBelow": "Create the profile with information below.",
+  "FullName": "Full Name",
+  "FullNamePattern": "Full name must include first name and last name",
+  "PhoneNumber": "Phone Number",
+  "PhoneNumberPattern": "Please enter a valid Vietnamese phone number (e.g., 0912345678)",
+  "PersonalID": "Personal ID",
+  "DateOfBirth": "Date of Birth",
+  "LastDonationDate": "Last Donation Date",
+  "BloodType": "Blood Type",
+  "SelectBloodType": "Select blood type",
+  "Gender": "Gender",
+  "SelectGender": "Select gender",
+  "CityProvince": "City/Province",
+  "SelectCityProvince": "Select city/province",
+  "District": "District",
+  "SelectDistrict": "Select district",
+  "Ward": "Ward",
+  "SelectWard": "Select ward",
+  "Address": "Address",
+  "Status": "Status",
+  "SelectStatus": "Select status",
+  "Cancel": "Cancel",
+  "Updating": "Updating...",
+  "Creating": "Creating...",
+  "SaveChanges": "Save Changes",
+  "CreateProfileButton": "Create Profile",
+  "APlus": "A+",
+  "AMinus": "A-",
+  "BPlus": "B+",
+  "BMinus": "B-",
+  "ABPlus": "AB+",
+  "ABMinus": "AB-",
+  "OPlus": "O+",
+  "OMinus": "O-",
+  "Male": "Male",
+  "Female": "Female",
+  "Available": "Available",
+  "Unavailable": "Unavailable",
+  "SearchProfiles": "Search profiles...",
+  "CreateNewProfile": "Create New Profile",
+  "Name": "Name",
+  "Phone": "Phone",
+  "BloodTypeShort": "Blood Type",
+  "LastDonation": "Last Donation",
+  "Actions": "Actions",
+  "ViewHistory": "View History",
+  "Edit": "Edit",
+  "NoProfilesFound": "No profiles found.",
+  "DonationHistory": "Donation History",
+  "Close": "Close",
+  "Date": "Date",
+  "AmountMl": "Amount (ml)",
+  "NoDonationHistoryAvailable": "No donation history available."
+},
+"eventRequest":{
+  "BloodDonationEventRequests": "Blood Donation Event Requests",
+  "ReviewAndManageRequests": "Review and manage pending blood donation event requests",
+  "TotalRequests": "total",
+  "Loading": "Loading...",
+  "Refresh": "Refresh",
+  "FailedToLoadRequests": "Failed to load event requests. Please try again.",
+  "FailedToLoadEventRequests": "Failed to load event requests",
+  "SearchRequests": "Search requests...",
+  "Status": "Status",
+  "RequestType": "Request Type",
+  "ShowingOf": "Showing",
+  "Of": "of",
+  "Requests": "requests",
+  "RequestsPerPage": "Requests per page:",
+  "EventName": "Event Name",
+  "Location": "Location",
+  "Date": "Date",
+  "CrudType": "CRUD Type",
+  "Actions": "Actions",
+  "View": "View",
+  "Approve": "Approve",
+  "Reject": "Reject",
+  "NoRequestsFound": "No requests found.",
+  "PreviousPage": "Previous Page",
+  "NextPage": "Next Page",
+  "RequestDetails": "Request Details",
+  "Close": "Close",
+  "requestType": "Request Type",
+  "EventInformation": "Event Information",
+  "Name": "Name",
+  "Hospital": "Hospital",
+  "Address": "Address",
+  "City": "City",
+  "DonationDate": "Donation Date",
+  "TimeSlots": "Time Slots",
+  "DonationType": "Donation Type",
+  "Organizer": "Organizer",
+  "OrganizationName": "Organization Name",
+  "ContactPerson": "Contact Person",
+  "ContactEmail": "Contact Email",
+  "ContactPhone": "Contact Phone",
+  "OriginalEventInformation": "Original Event Information",
+  "ApproveRequest": "Approve Request",
+  "RejectRequest": "Reject Request",
+  "AreYouSureApprove": "Are you sure you want to approve this request?",
+  "AreYouSureReject": "Are you sure you want to reject this request?",
+  "Cancel": "Cancel",
+  "Confirm": "Confirm",
+  "RequestApprovedSuccessfully": "Request approved successfully",
+  "RequestRejectedSuccessfully": "Request rejected successfully",
+  "FailedToApproveRequest": "Failed to approve request",
+  "FailedToRejectRequest": "Failed to reject request",
+  "AllStatuses": "All Statuses",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "AllRequestTypes": "All Request Types",
+  "CreateEvent": "Create Event",
+  "UpdateEvent": "Update Event",
+  "DeleteEvent": "Delete Event",
+  "NA": "N/A",
+  "Slots": "slots"
+}
 }
 
   

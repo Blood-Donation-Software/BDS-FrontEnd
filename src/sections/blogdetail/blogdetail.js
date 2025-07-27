@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '@/context/language_context';
-import { useLanguage } from '@/context/language_context';
 import { BASE_URL } from '@/global-config';
 
 export default function BlogDetail() {

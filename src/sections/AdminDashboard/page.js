@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                 {/* Recent Activity */}
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
                     <div className="px-6 py-4 border-b border-gray-200">
-                        <h3 className="font-medium text-gray-900">Recent Activity</h3>
+                        <h3 className="font-medium text-gray-900">{t?.RecentActivity?.title}</h3>
                     </div>
                     <div className="p-6">
                         <div className="space-y-6">
@@ -80,8 +80,8 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-900">New user account <span className="font-medium">John Smith</span> was created</p>
-                                    <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                    <p className="text-sm text-gray-900">{t?.RecentActivity?.userCreated} <span className="font-medium">John Smith</span> {t?.RecentActivity?.wasCreated}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t?.RecentActivity?.time_2h}</p>
                                 </div>
                             </div>
 

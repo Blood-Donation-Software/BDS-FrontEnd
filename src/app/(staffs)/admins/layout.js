@@ -4,32 +4,34 @@ import AppSidebar from "@/components/sidebar/sidebar"
 import { Calendar, Newspaper, TriangleAlert, LayoutDashboard, UserPen } from "lucide-react"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
 import { ROLES, RouteProtection } from "@/components/auth"
+import { useLanguage } from "@/context/language_context"
 
 
 export default function Layout({ children }) {
+  const {t} = useLanguage();
   const items = [
     {
-      title: "Dashboard & Report",
+      title: t?.dropDownMenu?.dashReport,
       url: "/admins/dashboard",
       icon: LayoutDashboard,
     },
     {
-      title: "Account Management",
+      title: t?.dropDownMenu?.accountManagement,
       url: "/admins/account-management",
       icon: Newspaper,
     },
     {
-      title: "Profiles Management",
+      title: t?.dropDownMenu?.profileManager, 
       url: "/admins/profiles-management",
       icon: UserPen,
     },
     {
-      title: "Event Request",
+      title: t?.dropDownMenu?.eventRequest,
       url: "/admins/event-request",
       icon: Calendar,
     },
     {
-      title: "Blog Request",
+      title: t?.dropDownMenu?.blogRequest,
       url: "/admins/blog-request",
       icon: TriangleAlert,
     },

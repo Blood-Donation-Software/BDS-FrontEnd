@@ -274,12 +274,17 @@
       "unknownError": "Lỗi không xác định"
     }
   },
-  "dropDownMenu": {
+   "dropDownMenu": {
     "profile": "Thông tin cá nhân",
     "dashBoard": "Bảng điều khiển",
     "settings": "Cài đặt",
     "dashboard": "Bảng điều khiển",
-    "donationHistory": "Lịch sử hiến máu"
+    "donationHistory": "Lịch sử hiến máu",
+       "dashReport": "Báo cáo",
+    "accountManagement": "Quản lý tài khoản",
+    "profileManager": "Quản lý hồ sơ",
+    "eventRequest": "Yêu cầu sự kiện",
+    "blogRequest": "Yêu cầu blog"
   },
   "system": {
     "details_info": "Vui lòng cung cấp thông tin chi tiết về yêu cầu hiến máu của bạn.",
@@ -620,6 +625,28 @@
     "noti": {
       "error": {
         "donationHistory": "Không thể tải lịch sử hiến máu"
+      }
+    },
+    "donateHistory": {
+      "title": "Lịch sử hiến máu",
+      "description": "Danh sách các lần hiến máu của bạn",
+      "noData": "Không tìm thấy lịch sử hiến máu",
+      "loading": "Đang tải lịch sử hiến máu...",
+      "tryAgain": "Vui lòng thử lại",
+      "columns": {
+        "date": "Ngày",
+        "type": "Hình thức hiến máu",
+        "volume": "Khối lượng (ml)",
+        "status": "Trạng thái"
+      },
+      "statusMap": {
+        "COMPLETED": "Hoàn thành",
+        "PENDING": "Chờ xử lý",
+        "CANCELLED": "Hủy"
+      },
+      "callToAction": {
+        "joinEvents": "Tham gia sự kiện hiến máu",
+        "participateButton": "Tham gia sự kiện hiến máu"
       }
     },
     "admin": {
@@ -1095,6 +1122,8 @@
   "stockView": "Xem kho"
 },
 "blogRequest": {
+  "request":"Yêu cầu",
+  "to":"đến",
     "full_name": "Họ tên",
     "blood_group": "Nhóm máu",
     "priority_level": "Mức độ ưu tiên",
@@ -1131,7 +1160,60 @@
     "additional_info": "Thông tin bổ sung",
     "medical_info": "Thông tin y tế",
     "notes": "Ghi chú",
-    "unit": "Đơn vị"
+    "unit": "Đơn vị",
+     "BlogRequests": "Yêu cầu Bài viết",
+  "ReviewAndManageBlogSubmissions": "Xem xét và quản lý các bài viết đã gửi",
+  "TotalRequests": "tổng cộng",
+  "Refresh": "Làm mới",
+  "Loading": "Đang tải...",
+  "SearchBlogRequests": "Tìm kiếm yêu cầu bài viết...",
+  "Status": "Trạng thái",
+  "RequestType": "Loại Yêu cầu",
+  "ShowingOf": "Hiển thị",
+  "Of": "trong số",
+  "Requests": "yêu cầu",
+  "RequestsPerPage": "Số yêu cầu mỗi trang:",
+  "Title": "Tiêu đề",
+  "Author": "Tác giả",
+  "ContentPreview": "Xem trước Nội dung",
+  "Actions": "Hành động",
+  "LoadingRequests": "Đang tải yêu cầu...",
+  "NoBlogRequestsFound": "Không tìm thấy yêu cầu bài viết nào",
+  "NoRequestsMatchFilters": "Không có yêu cầu nào phù hợp với bộ lọc",
+  "Untitled": "Chưa đặt tiêu đề",
+  "RequestID": "ID Yêu cầu:",
+  "NoContentAvailable": "Không có nội dung",
+  "View": "Xem",
+  "Approve": "Phê duyệt",
+  "Reject": "Từ chối",
+  "PreviousPage": "Trang trước",
+  "NextPage": "Trang sau",
+  "ViewBlogRequest": "Xem Yêu cầu Bài viết",
+  "Close": "Đóng",
+  "BlogTitle": "Tiêu đề Bài viết",
+  "BlogContent": "Nội dung Bài viết",
+  "ApproveRequest": "Phê duyệt Yêu cầu",
+  "RejectRequest": "Từ chối Yêu cầu",
+  "AreYouSureApprove": "Bạn có chắc chắn muốn phê duyệt yêu cầu bài viết này không?",
+  "AreYouSureReject": "Bạn có chắc chắn muốn từ chối yêu cầu bài viết này không?",
+  "Cancel": "Hủy",
+  "ConfirmApprove": "Có, Phê duyệt",
+  "ConfirmReject": "Có, Từ chối",
+  "AllStatuses": "Tất cả Trạng thái",
+  "Pending": "Đang chờ",
+  "Approved": "Đã phê duyệt",
+  "Rejected": "Đã từ chối",
+  "AllRequestTypes": "Tất cả Loại Yêu cầu",
+  "CreateBlog": "Tạo Bài viết",
+  "UpdateBlog": "Cập nhật Bài viết",
+  "DeleteBlog": "Xóa Bài viết",
+  "FailedToLoadBlogRequests": "Không thể tải yêu cầu bài viết",
+  "BlogRequestApprovedSuccessfully": "Yêu cầu bài viết đã được phê duyệt thành công!",
+  "BlogRequestRejectedSuccessfully": "Yêu cầu bài viết đã bị từ chối thành công!",
+  "FailedToApproveBlogRequest": "Không thể phê duyệt yêu cầu bài viết:",
+  "FailedToRejectBlogRequest": "Không thể từ chối yêu cầu bài viết:",
+  "FailedToLoadBlogRequestDetails": "Không thể tải chi tiết yêu cầu bài viết"
+
   },
   "eventRequestForStaff": {
     "title": "Yêu Cầu Sự Kiện Của Tôi",
@@ -1397,7 +1479,419 @@
       "confirm": "Xác nhận & Gửi yêu cầu",
       "creating": "Đang tạo yêu cầu..."
     }
+  },
+  "profilePage": {
+    "header": {
+      "title": "Thông tin cá nhân",
+      "description": "Quản lý thông tin cá nhân và cài đặt tài khoản của bạn"
+    },
+    "avatarCard": {
+      "title": "Chưa có tên",
+      "roleBadges": {
+        "ADMIN": "Quản trị viên",
+        "STAFF": "Nhân viên",
+        "MEMBER": "Thành viên",
+        "GUEST": "Khách",
+        "UNKNOWN": "Chưa xác định"
+      },
+      "infoFields": {
+        "email": "Email",
+        "emailPlaceholder": "Chưa có email",
+        "phone": "Số điện thoại",
+        "phonePlaceholder": "Chưa cập nhật",
+        "address": "Địa chỉ",
+        "addressPlaceholder": "Chưa cập nhật",
+        "bloodType": "Nhóm máu"
+      }
+    },
+    "avatarDialog": {
+      "title": "Cập nhật ảnh đại diện",
+      "description": "Chọn ảnh mới để làm ảnh đại diện (tối đa 5MB)",
+      "selectLabel": "Chọn ảnh",
+      "cancelButton": "Hủy",
+      "uploadButton": "Cập nhật",
+      "uploading": "Đang tải...",
+      "error": {
+        "size": "Kích thước ảnh không được vượt quá 5MB",
+        "type": "Vui lòng chọn file ảnh",
+        "auth": "Vui lòng chọn ảnh và đảm bảo đã đăng nhập"
+      },
+      "success": "Cập nhật ảnh đại diện thành công!"
+    },
+    "profileForm": {
+      "title": "Thông tin chi tiết",
+      "description": "Cập nhật thông tin cá nhân của bạn",
+      "buttons": {
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "sections": {
+        "personalInfo": {
+          "title": "Thông tin cá nhân",
+          "fields": {
+            "name": {
+              "label": "Họ và tên *",
+              "placeholder": "Nhập họ và tên"
+            },
+            "phone": {
+              "label": "Số điện thoại",
+              "placeholder": "Nhập số điện thoại"
+            },
+            "personalId": {
+              "label": "Số CCCD/CMND",
+              "placeholder": "Nhập số CCCD/CMND"
+            },
+            "dateOfBirth": {
+              "label": "Ngày sinh"
+            },
+            "gender": {
+              "label": "Giới tính",
+              "options": {
+                "male": "Nam",
+                "female": "Nữ",
+                "other": "Khác",
+                "placeholder": "Chọn giới tính"
+              }
+            },
+            "bloodType": {
+              "label": "Nhóm máu",
+              "options": {
+                "A_POSITIVE": "A+",
+                "A_NEGATIVE": "A-",
+                "B_POSITIVE": "B+",
+                "B_NEGATIVE": "B-",
+                "AB_POSITIVE": "AB+",
+                "AB_NEGATIVE": "AB-",
+                "O_POSITIVE": "O+",
+                "O_NEGATIVE": "O-",
+                "placeholder": "Chọn nhóm máu"
+              }
+            }
+          }
+        },
+        "addressInfo": {
+          "title": "Thông tin địa chỉ",
+          "fields": {
+            "address": {
+              "label": "Địa chỉ",
+              "placeholder": "Nhập địa chỉ"
+            },
+            "city": {
+              "label": "Tỉnh/Thành phố",
+              "placeholder": "Chọn tỉnh/thành phố"
+            },
+            "district": {
+              "label": "Quận/Huyện",
+              "placeholder": {
+                "noCity": "Vui lòng chọn tỉnh/thành phố trước",
+                "select": "Chọn quận/huyện"
+              }
+            },
+            "ward": {
+              "label": "Phường/Xã",
+              "placeholder": {
+                "noDistrict": "Vui lòng chọn quận/huyện trước",
+                "select": "Chọn phường/xã"
+              }
+            }
+          }
+        },
+        "donationHistory": {
+          "title": "Lịch sử hiến máu",
+          "fields": {
+            "lastDonation": "Ngày hiến máu gần nhất",
+            "nextDonation": "Ngày có thể hiến máu tiếp theo"
+          }
+        }
+      }
+    },
+    "validation": {
+      "name": {
+        "min": "Họ tên phải có ít nhất 2 ký tự",
+        "max": "Họ tên không được vượt quá 100 ký tự"
+      },
+      "phone": {
+        "invalid": "Số điện thoại phải có đúng 10 chữ số"
+      },
+      "personalId": {
+        "invalid": "Số CCCD/CMND phải có đúng 12 chữ số"
+      },
+      "dateOfBirth": {
+        "invalid": "Tuổi phải từ 16 đến 100"
+      },
+      "address": {
+        "max": "Địa chỉ không được vượt quá 255 ký tự"
+      }
+    },
+    "notifications": {
+      "success": "Cập nhật thông tin thành công!",
+      "error": {
+        "default": "Cập nhật thất bại! Vui lòng thử lại",
+        "connection": "Lỗi kết nối: {message}",
+        "invalidData": "Dữ liệu không hợp lệ"
+      }
+    },
+    "error": {
+  "size": "Kích thước ảnh không được vượt quá 5MB",
+   "type": "Vui lòng chọn file ảnh",
+     "auth": "Vui lòng chọn ảnh và đảm bảo đã đăng nhập",
+      "upload": "Lỗi tải ảnh đại diện:",
+      "generic": "Lỗi:",
+      "failed": "Cập nhật ảnh đại diện thất bại! Vui lòng thử lại"
+},
+    "loading": "Đang tải...",
+    "profileUpdate": {
+    "success": "Cập nhật thông tin thành công!",
+    "error": {
+      "invalidData": "Dữ liệu không hợp lệ",
+      "connection": "Lỗi kết nối:",
+      "generic": "Cập nhật thất bại! Vui lòng thử lại"
+    }
   }
+    
+  },
+  "settingPage": {
+    "header": {
+      "title": "Cài đặt",
+      "description": "Quản lý cài đặt tài khoản và tùy chọn của bạn"
+    },
+    "accountInfo": {
+      "title": "Thông tin tài khoản",
+      "description": "Thông tin cơ bản về tài khoản của bạn",
+      "fields": {
+        "email": "Email",
+        "name": "Họ tên",
+        "role": "Vai trò",
+        "joinDate": "Ngày tham gia",
+        "notUpdated": "Chưa cập nhật"
+      },
+      "roles": {
+        "admin": "Quản trị viên",
+        "staff": "Nhân viên",
+        "member": "Thành viên",
+        "guest": "Khách"
+      }
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "description": "Quản lý cách bạn nhận thông báo",
+      "marketingEmails": {
+        "label": "Email marketing",
+        "description": "Nhận email về tin tức và ưu đãi"
+      }
+    },
+    "password": {
+      "title": "Đổi mật khẩu",
+      "description": "Cập nhật mật khẩu để bảo mật tài khoản",
+      "fields": {
+        "current": "Mật khẩu hiện tại",
+        "new": "Mật khẩu mới",
+        "confirm": "Xác nhận mật khẩu mới"
+      },
+      "button": "Đổi mật khẩu",
+      "changing": "Đang thay đổi...",
+      "errors": {
+        "mismatch": "Mật khẩu xác nhận không khớp!",
+        "length": "Mật khẩu mới phải có ít nhất 6 ký tự!",
+        "generic": "Có lỗi xảy ra khi thay đổi mật khẩu!"
+      },
+      "success": "Mật khẩu đã được thay đổi thành công!"
+    },
+    "preferences": {
+      "title": "Tùy chọn",
+      "description": "Cài đặt ngôn ngữ và múi giờ",
+      "language": {
+        "label": "Ngôn ngữ",
+        "options": {
+          "vi": "Tiếng Việt",
+          "en": "English"
+        }
+      },
+      "timezone": {
+        "label": "Múi giờ",
+        "options": {
+          "Asia_Ho_Chi_Minh": "Việt Nam (GMT+7)",
+          "utc": "UTC (GMT+0)",
+          "America_New_York": "New York (GMT-5)"
+        }
+      }
+    },
+    "saveButton": {
+      "label": "Lưu cài đặt",
+      "saving": "Đang lưu..."
+    },
+    "toasts": {
+      "settingsSuccess": "Cài đặt đã được lưu thành công!",
+      "settingsError": "Có lỗi xảy ra khi lưu cài đặt!"
+    }
+  },
+    "RecentActivity": {
+    "title": "Hoạt động gần đây",
+    "userCreated": "Tài khoản người dùng mới",
+    "eventRequest": "Yêu cầu sự kiện mới",
+    "wasCreated": "đã được tạo",
+    "blogApproved": "Bài viết đã được phê duyệt",
+    "time_2h": "2 giờ trước",
+    "time_5h": "5 giờ trước",
+    "time_yesterday": "Hôm qua"
+  },
+   "accountManagement": {
+    "searchPlaceholder": "Tìm kiếm tài khoản...",
+    "allRoles": "Tất cả vai trò",
+    "admin": "Quản trị viên",
+    "staff": "Nhân viên",
+    "member": "Thành viên",
+    "transporter": "Người vận chuyển",
+    "allStatus": "Tất cả trạng thái",
+    "enable": "Kích hoạt",
+    "disable": "Vô hiệu",
+    "addUser": "Thêm tài khoản",
+    "addNewUser": "Thêm người dùng mới",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "role": "Vai trò",
+    "status": "Trạng thái",
+    "avatarUrl": "Ảnh đại diện (URL)",
+    "saveUser": "Lưu tài khoản",
+    "name": "Tên",
+    "lastLogin": "Đăng nhập lần cuối:",
+    "actions": "Hành động",
+    "systemMessages": {
+      "cannotLoadAccounts": "Không thể tải danh sách tài khoản!",
+      "fillEmailPassword": "Vui lòng điền email và mật khẩu",
+      "createUserFailed": "Tạo tài khoản thất bại!",
+      "createUserSuccess": "Tạo tài khoản thành công!"
+    }
+  },
+  "profileManagement":{
+    "viewDetails": "Xem chi tiết",
+  "EditProfile": "Chỉnh sửa hồ sơ",
+  "CreateProfile": "Tạo hồ sơ mới",
+  "UpdateProfileInformationBelow": "Cập nhật thông tin hồ sơ dưới đây.",
+  "CreateProfileWithInformationBelow": "Tạo hồ sơ với thông tin dưới đây.",
+  "FullName": "Họ và tên",
+  "FullNamePattern": "Họ và tên phải bao gồm tên và họ",
+  "PhoneNumber": "Số điện thoại",
+  "ValidVietnamesePhoneNumber": "Vui lòng nhập số điện thoại Việt Nam hợp lệ (ví dụ: 0912345678)",
+  "PersonalID": "Số CMND/CCCD",
+  "DateOfBirth": "Ngày sinh",
+  "LastDonationDate": "Ngày hiến máu gần nhất",
+  "BloodType": "Nhóm máu",
+  "SelectBloodType": "Chọn nhóm máu",
+  "Gender": "Giới tính",
+  "SelectGender": "Chọn giới tính",
+  "CityProvince": "Tỉnh/Thành phố",
+  "SelectCityProvince": "Chọn tỉnh/thành phố",
+  "District": "Quận/Huyện",
+  "SelectDistrict": "Chọn quận/huyện",
+  "Ward": "Phường/Xã",
+  "SelectWard": "Chọn phường/xã",
+  "Address": "Địa chỉ",
+  "Status": "Trạng thái",
+  "SelectStatus": "Chọn trạng thái",
+  "Cancel": "Hủy",
+  "Updating": "Đang cập nhật...",
+  "Creating": "Đang tạo...",
+  "SaveChanges": "Lưu thay đổi",
+  "CreateProfileButton": "Tạo hồ sơ",
+  "APlus": "A+",
+  "AMinus": "A-",
+  "BPlus": "B+",
+  "BMinus": "B-",
+  "ABPlus": "AB+",
+  "ABMinus": "AB-",
+  "OPlus": "O+",
+  "OMinus": "O-",
+  "Male": "Nam",
+  "Female": "Nữ",
+  "Available": "Có sẵn",
+  "Unavailable": "Không có sẵn",
+  "SearchProfiles": "Tìm kiếm hồ sơ...",
+  "CreateNewProfile": "Tạo hồ sơ mới",
+  "Name": "Tên",
+  "Phone": "Điện thoại",
+  "BloodTypeShort": "Nhóm máu",
+  "LastDonation": "Lần hiến máu gần nhất",
+  "Actions": "Hành động",
+  "ViewHistory": "Xem lịch sử",
+  "Edit": "Chỉnh sửa",
+  "NoProfilesFound": "Không tìm thấy hồ sơ nào.",
+  "DonationHistory": "Lịch sử hiến máu",
+  "Close": "Đóng",
+  "Date": "Ngày",
+  "AmountMl": "Số lượng (ml)",
+  "NoDonationHistoryAvailable": "Không có lịch sử hiến máu."
+},
+"eventRequest":{
+  "BloodDonationEventRequests": "Yêu cầu sự kiện hiến máu",
+  "ReviewAndManageRequests": "Xem xét và quản lý các yêu cầu sự kiện hiến máu đang chờ xử lý",
+  "TotalRequests": "tổng số",
+  "Loading": "Đang tải...",
+  "Refresh": "Làm mới",
+  "FailedToLoadRequests": "Không thể tải yêu cầu sự kiện. Vui lòng thử lại.",
+  "FailedToLoadEventRequests": "Không thể tải yêu cầu sự kiện",
+  "SearchRequests": "Tìm kiếm yêu cầu...",
+  "Status": "Trạng thái",
+  "RequestType": "Loại yêu cầu",
+  "ShowingOf": "Hiển thị",
+  "Of": "trong số",
+  "Requests": "yêu cầu",
+  "RequestsPerPage": "Số yêu cầu mỗi trang:",
+  "EventName": "Tên sự kiện",
+  "Location": "Địa điểm",
+  "Date": "Ngày",
+  "CrudType": "Loại thao tác",
+  "Actions": "Hành động",
+  "View": "Xem",
+  "Approve": "Phê duyệt",
+  "Reject": "Từ chối",
+  "NoRequestsFound": "Không tìm thấy yêu cầu nào.",
+  "PreviousPage": "Trang trước",
+  "NextPage": "Trang sau",
+  "RequestDetails": "Chi tiết yêu cầu",
+  "Close": "Đóng",
+  "requestType": "Loại yêu cầu",
+  "EventInformation": "Thông tin sự kiện",
+  "Name": "Tên",
+  "Hospital": "Bệnh viện",
+  "Address": "Địa chỉ",
+  "City": "Thành phố",
+  "DonationDate": "Ngày hiến máu",
+  "TimeSlots": "Khung giờ",
+  "DonationType": "Loại hiến máu",
+  "Organizer": "Đơn vị tổ chức",
+  "OrganizationName": "Tên tổ chức",
+  "ContactPerson": "Người liên hệ",
+  "ContactEmail": "Email liên hệ",
+  "ContactPhone": "Số điện thoại liên hệ",
+  "OriginalEventInformation": "Thông tin sự kiện ban đầu",
+  "ApproveRequest": "Phê duyệt yêu cầu",
+  "RejectRequest": "Từ chối yêu cầu",
+  "AreYouSureApprove": "Bạn có chắc chắn muốn phê duyệt yêu cầu này không?",
+  "AreYouSureReject": "Bạn có chắc chắn muốn từ chối yêu cầu này không?",
+  "Cancel": "Hủy",
+  "Confirm": "Xác nhận",
+  "RequestApprovedSuccessfully": "Yêu cầu đã được phê duyệt thành công",
+  "RequestRejectedSuccessfully": "Yêu cầu đã bị từ chối thành công",
+  "FailedToApproveRequest": "Không thể phê duyệt yêu cầu",
+  "FailedToRejectRequest": "Không thể từ chối yêu cầu",
+  "AllStatuses": "Tất cả trạng thái",
+  "Pending": "Đang chờ",
+  "Approved": "Đã phê duyệt",
+  "Rejected": "Đã từ chối",
+  "AllRequestTypes": "Tất cả loại yêu cầu",
+  "CreateEvent": "Tạo sự kiện",
+  "UpdateEvent": "Cập nhật sự kiện",
+  "DeleteEvent": "Xóa sự kiện",
+  "NA": "Không có",
+  "Slots": "khung giờ"
+}
+
+
+    
+  
 }
   
 

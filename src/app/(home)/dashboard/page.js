@@ -6,6 +6,7 @@ import { getDonationHistory } from '@/apis/user';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/context/language_context';
 import {
     Calendar,
     MapPin,

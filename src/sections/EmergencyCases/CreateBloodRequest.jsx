@@ -82,10 +82,10 @@ export default function CreateBloodRequest() {
   const [availableWards, setAvailableWards] = useState([]);
 
   const bloodComponents = [
-    { id: 1, type: "Whole", value: "WHOLE_BLOOD" },
-    { id: 2, type: "Red Blood Cells", value: "RED_BLOOD_CELLS" },
-    { id: 3, type: "Plasma", value: "PLASMA" },
-    { id: 4, type: "Platelets", value: "PLATELETS" },
+    { id: 1, type: t?.blood_components?.whole_blood?.name, value: "WHOLE_BLOOD" },
+    { id: 2, type: t?.blood_components?.red_blood_cells?.name, value: "RED_BLOOD_CELLS" },
+    { id: 3, type: t?.blood_components?.plasma?.name, value: "PLASMA" },
+    { id: 4, type: t?.blood_components?.platelets?.name, value: "PLATELETS" },
   ];
 
   const bloodTypes = [
@@ -1145,8 +1145,8 @@ export default function CreateBloodRequest() {
                               ? 'bg-yellow-100 text-yellow-800' 
                               : 'bg-green-100 text-green-800'
                           }`}>
-                            {condition.urgencyLevel === 'HIGH' ? 'Critical' : 
-                             condition.urgencyLevel === 'MEDIUM' ? 'Urgent' : 'Normal'} Priority
+                            {condition.urgencyLevel === 'HIGH' ? t?.createBloodRequest?.bloodRequest?.urgency?.critical : 
+                             condition.urgencyLevel === 'MEDIUM' ? t?.createBloodRequest?.bloodRequest?.urgency?.urgent : t?.createBloodRequest?.bloodRequest?.urgency?.normal} {t?.blogRequest?.priority}
                           </span>
                         </div>
                       </div>
@@ -1159,7 +1159,7 @@ export default function CreateBloodRequest() {
 
           {/* Urgency */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">Urgency Level *</Label>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.urgency?.label}*</Label>
             <p className="text-sm text-gray-600">
               {bloodRequest.urgency ? 
                 "Urgency level automatically calculated based on medical conditions and required date. You can override if needed." :
@@ -1182,7 +1182,7 @@ export default function CreateBloodRequest() {
                   </div>
                   <p className={`font-semibold ${urgency.textColor} text-sm mt-1`}>{urgency.timeframe}</p>
                   {urgency.value === bloodRequest.urgency && (
-                    <p className="text-xs text-gray-600 mt-1">Auto-selected</p>
+                    <p className="text-xs text-gray-600 mt-1">{t?.createBloodRequest?.urgency?.autoSelected}</p>
                   )}
                 </div>
               ))}
@@ -1192,21 +1192,21 @@ export default function CreateBloodRequest() {
           {/* Notes */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="additionalMedicalInformation" className="font-semibold text-gray-800 text-sm">Additional Medical Information *</Label>
+              <Label htmlFor="additionalMedicalInformation" className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.notes?.medicalInfo?.label}</Label>
               <Textarea
                 id="additionalMedicalInformation"
                 name="additionalMedicalInformation"
-                placeholder="Describe any additional medical information, symptoms, or special requirements..."
+                placeholder={t?.createBloodRequest?.notes?.medicalInfo?.placeholder}
                 className="min-h-[100px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 onChange={handleBloodRequest}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="additionalNotes" className="font-semibold text-gray-800 text-sm">Additional Notes</Label>
+              <Label htmlFor="additionalNotes" className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.notes?.additional?.label}</Label>
               <Textarea
                 id="additionalNotes"
                 name="additionalNotes"
-                placeholder="Any other relevant information..."
+                placeholder={t?.createBloodRequest?.notes?.additional?.placeholder}     
                 className="min-h-[100px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 onChange={handleBloodRequest}
               />
@@ -1215,8 +1215,8 @@ export default function CreateBloodRequest() {
 
           {/* Submit */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">Cancel</Button>
-            <Button type="submit" className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg">Submit Blood Request</Button>
+            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">{t?.createBloodRequest?.buttons?.cancel}</Button>
+            <Button type="submit" className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg">{t?.createBloodRequest?.buttons?.submit}</Button>
           </div>
         </form>
       </CardContent>
