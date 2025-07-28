@@ -141,15 +141,23 @@ function DonationEvents() {
         return true
     }    // Filter events based on search query and date range, excluding cancelled and completed events
     // const filteredEvents = events.filter(event =>
-    const filteredEvents = (events || []).filter(event =>
-        event.status !== 'CANCELLED' && // Exclude cancelled events
-        event.status !== 'COMPLETED' && // Exclude completed events
-        (event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.city.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        isEventInDateRange(event)
-    )
+    const filteredEvents = (events || []).filter(event => {
+        // Parse the event date
+        const eventDate = parseDate(event.donationDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to start of today for comparison
+        
+        return (
+            event.status !== 'CANCELLED' && // Exclude cancelled events
+            event.status !== 'COMPLETED' && // Exclude completed events
+            eventDate && isAfter(eventDate, today) && // Only show future events (after today)
+            (event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.city.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            isEventInDateRange(event)
+        );
+    });
 
     // Sort events
     const sortedEvents = [...filteredEvents].sort((a, b) => {
@@ -215,7 +223,7 @@ function DonationEvents() {
 
                 {/* Filters and Search */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
-                    <div className="flex flex-col md:flex-row">
+                    <div className="flex flex-col md:flex-row justify-evenly space-x-2">
                         <div className="flex-3/4">
                             <Input
                                 type="text"
@@ -283,7 +291,7 @@ function DonationEvents() {
                                 </Button>
                             )}
                         </div>
-                        <div className="flex-1/4">
+                        <div className="">
                             <Button
                                 variant="outline"
                                 size="icon"

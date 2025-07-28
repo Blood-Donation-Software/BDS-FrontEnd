@@ -2,4 +2,12 @@ import { env } from "next-runtime-env";
 
 export const BASE_URL = env('NEXT_PUBLIC_API_URL')
 export const AVATAR_URL = env('NEXT_PUBLIC_AVATAR_URL');
-// export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const HOSPITAL_STREET = env('NEXT_PUBLIC_STREET_ADDRESS');
+const HOSPITAL_DISTRICT = env('NEXT_PUBLIC_DISTRICT');
+const HOSPITAL_CITY = env('NEXT_PUBLIC_CITY');
+const HOSPITAL_STATE = env('NEXT_PUBLIC_STATE');
+export const HOSPITAL_ADDRESS = `${HOSPITAL_STREET}, ${HOSPITAL_DISTRICT}, ${HOSPITAL_CITY}, ${HOSPITAL_STATE}`;
+export const HOSPITAL_NAME = env('NEXT_PUBLIC_HOSPITAL_NAME');
+export const HOSPITAL_PHONE = env('NEXT_PUBLIC_HOSPITAL_PHONE');
+// export const AVATAR_URL = process.env.NEXT_PUBLIC_AVATAR_URL;
+// export const BASE_URL = process.env.EXT_PUBLIC_API_URL;

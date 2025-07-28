@@ -149,7 +149,7 @@ const MenuBar = ({ editor }) => {
   const headingItems = [
     {
       label: 'H1',
-      command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+      command: () => editor.chain().focus().setFontSize('28px').run(),
       isActive: editor.isActive('heading', { level: 1 })
     },
     {
@@ -642,37 +642,6 @@ export default function CreateBlog() {
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-  // Save as draft
-  const saveDraft = async () => {
-    if (!validateForm()) {
-      toast.error('Please fill in all required fields')
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const blogData = {
-        title: formData.title,
-        content: editor.getHTML(),
-        status: 'INACTIVE' // Draft status
-      }
-
-      const result = await createBlogRequest(blogData, thumbnail)
-      toast.success('Blog request submitted successfully! It will be reviewed by administrators.')
-
-      // Redirect to blog list or dashboard
-      router.push('/staffs/blog/requests')
-    } catch (error) {
-      console.error('Error saving draft:', error)
-      if (error.response?.data) {
-        toast.error(`Failed to save draft: ${error.response.data}`)
-      } else {
-        toast.error('Failed to save draft. Please try again.')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   // Submit for publication
   const submitForPublication = async () => {
@@ -704,12 +673,6 @@ export default function CreateBlog() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Preview blog
-  const previewBlog = () => {
-    // TODO: Implement preview functionality
-    toast.info('Preview functionality coming soon!')
   }
 
   return (
@@ -761,7 +724,8 @@ export default function CreateBlog() {
                 )}
               </div>
             </CardContent>
-          </Card>          {/* Thumbnail */}
+          </Card>
+          {/* Thumbnail */}
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">

@@ -1,165 +1,135 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { 
+  getStaffDashboardData, 
+  getDonationEventChartData 
+} from '@/apis/dashboard';
+import { 
+  Bar, 
+  BarChart, 
+  Line, 
+  LineChart, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  ResponsiveContainer, 
+  Tooltip,
+  Legend
+} from "recharts";
 import { 
   Users, 
   Droplet, 
-  MapPin, 
-  Clock, 
-  AlertTriangle, 
-  CheckCircle, 
-  TrendingUp,
   Calendar,
-  Phone,
-  UserCheck,
   Activity,
-  Target,
-  Heart,
-  Navigation
+  FileText,
+  Eye,
+  CheckCircle,
+  Clock,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react';
-
-// Mock data
-const mockData = {
-  overview: {
-    totalDonors: 2847,
-    activeDonors: 1203,
-    bloodRequests: 23,
-    urgentRequests: 5,
-    completedToday: 12,
-    averageResponseTime: '18 mins'
-  },
-  bloodInventory: {
-    'A_POSITIVE': { available: 45, critical: 20, percentage: 75 },
-    'A_NEGATIVE': { available: 12, critical: 15, percentage: 40 },
-    'B_POSITIVE': { available: 32, critical: 20, percentage: 65 },
-    'B_NEGATIVE': { available: 8, critical: 10, percentage: 30 },
-    'AB_POSITIVE': { available: 18, critical: 15, percentage: 55 },
-    'AB_NEGATIVE': { available: 5, critical: 8, percentage: 25 },
-    'O_POSITIVE': { available: 67, critical: 25, percentage: 85 },
-    'O_NEGATIVE': { available: 15, critical: 18, percentage: 45 }
-  },
-  recentRequests: [
-    {
-      id: 1,
-      type: 'Cấp cứu',
-      bloodType: 'O_NEGATIVE',
-      quantity: 3,
-      location: 'Bệnh viện Chợ Rẫy',
-      distance: '2.3 km',
-      status: 'pending',
-      time: '10 phút trước',
-      priority: 'urgent'
-    },
-    {
-      id: 2,
-      type: 'Phẫu thuật',
-      bloodType: 'A_POSITIVE',
-      quantity: 2,
-      location: 'Bệnh viện Nhân dân 115',
-      distance: '5.7 km',
-      status: 'processing',
-      time: '25 phút trước',
-      priority: 'high'
-    },
-    {
-      id: 3,
-      type: 'Điều trị',
-      bloodType: 'B_POSITIVE',
-      quantity: 1,
-      location: 'Bệnh viện Đại học Y Dược',
-      distance: '8.1 km',
-      status: 'completed',
-      time: '1 giờ trước',
-      priority: 'normal'
-    }
-  ],
-  nearbyDonors: [
-    {
-      id: 1,
-      name: 'Nguyễn Văn An',
-      bloodType: 'O_NEGATIVE',
-      distance: '1.2 km',
-      phone: '0901234567',
-      lastDonation: '3 tháng trước',
-      eligible: true,
-      responseRate: '95%'
-    },
-    {
-      id: 2,
-      name: 'Trần Thị Bình',
-      bloodType: 'A_POSITIVE',
-      distance: '2.8 km',
-      phone: '0912345678',
-      lastDonation: '2 tháng trước',
-      eligible: true,
-      responseRate: '87%'
-    },
-    {
-      id: 3,
-      name: 'Lê Minh Cường',
-      bloodType: 'B_POSITIVE',
-      distance: '3.5 km',
-      phone: '0923456789',
-      lastDonation: '1 tháng trước',
-      eligible: false,
-      responseRate: '92%'
-    }
-  ],
-  todayActivities: [
-    { time: '09:15', action: 'Yêu cầu máu O- từ BV Chợ Rẫy', status: 'new' },
-    { time: '09:32', action: 'Liên hệ người hiến Nguyễn Văn An', status: 'processing' },
-    { time: '10:45', action: 'Hoàn thành yêu cầu #BLD-2025-001', status: 'completed' },
-    { time: '11:20', action: 'Cập nhật kho máu A+', status: 'completed' },
-    { time: '14:15', action: 'Yêu cầu khẩn cấp từ BV 115', status: 'urgent' }
-  ]
-};
-
-const bloodTypeColors = {
-  'A_POSITIVE': 'bg-red-500',
-  'A_NEGATIVE': 'bg-red-400',
-  'B_POSITIVE': 'bg-blue-500',
-  'B_NEGATIVE': 'bg-blue-400',
-  'AB_POSITIVE': 'bg-purple-500',
-  'AB_NEGATIVE': 'bg-purple-400',
-  'O_POSITIVE': 'bg-green-500',
-  'O_NEGATIVE': 'bg-green-400'
-};
-
-const bloodTypeLabels = {
-  'A_POSITIVE': 'A+',
-  'A_NEGATIVE': 'A-',
-  'B_POSITIVE': 'B+',
-  'B_NEGATIVE': 'B-',
-  'AB_POSITIVE': 'AB+',
-  'AB_NEGATIVE': 'AB-',
-  'O_POSITIVE': 'O+',
-  'O_NEGATIVE': 'O-'
-};
+import { endpoint } from '@/utils/axios';
 
 export default function DashboardForStaff() {
-  const [selectedTimeframe, setSelectedTimeframe] = useState('today');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('week');
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'processing': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'urgent': return 'bg-red-100 text-red-800';
-      case 'new': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+  // Fetch dashboard data on component mount
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // Fetch chart data when timeframe changes
+  useEffect(() => {
+    if (dashboardData) {
+      fetchChartData();
+    }
+  }, [selectedTimeframe]);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const data = await getStaffDashboardData();
+      setDashboardData(data);
+      setError(null);
+    } catch (err) {
+      setError('Không thể tải dữ liệu dashboard. Vui lòng thử lại.');
+      console.error('Error fetching dashboard data:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'urgent': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'normal': return 'text-green-600';
-      default: return 'text-gray-600';
+  const fetchChartData = async () => {
+    try {
+      const chartData = await getDonationEventChartData(selectedTimeframe);
+      setDashboardData(prev => ({
+        ...prev,
+        donationEventChartData: chartData
+      }));
+    } catch (err) {
+      console.error('Error fetching chart data:', err);
+    }
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={fetchDashboardData}>Thử lại</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Helper functions
+  const getEventData = () => {
+    return dashboardData?.donationEventChartData || [];
+  };
+
+  const getTimeKey = () => {
+    switch (selectedTimeframe) {
+      case 'week':
+        return 'timeKey';
+      case 'month':
+        return 'timeKey';
+      case 'year':
+        return 'timeKey';
+      default:
+        return 'timeKey';
+    }
+  };
+
+  const getTimeLabel = () => {
+    switch (selectedTimeframe) {
+      case 'week':
+        return 'ngày trong tuần';
+      case 'month':
+        return 'tháng trong năm';
+      case 'year':
+        return 'năm';
+      default:
+        return 'ngày';
     }
   };
 
@@ -170,252 +140,168 @@ export default function DashboardForStaff() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Staff Dashboard</h1>
-            <p className="text-gray-600">Quản lý yêu cầu hiến máu và người hiến</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant={selectedTimeframe === 'today' ? 'default' : 'outline'} 
-                    onClick={() => setSelectedTimeframe('today')}>
-              Hôm nay
-            </Button>
-            <Button variant={selectedTimeframe === 'week' ? 'default' : 'outline'}
-                    onClick={() => setSelectedTimeframe('week')}>
-              Tuần này
-            </Button>
-            <Button variant={selectedTimeframe === 'month' ? 'default' : 'outline'}
-                    onClick={() => setSelectedTimeframe('month')}>
-              Tháng này
-            </Button>
+            <p className="text-gray-600">Quản lý yêu cầu hiến máu, blog và sự kiện</p>
           </div>
         </div>
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Blood Requests Unfinished */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tổng người hiến</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockData.overview.totalDonors.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+12%</span> so với tháng trước
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Người hiến hoạt động</CardTitle>
-              <UserCheck className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockData.overview.activeDonors.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+8%</span> so với tuần trước
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Yêu cầu hiện tại</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{mockData.overview.bloodRequests}</div>
-              <div className="flex items-center space-x-2 text-xs">
-                <span className="text-red-600 font-medium">{mockData.overview.urgentRequests} khẩn cấp</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Thời gian phản hồi TB</CardTitle>
+              <CardTitle className="text-sm font-medium">Yêu cầu chưa hoàn thành</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{mockData.overview.averageResponseTime}</div>
+              <div className="text-2xl font-bold text-red-600">{dashboardData?.bloodRequestStats?.unfinished || 0}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">-15%</span> so với tháng trước
+                Cần xử lý khẩn cấp
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Blood Requests Fulfilled */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Yêu cầu đã hoàn thành</CardTitle>
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{dashboardData?.bloodRequestStats?.fulfilled || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="text-green-600">
+                </span> Đã hoàn thành
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Blogs Published */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Blog đã xuất bản</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">{dashboardData?.blogStats?.published || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                Đang hoạt động
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Blogs Waiting */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Tổng sự kiện hiến máu</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">{dashboardData?.donationEventStats?.total || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="text-green-600">{dashboardData?.donationEventStats?.completed || 0}</span> hoàn thành, 
+                <span className="text-orange-600 ml-1">{dashboardData?.donationEventStats?.available || 0}</span> đang hoạt động
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Blood Inventory */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Droplet className="h-5 w-5 text-red-500" />
-                Tồn kho máu
-              </CardTitle>
-              <CardDescription>Trạng thái hiện tại của các nhóm máu</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {Object.entries(mockData.bloodInventory).map(([type, data]) => (
-                <div key={type} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{bloodTypeLabels[type]}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">{data.available} đơn vị</span>
-                      <Badge variant={data.available < data.critical ? 'destructive' : 'secondary'}>
-                        {data.available < data.critical ? 'Thiếu' : 'Đủ'}
-                      </Badge>
-                    </div>
-                  </div>
-                  <Progress value={data.percentage} className="h-2" />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Recent Requests */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-orange-500" />
-                Yêu cầu gần đây
-              </CardTitle>
-              <CardDescription>Các yêu cầu hiến máu mới nhất</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {mockData.recentRequests.map((request) => (
-                  <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-3 h-3 rounded-full ${getPriorityColor(request.priority)}`}>
-                        <div className="w-full h-full bg-current rounded-full animate-pulse"></div>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{request.type}</span>
-                          <Badge variant="outline">{bloodTypeLabels[request.bloodType]}</Badge>
-                          <span className="text-sm text-gray-600">{request.quantity} đơn vị</span>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {request.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Navigation className="h-3 w-3" />
-                            {request.distance}
-                          </span>
-                          <span>{request.time}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(request.status)}>
-                        {request.status === 'pending' && 'Chờ xử lý'}
-                        {request.status === 'processing' && 'Đang xử lý'}
-                        {request.status === 'completed' && 'Hoàn thành'}
-                      </Badge>
-                      <Button size="sm" variant="outline">
-                        {request.status === 'pending' ? 'Xử lý' : 'Chi tiết'}
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Bottom Section */}
+        {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Nearby Donors */}
+          {/* Donation Events Chart */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-blue-500" />
-                Người hiến gần đây
-              </CardTitle>
-              <CardDescription>Danh sách người hiến trong khu vực</CardDescription>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-blue-500" />
+                    Tổng số người hiến máu
+                  </CardTitle>
+                  <CardDescription>
+                    Theo dõi tổng số người hiến máu từ tất cả sự kiện theo {getTimeLabel()}
+                  </CardDescription>
+                </div>
+                <div className="flex gap-1">
+                  <Button 
+                    variant={selectedTimeframe === 'week' ? 'default' : 'outline'} 
+                    size="sm"
+                    onClick={() => setSelectedTimeframe('week')}
+                  >
+                    Theo tuần
+                  </Button>
+                  <Button 
+                    variant={selectedTimeframe === 'month' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedTimeframe('month')}
+                  >
+                    Theo tháng
+                  </Button>
+                  <Button 
+                    variant={selectedTimeframe === 'year' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedTimeframe('year')}
+                  >
+                    Theo năm
+                  </Button>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {mockData.nearbyDonors.map((donor) => (
-                  <div key={donor.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium">{donor.name.split(' ').map(n => n[0]).join('')}</span>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{donor.name}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {bloodTypeLabels[donor.bloodType]}
-                          </Badge>
-                          {donor.eligible ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <Clock className="h-4 w-4 text-orange-500" />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Navigation className="h-3 w-3" />
-                            {donor.distance}
-                          </span>
-                          <span>Hiến gần nhất: {donor.lastDonation}</span>
-                          <span>Phản hồi: {donor.responseRate}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline">
-                        <Phone className="h-4 w-4 mr-1" />
-                        Gọi
-                      </Button>
-                      <Button size="sm">
-                        Mời hiến
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ width: '100%', height: '300px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={getEventData()}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey={getTimeKey()} />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value) => [value.toLocaleString(), 'Người hiến máu']}
+                      labelFormatter={(label) => {
+                        const timeKeyValue = getTimeKey();
+                        if (selectedTimeframe === 'week') return `Ngày: ${label}`;
+                        if (selectedTimeframe === 'month') return `Tháng: ${label}`;
+                        if (selectedTimeframe === 'year') return `Năm: ${label}`;
+                        return label;
+                      }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="totalDonors" 
+                      stroke="#3b82f6" 
+                      strokeWidth={3}
+                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
 
-          {/* Today's Activities */}
+          {/* Blood Stock Chart */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-green-500" />
-                Hoạt động hôm nay
+                <BarChart3 className="h-5 w-5 text-red-500" />
+                Tồn kho máu theo nhóm máu
               </CardTitle>
-              <CardDescription>Lịch sử hoạt động trong ngày</CardDescription>
+              <CardDescription>
+                Số lượng các thành phần máu theo từng nhóm máu
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {mockData.todayActivities.map((activity, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className={`w-2 h-2 rounded-full mt-2 ${
-                        activity.status === 'completed' ? 'bg-green-500' :
-                        activity.status === 'urgent' ? 'bg-red-500' :
-                        activity.status === 'processing' ? 'bg-blue-500' :
-                        'bg-purple-500'
-                      }`}></div>
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">{activity.action}</span>
-                        <span className="text-xs text-gray-500">{activity.time}</span>
-                      </div>
-                      <Badge className={`mt-1 ${getStatusColor(activity.status)} text-xs`}>
-                        {activity.status === 'completed' && 'Hoàn thành'}
-                        {activity.status === 'urgent' && 'Khẩn cấp'}
-                        {activity.status === 'processing' && 'Đang xử lý'}
-                        {activity.status === 'new' && 'Mới'}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ width: '100%', height: '300px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={ dashboardData?.bloodStock || []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="bloodType" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="wholeBlood" stackId="a" fill="#dc2626" name="Máu toàn phần" />
+                    <Bar dataKey="redCells" stackId="a" fill="#ea580c" name="Hồng cầu" />
+                    <Bar dataKey="plasma" stackId="a" fill="#ca8a04" name="Huyết tương" />
+                    <Bar dataKey="platelets" stackId="a" fill="#16a34a" name="Tiểu cầu" />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
@@ -425,27 +311,27 @@ export default function DashboardForStaff() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-indigo-500" />
+              <Activity className="h-5 w-5 text-indigo-500" />
               Hành động nhanh
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <AlertTriangle className="h-6 w-6 text-red-500" />
-                <span className="text-sm">Yêu cầu khẩn cấp</span>
+                <Clock className="h-6 w-6 text-red-500" />
+                <span className="text-sm">Xử lý yêu cầu</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <Users className="h-6 w-6 text-blue-500" />
-                <span className="text-sm">Tìm người hiến</span>
+                <FileText className="h-6 w-6 text-blue-500" />
+                <span className="text-sm">Tạo blog</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <Droplet className="h-6 w-6 text-green-500" />
+                <Calendar className="h-6 w-6 text-green-500" />
+                <span className="text-sm">Tạo sự kiện</span>
+              </Button>
+              <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
+                <Droplet className="h-6 w-6 text-purple-500" />
                 <span className="text-sm">Cập nhật kho</span>
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <Heart className="h-6 w-6 text-pink-500" />
-                <span className="text-sm">Lịch sử hiến máu</span>
               </Button>
             </div>
           </CardContent>

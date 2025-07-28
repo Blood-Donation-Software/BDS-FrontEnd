@@ -27,3 +27,8 @@ export const fulfillBloodRequest = (bloodRequest) => {
     return axiosInstance.post(`${endpoint.bloodRequest.fulfillRequest}`, bloodRequest)
         .then(res => res.data);
 }
+
+export const getEmergencyBloodRequests = () => {
+    return axiosInstance.get(endpoint.bloodRequest.getEmergencyRequests)
+        .then(res => res.data);
+}

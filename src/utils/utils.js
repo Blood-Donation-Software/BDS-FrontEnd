@@ -26,6 +26,8 @@ export const convertDonationRegistrationStatus = (status) => {
       return 'Đã hủy';
     case 'CHECKED_IN':
       return 'Đã checkin';
+    case 'COMPLETED':
+      return 'Đã hiến';
     default:
       return status;
   }

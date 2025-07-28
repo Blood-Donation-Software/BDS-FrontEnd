@@ -1,11 +1,7 @@
 'use client'
 
-import { getRequestById } from '@/apis/bloodrequest';
-import { deleteStock } from '@/apis/bloodStock';
-import { getAllAccount, updateProfile } from '@/apis/user';
 import { AVATAR_URL, BASE_URL } from '@/global-config';
 import axios from 'axios';
-import { add } from 'lodash';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -70,7 +66,8 @@ export const endpoint = {
     create: `${BASE_URL}/api/blood-request/create-request`,
     getById: `${BASE_URL}/api/blood-request`,
     addDonor: `${BASE_URL}/api/blood-request/add-donor`,
-    fulfillRequest: `${BASE_URL}/api/blood-request/fulfill-request`
+    fulfillRequest: `${BASE_URL}/api/blood-request/fulfill-request`,
+    getEmergencyRequests: `${BASE_URL}/api/blood-request/emergency-request`
   },
   bloodStock: {
     checkStock: `${BASE_URL}/api/medical-facility-stock/check-stock`,
@@ -126,13 +123,24 @@ export const endpoint = {
     getMyBlogById: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}`,
     updateBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/update`,
     deleteBlog: (blogId) => `${BASE_URL}/api/blog/my-blogs/${blogId}/delete`,
-      createBlogRequest: `${BASE_URL}/api/blog-request/create`,
+    createBlogRequest: `${BASE_URL}/api/blog-request/create`,
     getPendingRequests: `${BASE_URL}/api/blog-request/pending`,
     getBlogRequestById: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}`,
     verifyBlogRequest: (requestId) => `${BASE_URL}/api/blog-request/pending/${requestId}/verify`,
     getMyBlogRequests: `${BASE_URL}/api/blog-request/my-requests`,
     getMyBlogRequestById: (requestId) => `${BASE_URL}/api/blog-request/my-requests/${requestId}`,
+  },
+  dashboard: {
+    getStaffDashboard: `${BASE_URL}/api/dashboard/staff`,
+    getBloodRequestStats: `${BASE_URL}/api/dashboard/blood-requests/stats`,
+    getBlogStats: `${BASE_URL}/api/dashboard/blogs/stats`,
+    getDonationEventStats: `${BASE_URL}/api/dashboard/donation-events/stats`,
+    getBloodStock: `${BASE_URL}/api/dashboard/blood-stock`,
+    getDonationEventChart: (timeframe) => `${BASE_URL}/api/dashboard/donation-events/chart?timeframe=${timeframe}`,
+    // Admin Dashboard endpoints
+    getAdminDashboard: `${BASE_URL}/api/dashboard/admin`,
+    getAdminTotalStats: `${BASE_URL}/api/dashboard/admin/total-stats`,
+    getAdminRecentActivities: `${BASE_URL}/api/dashboard/admin/recent-activities`,
   }
 }
-
 export default axiosInstance;

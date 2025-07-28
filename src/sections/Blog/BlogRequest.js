@@ -362,7 +362,7 @@ export default function BlogRequest() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span>{request.authorName || "null"}</span>
+                        <span>{request.blog.authorName || "Unknown"}</span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={getStatusBadge(request.status)}>

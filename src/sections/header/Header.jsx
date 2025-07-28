@@ -107,7 +107,8 @@ export default function Header() {
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
-        </NavigationMenu>        {/* Auth/User Avatar */}
+        </NavigationMenu>        
+        {/* Auth/User Avatar */}
         <div className="flex items-center space-x-4">
           {loggedIn ? (
             <DropdownMenu>
@@ -125,7 +126,7 @@ export default function Header() {
                   {/* User name with role badge */}
                   <div className="flex flex-col items-start text-left">
                     <span className="font-semibold text-sm text-gray-800 leading-tight">
-                      {profile?.name || account?.email || 'Người dùng'}
+                      {profile?.name || account?.email }
                     </span>                    
                     {account?.role && (
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${account.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' :

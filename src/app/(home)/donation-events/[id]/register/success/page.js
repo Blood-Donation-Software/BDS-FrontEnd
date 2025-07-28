@@ -54,7 +54,7 @@ function RegistrationSuccess() {
     const downloadQRCode = () => {
         if (qrCodeUrl) {
             const link = document.createElement('a');
-            link.download = `qr-code-checkin-${getRegistrationId()}.png`;
+            link.download = `qr-code-checkin.png`;
             link.href = qrCodeUrl;
             document.body.appendChild(link);
             link.click();
@@ -108,13 +108,6 @@ function RegistrationSuccess() {
         }
     };
 
-    // Generate a display registration ID from timestamp
-    const getRegistrationId = () => {
-        if (lastRegistration?.timestamp) {
-            return new Date(lastRegistration.timestamp).getTime().toString(36).toUpperCase();
-        }
-        return 'N/A';
-    };
 
     const handleBackToEvents = () => {
         clearSelection();
@@ -178,12 +171,6 @@ function RegistrationSuccess() {
                                 <p className="text-green-700 mb-4">
                                     Cảm ơn bạn đã đăng ký tham gia sự kiện hiến máu. Thông tin đăng ký đã được ghi nhận.
                                 </p>
-                                <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-green-200">
-                                    <span className="text-sm font-medium text-gray-600">Mã đăng ký:</span>
-                                    <span className="text-sm font-mono font-semibold text-green-700">
-                                        #{getRegistrationId()}
-                                    </span>
-                                </div>
                             </div>
                         </CardContent>
                     </Card>
