@@ -35,6 +35,17 @@ export const convertDonationRegistrationStatus = (status) => {
   }
 }
 
+export async function getDictionary(lang) {
+  switch (lang) {
+    case 'en':
+      return (await import('@/data/locales/en.json')).default;
+    case 'vie':
+      return (await import('@/data/locales/vie.json')).default;
+    default:
+      return (await import('@/data/locales/en.json')).default;
+  }
+}
+
 export const validateEmail = (email) => {
   return String(email)
     .toLowerCase()

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { SidebarTrigger } from "../ui/sidebar";
 import Link from "next/link";
 import { useUserProfile } from "@/context/user_context";
+import LanguageSwitcher from "@/data/locales/LanguageSwitcher";
 export default function AuthenticatedHeader({ items }) {
     const { profile } = useUserProfile();
     return (
@@ -13,6 +14,7 @@ export default function AuthenticatedHeader({ items }) {
                     <SidebarTrigger />
                     <h2 className="text-xl font-semibold text-gray-900">Welcome {profile?.name || "User"}</h2>
                 </div>
+                <LanguageSwitcher />
                 {/* {currentPage.button && currentPage.url === pathname && (
                     <Link href={currentPage.nav}>
                         <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">

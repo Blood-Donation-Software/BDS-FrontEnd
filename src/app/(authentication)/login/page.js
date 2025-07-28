@@ -55,10 +55,10 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold mb-6 text-center">{t?.auth?.login }</h1>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">{t?.auth?.email }</label>
+          <label className="block text-sm font-medium mb-1">{t?.auth?.email}</label>
           <input
             type="email"
-            placeholder="Vui lòng nhập email"
+            placeholder={t?.auth?.placeholder?.email || "Please enter your email"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -69,7 +69,7 @@ export default function LoginPage() {
           <label className="block text-sm font-medium mb-1">{t?.auth?.password}</label>
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder={t?.auth?.placeholder?.password || "Enter password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -84,7 +84,7 @@ export default function LoginPage() {
 
         <div className="flex items-center justify-between mb-4">
           <hr className="w-1/4 border-gray-300" />
-          <span className="text-sm text-gray-500">Or:</span>
+          <span className="text-sm text-gray-500">{t?.auth?.or || "Or"}:</span>
           <hr className="w-1/4 border-gray-300" />
         </div>
 
@@ -103,7 +103,7 @@ export default function LoginPage() {
         </p>
 
         <p className="text-sm text-center">
-          {t?.auth?.No_account_yet} {' '}
+          {t?.auth?.No_account_yet}{' '}
           <a href="/register" className="text-blue-600 hover:underline">{t?.auth?.registerNow}</a>
         </p>
       </div>

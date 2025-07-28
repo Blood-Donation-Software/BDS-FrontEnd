@@ -37,6 +37,7 @@ import { useLanguage } from '@/context/language_context';
 const statusMap = {
     PENDING: { label: 'Chờ duyệt', variant: 'secondary', color: 'bg-yellow-100 text-yellow-800' },
     APPROVED: { label: 'Đã duyệt', variant: 'success', color: 'bg-green-100 text-green-800' },
+    AVAILABLE: { label: 'Có sẵn', variant: 'success', color: 'bg-green-100 text-green-800' },
     ONGOING: { label: 'Đang diễn ra', variant: 'default', color: 'bg-blue-100 text-blue-800' },
     COMPLETED: { label: 'Đã hoàn thành', variant: 'success', color: 'bg-green-100 text-green-800' },
     CANCELLED: { label: 'Đã hủy', variant: 'destructive', color: 'bg-red-100 text-red-800' }
@@ -50,7 +51,7 @@ const donationTypeMap = {
 }
 
 function DonationEvents() {
-    const{ dictionary}= useLanguage();
+    const { t } = useLanguage();
     // All hooks must be at the top, before any return or conditional
     const { events, organizers, loading, error, selectEventById } = useDonationEvents();
     const { loggedIn, isLoading: userLoading } = useContext(UserContext);
@@ -65,7 +66,12 @@ function DonationEvents() {
     useEffect(() => {
         console.log("DonationEvents - Events:", events);
         console.log("DonationEvents - Organizers:", organizers);
-    }, [events, organizers])
+        console.log("DonationEvents - Loading:", loading);
+        console.log("DonationEvents - Error:", error);
+        if (events && events.length > 0) {
+            console.log("First event structure:", events[0]);
+        }
+    }, [events, organizers, loading, error])
 
     // Reset to page 1 when filters change - MOVED TO TOP
     useEffect(() => {
@@ -77,7 +83,7 @@ function DonationEvents() {
             router.push('/login');
             return;
         }
-        
+
         selectEventById(event.id);
         router.push(`/donation-events/${event.id}`);
     };
@@ -100,11 +106,11 @@ function DonationEvents() {
     if (error) {
         return (
             <div className="container mx-auto py-8 px-4">
-                <h1 className="text-2xl font-bold mb-2">{dictionary?.donationEvents?.title}</h1>
-                <p className="text-gray-600 mb-6">{dictionary?.donationEvents?.description}</p>
+                <h1 className="text-2xl font-bold mb-2">{t?.donationEvents?.title}</h1>
+                <p className="text-gray-600 mb-6">{t?.donationEvents?.description}</p>
                 <div className="text-center py-10">
-                    <p className="text-red-500">{dictionary?.donationEvents?.error?.title}: {error}</p>
-                    <p className="text-gray-500 mt-2">{dictionary?.donationEvents?.error?.notFound}</p>
+                    <p className="text-red-500">{t?.donationEvents?.error?.title}: {error}</p>
+                    <p className="text-gray-500 mt-2">{t?.donationEvents?.error?.notFound}</p>
                 </div>
             </div>
         );
@@ -141,8 +147,7 @@ function DonationEvents() {
         }
 
         return true
-    }    // Filter events based on search query and date range, excluding cancelled and completed events
-    // const filteredEvents = events.filter(event =>
+    }    // Filter events based on search query and date range, only show AVAILABLE events with future dates
     const filteredEvents = (events || []).filter(event => {
         // Parse the event date
         const eventDate = parseDate(event.donationDate);
@@ -150,16 +155,18 @@ function DonationEvents() {
         today.setHours(0, 0, 0, 0); // Set to start of today for comparison
         
         return (
-            event.status !== 'CANCELLED' && // Exclude cancelled events
-            event.status !== 'COMPLETED' && // Exclude completed events
+            event.status === 'AVAILABLE' && // Only show AVAILABLE events
             eventDate && isAfter(eventDate, today) && // Only show future events (after today)
             (event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                event.hospital.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 event.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 event.city.toLowerCase().includes(searchQuery.toLowerCase())) &&
             isEventInDateRange(event)
         );
     });
+
+    console.log("Filtered events:", filteredEvents);
+    console.log("Filtered events length:", filteredEvents.length);
 
     // Sort events
     const sortedEvents = [...filteredEvents].sort((a, b) => {
@@ -214,11 +221,11 @@ function DonationEvents() {
                             <Droplets className="h-8 w-8 text-white" />
                         </div>
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
-                            {dictionary?.donationEvents?.title }
+                            {t?.donationEvents?.title}
                         </h1>
                     </div>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        {dictionary?.donationEvents?.description}
+                        {t?.donationEvents?.description}
                     </p>
                 </div>
 
@@ -228,7 +235,7 @@ function DonationEvents() {
                         <div className="flex-3/4">
                             <Input
                                 type="text"
-                                placeholder={dictionary?.donationEvents?.searchPlaceholder}
+                                placeholder={t?.donationEvents?.searchPlaceholder}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="text-lg border-gray-200 focus:border-red-300 focus:ring-red-200"
@@ -253,7 +260,7 @@ function DonationEvents() {
                                                 dateRange.from ? format(dateRange.from, "dd/MM/yyyy") : ""
                                             )
                                         ) : (
-                                            dictionary?.donationEvents?.dateRangePlaceholder
+                                            t?.donationEvents?.dateRangePlaceholder
                                         )}
                                     </Button>
                                 </PopoverTrigger>
@@ -298,12 +305,12 @@ function DonationEvents() {
                                 size="icon"
                                 onClick={toggleSortOrder}
                                 className="shrink-0"
-                                title= {dictionary?.donationEvents?.sortByDate}
+                                title={t?.donationEvents?.sortByDate}
                             >
                                 <ArrowUpDown className="h-4 w-4" />
                                 {sortOrder !== 'default' && (
                                     <span className="sr-only">
-                                        {sortOrder === 'asc' ? dictionary?.donationEvents?.sortAsc : dictionary?.donationEvents?.sortDesc}
+                                        {sortOrder === 'asc' ? t?.donationEvents?.sortAsc : t?.donationEvents?.sortDesc}
                                     </span>
                                 )}
                             </Button>
@@ -315,8 +322,8 @@ function DonationEvents() {
                         <div className="flex justify-center mb-4">
                             <Droplets className="h-16 w-16 text-gray-300" />
                         </div>
-                        <p className="text-xl text-gray-500 mb-2">{dictionary?.donationEvents?.noEventTitle}</p>
-                        <p className="text-gray-400">{dictionary?.donationEvents?.noEventDescription}</p>
+                        <p className="text-xl text-gray-500 mb-2">{t?.donationEvents?.noEventTitle}</p>
+                        <p className="text-gray-400">{t?.donationEvents?.noEventDescription}</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -374,7 +381,7 @@ function DonationEvents() {
                                         <div className="flex items-start gap-3">
                                             <MapPinIcon className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
                                             <div>
-                                                <p className="font-medium text-gray-700">{event.location}</p>
+                                                <p className="font-medium text-gray-700">{event.hospital}</p>
                                                 <p className="text-sm text-gray-500 mt-1">
                                                     {event.address}, {event.ward}, {event.district}, {event.city}
                                                 </p>
@@ -394,8 +401,8 @@ function DonationEvents() {
                                                 {event.timeSlotDtos && event.timeSlotDtos.length > 0 ? (
                                                     event.timeSlotDtos.length === 1 ?
                                                         `${event.timeSlotDtos[0].startTime} - ${event.timeSlotDtos[0].endTime}` :
-                                                        `${event.timeSlotDtos.length} {dictionary?,donationEvents?.timeSlots?.multiple}`
-                                                ) : dictionary?.donationEvents?.timeSlots?.none}
+                                                        `${event.timeSlotDtos.length} ${t?.donationEvents?.timeSlot?.multiple}`
+                                                ) : t?.donationEvents?.timeSlot?.none}
                                             </p>
                                         </div>
                                         {/* Registration Status */}
@@ -406,35 +413,35 @@ function DonationEvents() {
                                                     {event.registeredMemberCount || 0}
                                                 </span>
                                                 <span className="text-gray-500">/{event.totalMemberCount}</span>
-                                                <span className="ml-1">{dictionary?.donationEvents?.registration?.of}</span>
+                                                <span className="ml-1">{t?.donationEvents?.registration?.of}</span>
                                                 {event.registeredMemberCount >= event.totalMemberCount && (
                                                     <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
-                                                        {dictionary?.donationEvents?.fullLabel}
+                                                        {t?.donationEvents?.fullLabel}
                                                     </span>
                                                 )}
                                             </p>
                                         </div>
-                                    </CardContent>                                    <CardFooter className="pt-0 pb-6">
+                                    </CardContent>
+                                    <CardFooter className="pt-0 pb-6">
                                         <Button
-                                            className={`w-full font-semibold py-2.5 shadow-md hover:shadow-lg transition-all duration-300 ${
-                                                event.registeredMemberCount >= event.totalMemberCount
+                                            className={`w-full font-semibold py-2.5 shadow-md hover:shadow-lg transition-all duration-300 ${event.registeredMemberCount >= event.totalMemberCount
                                                     ? 'bg-gray-400 cursor-not-allowed'
                                                     : !loggedIn
-                                                    ? 'bg-amber-500 hover:bg-amber-600'
-                                                    : 'bg-red-500 hover:bg-red-600'
+                                                        ? 'bg-amber-500 hover:bg-amber-600'
+                                                        : 'bg-red-500 hover:bg-red-600'
                                                 } text-white flex items-center justify-center gap-2`}
                                             onClick={() => handleRegisterClick(event)}
                                             disabled={event.registeredMemberCount >= event.totalMemberCount}
                                         >
                                             {event.registeredMemberCount >= event.totalMemberCount ? (
-                                                dictionary?.donationEvents?.fullSlot
+                                                t?.donationEvents?.fullSlot
                                             ) : !loggedIn ? (
                                                 <>
                                                     <LogIn className="h-4 w-4" />
-                                                    {dictionary?.donationEvents?.loginToRegister}
+                                                    {t?.donationEvents?.loginToRegister}
                                                 </>
                                             ) : (
-                                                <>{dictionary?.donationEvents?.register}</>
+                                                <>{t?.donationEvents?.register}</>
                                             )}
                                         </Button>
                                     </CardFooter>

@@ -1,12 +1,9 @@
 'use client'
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import AppSidebar from "@/components/sidebar/sidebar"
-import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard, FileText, Plus, List, QrCode, Droplet, Eye, AlertCircle, Package } from "lucide-react"
 import { Calendar, Newspaper, Warehouse, TriangleAlert, LayoutDashboard, FileText, Plus, List, QrCode, Droplet, Eye, AlertCircle, Package } from "lucide-react"
 import BloodRequestProvider from "@/context/bloodRequest_context"
 import AuthenticatedHeader from "@/components/authenticatedHeader/page"
-import { useParams, usePathname } from "next/navigation"
 import { useParams, usePathname } from "next/navigation"
 import { ROLES, RouteProtection } from "@/components/auth"
 import { useLanguage } from "@/context/language_context";
@@ -112,25 +109,6 @@ export default function Layout({ children }) {
   ]
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-gray-50">
-        <AppSidebar items={items} />
-        <SidebarInset>
-          <BloodRequestProvider>
-            <div className="flex-1 flex flex-col overflow-hidden w-full">
-              <AuthenticatedHeader items={items} />
-              <main className="flex-1 overflow-y-auto bg-gray-50 w-full">
-                <div className="w-full h-full">
-                  <RouteProtection requiredRole={ROLES.STAFF} hideOnNoAccess={true} redirectTo="/">
-                    {children}
-                  </RouteProtection>
-                </div>
-              </main>
-            </div>
-          </BloodRequestProvider>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-gray-50">
         <AppSidebar items={items} />

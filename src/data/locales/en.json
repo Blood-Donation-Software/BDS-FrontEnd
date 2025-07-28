@@ -10,6 +10,7 @@
     "confirm_newPassword": "Confirm Password",
     "email": "Email",
     "password": "Password",
+    "or": "Or",
     "loginWithGoogle": "Login with Google",
     "registerWithGoogle": "Register with Google",
     "loginWithGitHub": "Login with GitHub",
@@ -20,7 +21,8 @@
     "fullName": "Full Name",
     "confirmPassword": "Confirm Password",
     "placeholder": {
-      "email": "Please enter your email before resending OTP!",
+      "email": "Enter your email address",
+      "password": "Enter your password",
       "OtpReSend": "OTP has been resent successfully!",
       "OtpReSendError!": "Failed to resend OTP!",
       "blank": "Fields must not be bank!",
@@ -111,19 +113,33 @@
     "status": "Status"
   },
   "blog": {
-    "title": "Blog",
+    "title": "News & Articles",
     "blog_list": "Blog List",
     "blog_detail": "Blog Detail", 
     "create_blog": "Create Blog",
-    "blog": "Blog",
-    "no_blogs": "It looks like there are no articles related to your search",
+    "blog": "articles",
+    "no_blogs": "No articles found",
+    "no_blogs_description": "Try searching with different keywords",
+    "view_all_articles": "View all articles",
     "edit_blog": "Edit Blog",
     "delete_blog": "Delete Blog",
     "loading": "Loading...",
+    "loading_article": "Loading article...",
     "back": "Back",
+    "back_to_list": "Back to list",
     "latest_posts": "Latest Posts",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "search_placeholder": "Search articles...",
+    "clear_search": "Clear search",
+    "search": "Search",
+    "author": "Author",
+    "search_results": "Search results for: ",
+    "all_articles": "All articles",
+    "no_content": "No content",
+    "discover_description": "Discover stories, information, and useful knowledge about blood donation to save lives",
+    "related_articles": "Related Articles",
+    "related_articles_description": "Discover more interesting articles about blood donation and health"
   },
   "notification": {
     "title": "Notification",
@@ -258,7 +274,8 @@
     "search_placeholder": "Search for articles, events, or blood types...",
     "clear_search": "Clear Search",
     "search": "Search",
-    "author": "Author"
+    "author": "Author",
+    "emergencyCases": "Emergency Cases"
   },
   "notifications": {
     "logout": {
@@ -381,7 +398,7 @@
     "timeSlot": {
       "label": "Time Slot",
       "none": "No time slot",
-      "multiple": "{{count}} different time slots"
+      "multiple": "different time slots"
     },
     "registration": {
       "label": "Registered",
@@ -644,7 +661,62 @@
       }
     },
     "admin": {
+      "title": "Admin Dashboard",
+      "subtitle": "Blood donation system overview",
+      "loading": "Loading data...",
+      "error": "Unable to load dashboard data. Please try again.",
+      "retry": "Try again",
       "totalAcc": "Total Accounts",
+      "totalDonors": "Total Donors",
+      "totalAccounts": "Total Accounts",
+      "activeEvents": "Active Events",
+      "publishedBlogs": "Published Blogs",
+      "newDonorsThisMonth": "this month",
+      "newAccounts": "new accounts", 
+      "completed": "completed",
+      "drafts": "drafts",
+      "recentActivities": "Recent Activities",
+      "recentActivitiesDescription": "Latest activities in the system",
+      "donorStatistics": "Blood Donor Statistics",
+      "donorStatisticsDescription": "Total blood donors by",
+      "bloodStockChart": "Blood Stock by Blood Type",
+      "bloodStockDescription": "Quantity of blood components by blood type",
+      "adminActions": "Admin Actions",
+      "timeframes": {
+        "week": "Week",
+        "month": "Month", 
+        "year": "Year",
+        "dayInWeek": "days in week",
+        "monthInYear": "months in year",
+        "years": "years",
+        "day": "days"
+      },
+      "quickActions": {
+        "manageUsers": "Manage Users",
+        "manageEvents": "Manage Events", 
+        "manageBlogs": "Manage Blogs",
+        "manageBloodStock": "Manage Blood Stock",
+        "systemReports": "System Reports"
+      },
+      "bloodComponents": {
+        "wholeBlood": "Whole Blood",
+        "redCells": "Red Cells",
+        "plasma": "Plasma", 
+        "platelets": "Platelets"
+      },
+      "activityStatus": {
+        "completed": "Completed",
+        "fulfilled": "Fulfilled",
+        "new": "New",
+        "pending": "Pending", 
+        "ongoing": "Ongoing"
+      },
+      "chartTooltips": {
+        "donors": "Blood Donors",
+        "dayLabel": "Day: ",
+        "monthLabel": "Month: ",
+        "yearLabel": "Year: "
+      },
       "pendingEvents": "Pending Events",
       "pendingBlogPosts": "Pending Blog Posts",
       "totalDonations": "Total Donations",
@@ -656,7 +728,10 @@
   },
   "dashboardStaff": {
     "title": "Staff Dashboard",
-    "subtitle": "Manage blood donation requests and donors",
+    "subtitle": "Manage blood donation requests, blogs and events",
+    "loading": "Loading data...",
+    "error": "Unable to load dashboard data. Please try again.",
+    "retry": "Try again",
     "today": "Today",
     "thisWeek": "This week",
     "thisMonth": "This month",
@@ -667,6 +742,51 @@
     "comparedToLastMonth": "compared to last month",
     "comparedToLastWeek": "compared to last week",
     "urgent": "urgent",
+    "stats": {
+      "unfinishedRequests": "Unfinished Requests",
+      "needUrgentProcessing": "Need urgent processing",
+      "fulfilledRequests": "Fulfilled Requests",
+      "completed": "Completed",
+      "publishedBlogs": "Published Blogs",
+      "active": "Active",
+      "totalDonationEvents": "Total Donation Events",
+      "completedEvents": "completed",
+      "activeEvents": "active"
+    },
+    "charts": {
+      "totalDonors": "Total Blood Donors",
+      "totalDonorsDescription": "Track total blood donors from all events by",
+      "bloodStock": "Blood Stock by Blood Type",
+      "bloodStockDescription": "Quantity of blood components by blood type"
+    },
+    "timeframes": {
+      "week": "Weekly",
+      "month": "Monthly", 
+      "year": "Yearly",
+      "dayInWeek": "days in week",
+      "monthInYear": "months in year",
+      "years": "years",
+      "day": "days"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "processRequests": "Process Requests",
+      "createBlog": "Create Blog",
+      "createEvent": "Create Event",
+      "updateStock": "Update Stock"
+    },
+    "bloodComponents": {
+      "wholeBlood": "Whole Blood",
+      "redCells": "Red Cells",
+      "plasma": "Plasma",
+      "platelets": "Platelets"
+    },
+    "chartTooltips": {
+      "donors": "Blood Donors",
+      "dayLabel": "Day: ",
+      "monthLabel": "Month: ",
+      "yearLabel": "Year: "
+    },
     "bloodInventory": "Blood Inventory",
     "bloodInventoryDesc": "Current status of blood types",
     "unit": "unit",
@@ -693,7 +813,6 @@
     "invite": "Invite to donate",
     "todayActivities": "Today's Activities",
     "todayActivitiesDesc": "Activity history of the day",
-    "quickActions": "Quick Actions",
     "quickActionUrgent": "Urgent Request",
     "quickActionFindDonor": "Find Donor",
     "quickActionUpdateInventory": "Update Inventory",
@@ -1378,13 +1497,36 @@
         "label": "Medical Conditions",
         "trauma": "Trauma/Emergency Surgery",
         "anemia": "Severe Anemia",
+        "severeAnemia": "Severe Anemia",
         "bleeding": "Active Bleeding",
+        "activeBleeding": "Active Bleeding",
         "cardiac": "Cardiac Surgery",
+        "cardiacSurgery": "Cardiac Surgery",
         "cancer": "Cancer Treatment",
+        "cancerTreatment": "Cancer Treatment",
         "transplant": "Organ Transplant",
+        "organTransplant": "Organ Transplant",
         "planned": "Planned Surgery",
+        "plannedSurgery": "Planned Surgery",
         "disorder": "Blood Disorder",
-        "pregnancy": "Pregnancy Complications"
+        "bloodDisorder": "Blood Disorder",
+        "pregnancy": "Pregnancy Complications",
+        "pregnancyComplications": "Pregnancy Complications",
+        "traumaAndSurgery": "Trauma and Surgery",
+        "bloodDisorders": "Blood Disorders",
+        "chronicKidneyDisease": "Chronic Kidney Disease",
+        "obstetricComplications": "Obstetric Complications",
+        "gastrointestinalBleeding": "Gastrointestinal Bleeding",
+        "infectionsSepsis": "Infections & Sepsis",
+        "cardiovascularSurgery": "Cardiovascular Surgery",
+        "liverDisease": "Liver Disease",
+        "boneMarrowTransplant": "Bone Marrow Transplant",
+        "burns": "Burns",
+        "chronicStableConditions": "Chronic Stable Conditions (Low)",
+        "moderateAnemiaOrBleeding": "Moderate Anemia or Bleeding (Medium)",
+        "acuteHemorrhage": "Acute Hemorrhage (High)",
+        "traumaAndMajorSurgery": "Trauma and Major Surgery (High)",
+        "others": "Others"
       },
       "additionalInfo": "Additional Medical Information",
       "notes": "Additional Notes"
@@ -1392,14 +1534,32 @@
     "submit": "Submit Blood Request",
     "confirmDialog": {
       "title": "Confirm Blood Request",
-      "message": "Are you sure you want to submit this blood request?",
-      "confirm": "Confirm",
-      "cancel": "Cancel"
+      "message": "Please review the blood request details before submitting. This will create an emergency blood request.",
+      "patientName": "Patient Name",
+      "personalId": "Personal ID",
+      "phone": "Phone",
+      "address": "Address",
+      "patientBloodType": "Patient Blood Type",
+      "newProfile": "This is a new profile that will be created",
+      "bloodTypeRequested": "Blood Type Requested",
+      "requiredDate": "Required Date",
+      "notSpecified": "Not specified",
+      "urgency": "Urgency",
+      "componentsRequested": "Components Requested",
+      "volume": "Volume",
+      "medicalConditions": "Medical Conditions",
+      "additionalMedicalInfo": "Additional Medical Info",
+      "cancel": "Cancel",
+      "creating": "Creating Request",
+      "confirmSubmit": "Confirm & Submit Request",
+      "confirm": "Confirm"
     },
     "success": "Blood request created successfully!",
     "error": {
       "noProfile": "Please select a patient profile or create a new one",
-      "submission": "Submission failed. Please try again."
+      "submission": "Submission failed. Please try again.",
+      "requiredFields": "Please fill in all required fields",
+      "searchFailed": "Failed to search profiles. Please try again."
     },
     "criticalNeeds": {
   "severeInjury": "Severe injury requiring immediate surgical intervention",
@@ -1407,10 +1567,28 @@
   "ongoingBloodLoss": "Ongoing blood loss from internal or external sources",
   "heartSurgery": "Heart surgery requiring blood products",
   "chemoDisorders": "Chemotherapy-induced blood disorders",
-  "organTransplant": "Major organ transplantation procedure",
+  "majorTransplant": "Major organ transplantation procedure",
   "electiveSurgery": "Elective surgical procedure",
   "chronicConditions": "Chronic blood-related conditions",
-  "maternalComplications": "Maternal or fetal complications requiring blood"
+  "maternalFetalComplications": "Maternal or fetal complications requiring blood",
+  "traumaAndSurgeryDesc": "Severe accidents, major surgery, and internal bleeding requiring immediate blood support",
+  "cancerDesc": "Blood cancers and solid tumors affecting bone marrow or causing bleeding complications",
+  "bloodDisordersDesc": "Inherited blood disorders such as thalassemia, sickle cell anemia, and aplastic anemia",
+  "chronicKidneyDiseaseDesc": "End-stage renal disease patients on dialysis with low erythropoietin production",
+  "severeAnemiaDesc": "Critically low hemoglobin levels from iron deficiency or chronic disease",
+  "obstetricComplicationsDesc": "Postpartum hemorrhage, placenta complications, and pregnancy-related bleeding",
+  "gastrointestinalBleedingDesc": "Peptic ulcers, esophageal varices, and diverticular bleeding causing blood loss",
+  "infectionsSepsisDesc": "Septic shock causing disseminated intravascular coagulation (DIC)",
+  "cardiovascularSurgeryDesc": "Valve replacement and coronary artery bypass grafting procedures",
+  "liverDiseaseDesc": "Cirrhosis-related bleeding and coagulopathy due to liver failure",
+  "boneMarrowTransplantDesc": "Immunosuppression and pancytopenia from chemotherapy treatment",
+  "burnsDesc": "Large surface area burns causing hemolysis and significant fluid loss",
+  "chronicStableConditionsDesc": "Iron deficiency anemia, chronic kidney disease, thalassemia with regular transfusion",
+  "plannedSurgeryDesc": "Orthopedic surgery, gynecological procedures, pre-operative hemoglobin enhancement",
+  "moderateAnemiaOrBleedingDesc": "Mild peptic ulcer bleeding, symptomatic anemia requiring attention",
+  "acuteHemorrhageDesc": "Postpartum hemorrhage, massive gastrointestinal bleeding, ruptured ectopic pregnancy",
+  "traumaAndMajorSurgeryDesc": "Traffic accidents, cardiac/liver surgery, significant blood loss situations",
+  "othersDesc": "Other medical conditions requiring blood transfusion support"
 },
 
   "patientProfile": {
@@ -1438,7 +1616,11 @@
         "district": "District",
         "ward": "Ward"
       },
-      "createButton": "Create Profile"
+      "createButton": "Create Profile",
+      "selectDate": "Select date",
+      "selectCity": "Select city/province",
+      "selectDistrict": "Select district",
+      "selectWard": "Select ward"
     },
     "selectedProfile": {
       "id": "Personal ID:",
@@ -1455,12 +1637,18 @@
     },
     "medicalConditions": {
       "label": "Medical Conditions *",
-      "description": "Select applicable medical conditions. Urgency level will be automatically calculated based on your selections and required date."
+      "description": "Select applicable medical conditions. Urgency level will be automatically calculated based on your selections and required date.",
+      "priority": "Priority"
     },
     "urgency": {
-      "label": "Urgency Level *",
+      "label": "Urgency Level ",
       "description": "Urgency level automatically calculated based on medical conditions and required date. You can override if needed.",
       "autoSelected": "Auto-selected",
+      "autoCalculated": "Urgency level automatically calculated based on medical conditions and required date. You can override if needed.",
+      "willBeAutoSet": "Urgency level will be automatically set based on your medical condition selections and required date.",
+      "critical": "Critical",
+      "urgent": "Urgent", 
+      "normal": "Normal",
       "levels": {
         "HIGH": {
           "label": "Critical",

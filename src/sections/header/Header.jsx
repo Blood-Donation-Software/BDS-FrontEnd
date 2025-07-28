@@ -91,8 +91,6 @@ export default function Header() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenu>
-
-
             <NavigationMenuItem>
               <NavigationMenuLink asChild className="text-lg">
                 <Link href="/blog" className="font-semibold px-4 py-2 rounded-md text-lg hover:bg-gray-100 transition-colors">

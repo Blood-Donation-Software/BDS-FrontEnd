@@ -27,7 +27,58 @@
   //   { value: 'UPDATE', label: 'Update Event' },
   //   { value: 'DELETE', label: 'Delete Event' }
   // ]
-  const getTimeSlotDisplay = (timeSlotDtos) => {
+  
+
+  export default function EventRequest() {
+    const {t} = useLanguage();
+    const [requests, setRequests] = useState([])
+    const [filteredRequests, setFilteredRequests] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [pagination, setPagination] = useState({
+      page: 0,
+      size: 10,
+      totalElements: 0, totalPages: 0
+    })
+    const [filters, setFilters] = useState({
+      search: '',
+      status: 'ALL',
+      crudType: 'ALL'
+    })
+    const [sortConfig, setSortConfig] = useState({
+      key: 'id',
+      direction: 'desc'
+    })
+    const [selectedRequest, setSelectedRequest] = useState(null)
+    const [viewDialogOpen, setViewDialogOpen] = useState(false)
+    const [actionLoading, setActionLoading] = useState(false)  // Fetch pending requests from API
+    const fetchRequests = async (page = 0, size = 10) => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const response = await getPendingRequests(page, size, sortConfig.key, sortConfig.direction === 'asc')
+
+        if (response.content) {
+          setRequests(response.content)
+          setPagination({
+            page: response.number,
+            size: response.size,
+            totalElements: response.totalElements,
+            totalPages: response.totalPages
+          })
+        } else {
+          setRequests([])
+        }
+      } catch (error) {
+        console.error('Error fetching requests:', error)
+        setError(t.eventRequest.FailedToLoadEventRequests)
+        toast.error(t.eventRequest.FailedToLoadEventRequests)
+      } finally {
+        setLoading(false)
+      }
+    }
+    const getTimeSlotDisplay = (timeSlotDtos) => {
     if (!timeSlotDtos || timeSlotDtos.length === 0) return 'N/A'
 
     const firstSlot = timeSlotDtos[0]
@@ -40,14 +91,6 @@
     }
   }
 
-  const formatTime = (timeString) => {
-    if (!timeString) return 'N/A'
-    try {
-      return format(parseISO(`2000-01-01T${timeString}`), 'HH:mm')
-    } catch (error) {
-      return timeString
-    }
-  }
   // Status badge styling
   const getStatusBadge = (status) => {
     const styles = {
@@ -108,56 +151,6 @@
     }
     return types[crudType] || crudType
   }
-
-  export default function EventRequest() {
-    const {t} = useLanguage()
-    const [requests, setRequests] = useState([])
-    const [filteredRequests, setFilteredRequests] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [pagination, setPagination] = useState({
-      page: 0,
-      size: 10,
-      totalElements: 0, totalPages: 0
-    })
-    const [filters, setFilters] = useState({
-      search: '',
-      status: 'ALL',
-      crudType: 'ALL'
-    })
-    const [sortConfig, setSortConfig] = useState({
-      key: 'id',
-      direction: 'desc'
-    })
-    const [selectedRequest, setSelectedRequest] = useState(null)
-    const [viewDialogOpen, setViewDialogOpen] = useState(false)
-    const [actionLoading, setActionLoading] = useState(false)  // Fetch pending requests from API
-    const fetchRequests = async (page = 0, size = 10) => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const response = await getPendingRequests(page, size, sortConfig.key, sortConfig.direction === 'asc')
-
-        if (response.content) {
-          setRequests(response.content)
-          setPagination({
-            page: response.number,
-            size: response.size,
-            totalElements: response.totalElements,
-            totalPages: response.totalPages
-          })
-        } else {
-          setRequests([])
-        }
-      } catch (error) {
-        console.error('Error fetching requests:', error)
-        setError(t.eventRequest.FailedToLoadEventRequests)
-        toast.error(t.eventRequest.FailedToLoadEventRequests)
-      } finally {
-        setLoading(false)
-      }
-    }
       const statusOptions = [
     { value: 'ALL', label: t.eventRequest.AllStatuses },
     { value: 'PENDING', label: t.eventRequest.Pending },
@@ -462,7 +455,7 @@
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={getCrudTypeBadge(request.crudType)}>
-                            {formatCrudType(request.crudType)}
+                            {formatCrudType(request.crudType,t)}
                           </Badge>
                         </TableCell>
                         <TableCell>

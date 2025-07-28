@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from '@/context/language_context';
 import { 
   getAdminDashboardData,
   getDonationEventChartData,
@@ -39,6 +40,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const { t } = useLanguage();
   const [selectedTimeframe, setSelectedTimeframe] = useState('week');
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,7 +70,7 @@ export default function AdminDashboard() {
       });
       setError(null);
     } catch (err) {
-      setError('Không thể tải dữ liệu dashboard. Vui lòng thử lại.');
+      setError(t.dashboard.admin.error);
       console.error('Error fetching admin dashboard data:', err);
     } finally {
       setLoading(false);
@@ -93,7 +95,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <p className="mt-4 text-gray-600">{t.dashboard.admin.loading}</p>
         </div>
       </div>
     );
@@ -105,7 +107,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={fetchAdminDashboardData}>Thử lại</Button>
+          <Button onClick={fetchAdminDashboardData}>{t.dashboard.admin.retry}</Button>
         </div>
       </div>
     );
@@ -119,13 +121,13 @@ export default function AdminDashboard() {
   const getTimeLabel = () => {
     switch (selectedTimeframe) {
       case 'week':
-        return 'ngày trong tuần';
+        return t.dashboard.admin.timeframes.dayInWeek;
       case 'month':
-        return 'tháng trong năm';
+        return t.dashboard.admin.timeframes.monthInYear;
       case 'year':
-        return 'năm';
+        return t.dashboard.admin.timeframes.years;
       default:
-        return 'ngày';
+        return t.dashboard.admin.timeframes.day;
     }
   };
 
@@ -157,14 +159,25 @@ export default function AdminDashboard() {
     }
   };
 
+  const getActivityStatusText = (status) => {
+    const statusMap = {
+      'completed': t.dashboard.admin.activityStatus.completed,
+      'fulfilled': t.dashboard.admin.activityStatus.fulfilled,
+      'new': t.dashboard.admin.activityStatus.new,
+      'pending': t.dashboard.admin.activityStatus.pending,
+      'ongoing': t.dashboard.admin.activityStatus.ongoing
+    };
+    return statusMap[status] || status;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-600">Tổng quan hệ thống hiến máu</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t.dashboard.admin.title}</h1>
+            <p className="text-gray-600">{t.dashboard.admin.subtitle}</p>
           </div>
         </div>
 
@@ -173,13 +186,13 @@ export default function AdminDashboard() {
           {/* Total Donors */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tổng số người hiến máu</CardTitle>
+              <CardTitle className="text-sm font-medium">{t.dashboard.admin.totalDonors}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{dashboardData?.totalStats?.totalDonors?.toLocaleString() || 0}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+{dashboardData?.totalStats?.newDonorsThisMonth || 0}</span> tháng này
+                <span className="text-green-600">+{dashboardData?.totalStats?.newDonorsThisMonth || 0}</span> {t.dashboard.admin.newDonorsThisMonth}
               </p>
             </CardContent>
           </Card>
@@ -187,13 +200,13 @@ export default function AdminDashboard() {
           {/* Total Accounts */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tổng số tài khoản</CardTitle>
+              <CardTitle className="text-sm font-medium">{t.dashboard.admin.totalAccounts}</CardTitle>
               <UserPlus className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-600">{dashboardData?.totalStats?.totalAccounts?.toLocaleString() || 0}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+{dashboardData?.totalStats?.totalAccounts || 0}</span> tài khoản mới
+                <span className="text-green-600">+{dashboardData?.totalStats?.totalAccounts || 0}</span> {t.dashboard.admin.newAccounts}
               </p>
             </CardContent>
           </Card>
@@ -201,13 +214,13 @@ export default function AdminDashboard() {
           {/* Available Events */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sự kiện đang hoạt động</CardTitle>
+              <CardTitle className="text-sm font-medium">{t.dashboard.admin.activeEvents}</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{dashboardData?.donationEventStats?.available || 0}</div>
               <p className="text-xs text-muted-foreground">
-                {dashboardData?.donationEventStats?.completed || 0} hoàn thành
+                {dashboardData?.donationEventStats?.completed || 0} {t.dashboard.admin.completed}
               </p>
             </CardContent>
           </Card>
@@ -215,13 +228,13 @@ export default function AdminDashboard() {
           {/* Published Blogs */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Blog đã xuất bản</CardTitle>
+              <CardTitle className="text-sm font-medium">{t.dashboard.admin.publishedBlogs}</CardTitle>
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{dashboardData?.blogStats?.published || 0}</div>
               <p className="text-xs text-muted-foreground">
-                {dashboardData?.blogStats?.draft || 0} bản nháp
+                {dashboardData?.blogStats?.draft || 0} {t.dashboard.admin.drafts}
               </p>
             </CardContent>
           </Card>
@@ -234,10 +247,10 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-blue-500" />
-                Hoạt động gần đây
+                {t.dashboard.admin.recentActivities}
               </CardTitle>
               <CardDescription>
-                Các hoạt động mới nhất trong hệ thống
+                {t.dashboard.admin.recentActivitiesDescription}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -253,11 +266,7 @@ export default function AdminDashboard() {
                           {activity.title}
                         </p>
                         <Badge className={`text-xs ${getActivityStatusColor(activity.status)}`}>
-                          {activity.status === 'completed' && 'Hoàn thành'}
-                          {activity.status === 'fulfilled' && 'Đã xử lý'}
-                          {activity.status === 'new' && 'Mới'}
-                          {activity.status === 'pending' && 'Chờ xử lý'}
-                          {activity.status === 'ongoing' && 'Đang diễn ra'}
+                          {getActivityStatusText(activity.status)}
                         </Badge>
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
@@ -282,10 +291,10 @@ export default function AdminDashboard() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="h-5 w-5 text-blue-500" />
-                      Thống kê người hiến máu
+                      {t.dashboard.admin.donorStatistics}
                     </CardTitle>
                     <CardDescription>
-                      Tổng số người hiến máu theo {getTimeLabel()}
+                      {t.dashboard.admin.donorStatisticsDescription} {getTimeLabel()}
                     </CardDescription>
                   </div>
                   <div className="flex gap-1">
@@ -294,21 +303,21 @@ export default function AdminDashboard() {
                       size="sm"
                       onClick={() => setSelectedTimeframe('week')}
                     >
-                      Tuần
+                      {t.dashboard.admin.timeframes.week}
                     </Button>
                     <Button 
                       variant={selectedTimeframe === 'month' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedTimeframe('month')}
                     >
-                      Tháng
+                      {t.dashboard.admin.timeframes.month}
                     </Button>
                     <Button 
                       variant={selectedTimeframe === 'year' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setSelectedTimeframe('year')}
                     >
-                      Năm
+                      {t.dashboard.admin.timeframes.year}
                     </Button>
                   </div>
                 </div>
@@ -321,11 +330,11 @@ export default function AdminDashboard() {
                       <XAxis dataKey="timeKey" />
                       <YAxis />
                       <Tooltip 
-                        formatter={(value) => [value.toLocaleString(), 'Người hiến máu']}
+                        formatter={(value) => [value.toLocaleString(), t.dashboard.admin.chartTooltips.donors]}
                         labelFormatter={(label) => {
-                          if (selectedTimeframe === 'week') return `Ngày: ${label}`;
-                          if (selectedTimeframe === 'month') return `Tháng: ${label}`;
-                          if (selectedTimeframe === 'year') return `Năm: ${label}`;
+                          if (selectedTimeframe === 'week') return `${t.dashboard.admin.chartTooltips.dayLabel}${label}`;
+                          if (selectedTimeframe === 'month') return `${t.dashboard.admin.chartTooltips.monthLabel}${label}`;
+                          if (selectedTimeframe === 'year') return `${t.dashboard.admin.chartTooltips.yearLabel}${label}`;
                           return label;
                         }}
                       />
@@ -348,10 +357,10 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-red-500" />
-                  Tồn kho máu theo nhóm máu
+                  {t.dashboard.admin.bloodStockChart}
                 </CardTitle>
                 <CardDescription>
-                  Số lượng các thành phần máu theo từng nhóm máu
+                  {t.dashboard.admin.bloodStockDescription}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -363,10 +372,10 @@ export default function AdminDashboard() {
                       <YAxis />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="wholeBlood" stackId="a" fill="#dc2626" name="Máu toàn phần" />
-                      <Bar dataKey="redCells" stackId="a" fill="#ea580c" name="Hồng cầu" />
-                      <Bar dataKey="plasma" stackId="a" fill="#ca8a04" name="Huyết tương" />
-                      <Bar dataKey="platelets" stackId="a" fill="#16a34a" name="Tiểu cầu" />
+                      <Bar dataKey="wholeBlood" stackId="a" fill="#dc2626" name={t.dashboard.admin.bloodComponents.wholeBlood} />
+                      <Bar dataKey="redCells" stackId="a" fill="#ea580c" name={t.dashboard.admin.bloodComponents.redCells} />
+                      <Bar dataKey="plasma" stackId="a" fill="#ca8a04" name={t.dashboard.admin.bloodComponents.plasma} />
+                      <Bar dataKey="platelets" stackId="a" fill="#16a34a" name={t.dashboard.admin.bloodComponents.platelets} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -380,30 +389,30 @@ export default function AdminDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-indigo-500" />
-              Hành động quản trị
+              {t.dashboard.admin.adminActions}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Users className="h-6 w-6 text-blue-500" />
-                <span className="text-sm">Quản lý người dùng</span>
+                <span className="text-sm">{t.dashboard.admin.quickActions.manageUsers}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Calendar className="h-6 w-6 text-green-500" />
-                <span className="text-sm">Quản lý sự kiện</span>
+                <span className="text-sm">{t.dashboard.admin.quickActions.manageEvents}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <FileText className="h-6 w-6 text-orange-500" />
-                <span className="text-sm">Quản lý blog</span>
+                <span className="text-sm">{t.dashboard.admin.quickActions.manageBlogs}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Droplet className="h-6 w-6 text-red-500" />
-                <span className="text-sm">Quản lý kho máu</span>
+                <span className="text-sm">{t.dashboard.admin.quickActions.manageBloodStock}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <HeartHandshake className="h-6 w-6 text-purple-500" />
-                <span className="text-sm">Báo cáo hệ thống</span>
+                <span className="text-sm">{t.dashboard.admin.quickActions.systemReports}</span>
               </Button>
             </div>
           </CardContent>

@@ -5,29 +5,28 @@ export default function LanguageSwitcher() {
   const { selectedLanguage, setSelectedLanguage } = useLanguage();
   
   return (
-    <div className="flex justify-end mb-4">
-      <div className="inline-flex bg-white rounded-lg p-0.5 shadow-sm border border-gray-200">
-        <button
-          onClick={() => setSelectedLanguage('en')}
-          className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-            selectedLanguage === 'en'
-              ? 'bg-red-600 text-white shadow-sm'
-              : 'text-gray-600 hover:bg-red-50'
-          }`}
-        >
-          EN
-        </button>
-        <button
-          onClick={() => setSelectedLanguage('vie')}
-          className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-            selectedLanguage === 'vie'
-              ? 'bg-red-600 text-white shadow-sm'
-              : 'text-gray-600 hover:bg-red-50'
-          }`}
-        >
-          VN
-        </button>
-      </div>
+    <div className="flex bg-gray-100 rounded-lg justify-end p-1 shadow-sm">
+      <button
+        onClick={() => setSelectedLanguage('en')}
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+          selectedLanguage === 'en'
+            ? 'bg-white text-red-600 shadow-sm ring-1 ring-red-200'
+            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+        }`}
+      >
+        <span>EN</span>
+      </button>
+      
+      <button
+        onClick={() => setSelectedLanguage('vie')}
+        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+          selectedLanguage === 'vie'
+            ? 'bg-white text-red-600 shadow-sm ring-1 ring-red-200'
+            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+        }`}
+      >
+        <span>VN</span>
+      </button>
     </div>
   );
 }

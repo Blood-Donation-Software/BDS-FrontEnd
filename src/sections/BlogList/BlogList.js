@@ -85,7 +85,7 @@ export default function BlogList() {
           </h2>
           
           <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4 flex-grow">
-            {post.content ? post.content.replace(/<[^>]+>/g, '').slice(0, 160) + '...' : 'Không có nội dung'}
+            {post.content ? post.content.replace(/<[^>]+>/g, '').slice(0, 160) + '...' : t.blog.no_content}
           </p>
           
           {/* Author Section */}
@@ -100,7 +100,7 @@ export default function BlogList() {
                 <p className="font-semibold text-sm text-gray-900">
                   {post.authorName || 'Admin'}
                 </p>
-                <p className="text-gray-500 text-xs">Tác giả</p>
+                <p className="text-gray-500 text-xs">{t.blog.author}</p>
               </div>
             </div>
             
@@ -123,10 +123,10 @@ export default function BlogList() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Tin Tức & Bài Viết
+              {t.blog.title}
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Khám phá những câu chuyện, thông tin và kiến thức hữu ích về hiến máu cứu người
+              {t.blog.discover_description}
             </p>
           </div>
 
@@ -135,7 +135,7 @@ export default function BlogList() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Tìm kiếm bài viết..."
+                placeholder={t.blog.search_placeholder}
                 className="w-full px-5 py-4 pl-12 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-700 placeholder-gray-500 shadow-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -152,7 +152,7 @@ export default function BlogList() {
                 <button
                   onClick={() => setSearchTerm('')}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
-                  aria-label="Xóa tìm kiếm"
+                  aria-label={t.blog.clear_search}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -173,10 +173,10 @@ export default function BlogList() {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
             <h2 className="text-2xl font-semibold text-gray-900">
-              {searchTerm ? `Kết quả tìm kiếm: "${searchTerm}"` : 'Tất cả bài viết'}
+              {searchTerm ? `${t.blog.search_results}"${searchTerm}"` : t.blog.all_articles}
             </h2>
             <span className="bg-red-100 text-red-800 text-sm font-medium px-4 py-2 rounded-full">
-              {filteredPosts.length} bài viết
+              {filteredPosts.length} {t.blog.blog}
             </span>
           </div>
         </div>
@@ -195,16 +195,16 @@ export default function BlogList() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Không tìm thấy bài viết</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t.blog.no_blogs}</h3>
             <p className="text-gray-500 mb-6">
-              {searchTerm ? 'Thử tìm kiếm với từ khóa khác' : 'Chưa có bài viết nào được đăng tải'}
+              {searchTerm ? t.blog.no_blogs_description : t.blog.no_blogs}
             </p>
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
                 className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
               >
-                Xem tất cả bài viết
+                {t.blog.view_all_articles}
               </button>
             )}
           </div>
@@ -225,7 +225,7 @@ export default function BlogList() {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Trước
+              {t.blog.previous}
             </button>
 
             {/* Page Numbers */}
@@ -265,7 +265,7 @@ export default function BlogList() {
                   : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
               }`}
             >
-              Sau
+              {t.blog.next}
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

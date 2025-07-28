@@ -52,7 +52,7 @@ export default function BlogDetail() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Đang tải bài viết...</p>
+          <p className="text-gray-600 text-lg">{t.blog.loading_article}</p>
         </div>
       </div>
     );
@@ -72,7 +72,7 @@ export default function BlogDetail() {
               <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Quay lại danh sách
+              {t.blog.back_to_list}
             </Link>
             
             <div className="flex items-center space-x-4">
@@ -97,7 +97,7 @@ export default function BlogDetail() {
               </div>
               <div className="text-left">
                 <p className="font-semibold text-gray-900">{blog.authorName || blog.author || 'Admin'}</p>
-                <p className="text-gray-500 text-sm">Tác giả</p>
+                <p className="text-gray-500 text-sm">{t.blog.author}</p>
               </div>
             </div>
           </div>
@@ -124,9 +124,9 @@ export default function BlogDetail() {
         <div className="bg-white border-t border-gray-100">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Bài viết liên quan</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.blog.related_articles}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Khám phá thêm những bài viết thú vị khác về hiến máu và sức khỏe
+                {t.blog.related_articles_description}
               </p>
             </div>
             
