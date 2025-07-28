@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/context/language_context'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -414,6 +415,7 @@ const MenuBar = ({ editor }) => {
 
 export default function CreateBlog() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -686,9 +688,9 @@ export default function CreateBlog() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            {t?.createBlog?.back}
           </Button>
-          <h1 className="text-3xl font-bold">Create New Blog Post</h1>
+          <h1 className="text-3xl font-bold">{t?.createBlog?.title}</h1>
         </div>
         <div className="flex gap-2">
           <Button
@@ -696,7 +698,7 @@ export default function CreateBlog() {
             disabled={isLoading}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            {isLoading ? 'Submitting...' : 'Submit for Publication'}
+            {isLoading ? t?.createBlog?.submitting : t?.createBlog?.submit}
           </Button>
         </div>
       </div>
@@ -708,10 +710,10 @@ export default function CreateBlog() {
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
+                <Label htmlFor="title">{t?.createBlog?.titleLabel}</Label>
                 <Input
                   id="title"
-                  placeholder="Enter your blog title..."
+                  placeholder={t?.createBlog?.titlePlaceholder}
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
                   className={errors.title ? 'border-red-500' : ''}
@@ -729,7 +731,7 @@ export default function CreateBlog() {
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Label htmlFor="thumbnail">Thumbnail Image *</Label>
+                <Label htmlFor="thumbnail">{t?.createBlog?.thumbnailLabel}</Label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                   {thumbnailPreview ? (
                     <div className="relative">
@@ -753,10 +755,10 @@ export default function CreateBlog() {
                       <div className="mt-4">
                         <label htmlFor="thumbnail" className="cursor-pointer">
                           <span className="mt-2 block text-sm font-medium text-gray-900">
-                            Click to upload thumbnail
+                            {t?.createBlog?.thumbnailClick}
                           </span>
                           <span className="mt-1 block text-sm text-gray-500">
-                            PNG, JPG, GIF up to 5MB
+                            {t?.createBlog?.thumbnailNote}
                           </span>
                         </label>
                         <input
@@ -783,9 +785,9 @@ export default function CreateBlog() {
           {/* Editor */}
           <Card>
             <CardHeader>
-              <CardTitle>Content *</CardTitle>
+              <CardTitle>{t?.createBlog?.contentLabel}</CardTitle>
               <CardDescription>
-                Write your blog content. You can add images by clicking the image button, drag and drop files, or paste images directly into the editor.
+                {t?.createBlog?.contentDesc || 'Write your blog content. You can add images by clicking the image button, drag and drop files, or paste images directly into the editor.'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -811,13 +813,13 @@ export default function CreateBlog() {
           {/* Publication Status */}
           <Card>
             <CardHeader>
-              <CardTitle>Publication</CardTitle>
+              <CardTitle>{t?.createBlog?.publication}</CardTitle>
             </CardHeader>
             <CardContent>
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Your blog will be submitted for review. Administrators will approve or reject your submission.
+                  {t?.createBlog?.publicationNote}
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -826,25 +828,25 @@ export default function CreateBlog() {
           {/* Quick Stats */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Stats</CardTitle>
+              <CardTitle>{t?.createBlog?.quickStats}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Title Length:</span>
+                <span>{t?.createBlog?.titleLength}</span>
                 <span className={formData.title.length > 80 ? 'text-orange-500' : 'text-green-600'}>
                   {formData.title.length}/100
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Content Length:</span>
+                <span>{t?.createBlog?.contentLength}</span>
                 <span className="text-green-600">
                   {editor ? editor.getText().length : 0} characters
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Thumbnail:</span>
+                <span>{t?.createBlog?.thumbnail}</span>
                 <span className={thumbnail ? 'text-green-600' : 'text-red-500'}>
-                  {thumbnail ? 'Uploaded' : 'Required'}
+                  {thumbnail ? t?.createBlog?.uploaded : t?.createBlog?.required}
                 </span>
               </div>
             </CardContent>
@@ -853,15 +855,13 @@ export default function CreateBlog() {
           {/* Guidelines */}
           <Card>
             <CardHeader>
-              <CardTitle>Guidelines</CardTitle>
+              <CardTitle>{t?.createBlog?.guidelines}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-gray-600">
               <ul className="list-disc pl-4 space-y-1">
-                <li>Title should be clear and descriptive</li>
-                <li>Content must be at least 10 characters</li>
-                <li>Use appropriate formatting for readability</li>
-                <li>Thumbnail image should be relevant to content</li>
-                <li>All submissions are subject to review</li>
+                {t?.createBlog?.guidelinesList?.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </CardContent>
           </Card>

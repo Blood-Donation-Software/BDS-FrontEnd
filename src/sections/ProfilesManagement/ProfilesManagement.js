@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label"
 import vietnamProvinces from '@/data/vietnam-provinces.json';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { set } from 'lodash';
+import { useLanguage } from '@/context/language_context';
 
 // DialogForm component for both create and update
 const DialogForm = React.memo(({
@@ -35,21 +36,22 @@ const DialogForm = React.memo(({
     formData,
     onSubmit,
     onChange,
-    onSelectChange,
+    onSelectChange, 
     loading,
     availableDistricts,
     availableWards,
     vietnamProvinces
 }) => {
+    const {t} = useLanguage()
     const isUpdate = profile !== null;
     DialogForm.displayName = 'DialogForm';
     return (
         <DialogContent className="sm:max-w-[425px] lg:max-w-[700px] max-h-[90vh]">
             <form onSubmit={onSubmit}>
                 <DialogHeader>
-                    <DialogTitle>{isUpdate ? 'Edit Profile' : 'Create Profile'}</DialogTitle>
+                    <DialogTitle>{isUpdate ? t.profileManagement.EditProfile : t.profileManagement.CreateProfile}</DialogTitle>
                     <DialogDescription>
-                        {isUpdate ? 'Update the profile information below.' : 'Create the profile with information below.'}
+                        {isUpdate ? t.profileManagement.UpdateProfileInfo : t.profileManagement.CreateProfileInfo}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="max-h-[60vh] overflow-y-auto pr-2">
@@ -61,29 +63,30 @@ const DialogForm = React.memo(({
                     )}
                     <div className="grid grid-cols-1 gap-6">
                         <div>
-                            <label className="block text-gray-600 mb-1">Full Name</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.FullName}</label>
                             <input
                                 name="name"
                                 required
                                 value={formData?.name || ''}
+                                title={t.profileManagement.FullNamePattern}
                                 className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
                                 onChange={onChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Phone Number</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.PhoneNumber}</label>
                             <input
                                 name="phone"
                                 required
                                 value={formData?.phone || ''}
                                 pattern="^(03|05|07|08|09)\d{8}$"
-                                title="Please enter a valid Vietnamese phone number (e.g., 0912345678)"
+                                title={t.profileManagement.PhoneNumberPattern}
                                 className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
                                 onChange={onChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Personal ID</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.PersonalID}</label>
                             <input
                                 name="personalId"
                                 required
@@ -93,7 +96,7 @@ const DialogForm = React.memo(({
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Date of Birth</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.DateOfBirth}</label>
                             <input
                                 name="dob"
                                 type="date"
@@ -105,7 +108,7 @@ const DialogForm = React.memo(({
                         </div>
                         {isUpdate && (
                             <div>
-                                <label className="block text-gray-600 mb-1">Last Donation Date</label>
+                                <label className="block text-gray-600 mb-1">{t.profileManagement.LastDonationDate}</label>
                                 <input
                                     name="lastDonationDate"
                                     type="date"
@@ -116,7 +119,7 @@ const DialogForm = React.memo(({
                             </div>
                         )}
                         <div>
-                            <label className="block text-gray-600 mb-1">Blood Type</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.BloodType}</label>
                             <Select
                                 value={formData?.blood_type || ''}
                                 onValueChange={(value) => onSelectChange('blood_type', value)}
@@ -137,7 +140,7 @@ const DialogForm = React.memo(({
                             </Select>
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Gender</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.Gender}</label>
                             <Select
                                 value={formData?.gender || ''}
                                 onValueChange={(value) => onSelectChange('gender', value)}
@@ -146,13 +149,13 @@ const DialogForm = React.memo(({
                                     <SelectValue placeholder="Select gender" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="MALE">Male</SelectItem>
-                                    <SelectItem value="FEMALE">Female</SelectItem>
+                                    <SelectItem value="MALE">{t.profileManagement.Male}</SelectItem>
+                                    <SelectItem value="FEMALE">{t.profileManagement.Female}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">City/Province</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.CityProvince}</label>
                             <Select
                                 value={formData?.city || ''}
                                 onValueChange={(value) => onSelectChange('city', value)}
@@ -170,14 +173,14 @@ const DialogForm = React.memo(({
                             </Select>
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">District</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.District}</label>
                             <Select
                                 value={formData?.district || ''}
                                 onValueChange={(value) => onSelectChange('district', value)}
                                 disabled={availableDistricts.length === 0}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select district" />
+                                    <SelectValue placeholder={t.profileManagement.District} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {availableDistricts.map((district, index) => (
@@ -189,7 +192,7 @@ const DialogForm = React.memo(({
                             </Select>
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Ward</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.Ward}</label>
                             <Select
                                 value={formData?.ward || ''}
                                 onValueChange={(value) => onSelectChange('ward', value)}
@@ -208,7 +211,7 @@ const DialogForm = React.memo(({
                             </Select>
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Address</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.Address}</label>
                             <input
                                 name="address"
                                 required
@@ -218,17 +221,17 @@ const DialogForm = React.memo(({
                             />
                         </div>
                         <div>
-                            <label className="block text-gray-600 mb-1">Status</label>
+                            <label className="block text-gray-600 mb-1">{t.profileManagement.Status}</label>
                             <Select
                                 value={formData?.status || ''}
                                 onValueChange={(value) => onSelectChange('status', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select status" />
+                                    <SelectValue placeholder={t.profileManagement.Status} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="AVAILABLE">Available</SelectItem>
-                                    <SelectItem value="UNAVAILABLE">Unavailable</SelectItem>
+                                    <SelectItem value="AVAILABLE">{t.profileManagement.Available}</SelectItem>
+                                    <SelectItem value="UNAVAILABLE">{t.profileManagement.Unavailable}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -241,7 +244,7 @@ const DialogForm = React.memo(({
                             disabled={loading}
                             className="border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 disabled:bg-gray-400 disabled:cursor-not-allowed text-gray-700 font-semibold px-8 py-3 rounded-lg transition-all duration-200"
                         >
-                            Cancel
+                            {t.profileManagement.Cancel}
                         </button>
                     </DialogClose>
                     <button
@@ -249,7 +252,7 @@ const DialogForm = React.memo(({
                         disabled={loading}
                         className="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-lg transition"
                     >
-                        {loading ? (isUpdate ? "Updating..." : "Creating...") : (isUpdate ? "Save Changes" : "Create Profile")}
+                        {loading ? (isUpdate ? t.profileManagement.Updating : t.profileManagement.Creating) : (isUpdate ? t.profileManagement.SaveChanges : t.profileManagement.CreateProfile)}
                     </button>
                 </DialogFooter>
             </form>
@@ -260,6 +263,7 @@ const DialogForm = React.memo(({
 // Sample data matching ProfileDto structure
 
 export default function ProfilesManagement() {
+    const {t} = useLanguage();
     const [searchTerm, setSearchTerm] = useState('');
     const [profiles, setProfiles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -785,20 +789,20 @@ export default function ProfilesManagement() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[200px]">NAME</TableHead>
-                                <TableHead>DATE OF BIRTH</TableHead>
-                                <TableHead>BLOOD TYPE</TableHead>
-                                <TableHead>CONTACT</TableHead>
-                                <TableHead>STATUS</TableHead>
-                                <TableHead className="text-center">DONATION HISTORY</TableHead>
-                                <TableHead className="text-right">DETAILS</TableHead>
+                                <TableHead className="w-[200px]">{t.accountManagement.name}</TableHead>
+                                <TableHead>{t.profileManagement.DateOfBirth}</TableHead>
+                                <TableHead>{t.profileManagement.BloodType}</TableHead>
+                                <TableHead>{t.user.Contact}</TableHead>
+                                <TableHead>{t.profileManagement.Status}</TableHead>
+                                <TableHead className="text-center">{t.profileManagement.DonationHistory}</TableHead>
+                                <TableHead className="text-right">{t.profileManagement.Details}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
                                     <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                        Loading profiles...
+                                        {t.profileManagement.loadingProfiles}
                                     </TableCell>
                                 </TableRow>
                             ) : filteredProfiles.length > 0 ? (
@@ -843,20 +847,20 @@ export default function ProfilesManagement() {
                                                 </DialogTrigger>
                                                 <DialogContent className="sm:max-w-[425px] lg:max-w-[900px] max-h-[90vh]">
                                                     <DialogHeader>
-                                                        <DialogTitle>Donation history</DialogTitle>
+                                                        <DialogTitle>{t.profileManagement.DonationHistory}</DialogTitle>
                                                         <DialogDescription>
-                                                            View members donation history here.
+                                                            {t.profileManagement.viewMembersDonationHistory}
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Table>
                                                         <TableHeader>
                                                             <TableRow>
-                                                                <TableHead className="w-[150px]">Donation Name</TableHead>
-                                                                <TableHead className="w-[200px]">Location</TableHead>
-                                                                <TableHead className="w-[100px]">Type</TableHead>
-                                                                <TableHead className="w-[100px]">Status</TableHead>
-                                                                <TableHead className="text-right w-[120px]">Donation Date</TableHead>
-                                                                <TableHead className="text-right w-[120px]">Registration Date</TableHead>
+                                                                <TableHead className="w-[150px]">{t.profileManagement.DonationName}</TableHead>
+                                                                <TableHead className="w-[200px]">{t.profileManagement.Location}</TableHead>
+                                                                <TableHead className="w-[100px]">{t.profileManagement.Type}</TableHead>
+                                                                <TableHead className="w-[100px]">{t.profileManagement.Status}</TableHead>
+                                                                <TableHead className="text-right w-[120px]">{t.profileManagement.DonationDate}</TableHead>
+                                                                <TableHead className="text-right w-[120px]">{t.profileManagement.RegistrationDate}</TableHead>
                                                             </TableRow>
                                                         </TableHeader>
                                                         <TableBody>
@@ -878,7 +882,7 @@ export default function ProfilesManagement() {
                                                     </Table>
                                                     <DialogFooter>
                                                         <DialogClose asChild>
-                                                            <Button variant="outline">Close</Button>
+                                                            <Button variant="outline">{t.profileManagement.Close}</Button>
                                                         </DialogClose>
                                                     </DialogFooter>
                                                 </DialogContent>
@@ -899,7 +903,7 @@ export default function ProfilesManagement() {
                                                         size="sm"
                                                         className="text-blue-600 border-blue-200 hover:bg-blue-50">
                                                         <Eye className="h-4 w-4 mr-1" />
-                                                        View Details
+                                                        {t.profileManagement.viewDetails}
                                                     </Button>
                                                 </DialogTrigger>
                                                 <DialogForm
@@ -921,7 +925,7 @@ export default function ProfilesManagement() {
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                                        No profiles found matching your search criteria.
+                                        {t.profileManagement.NoProfilesFound}
                                     </TableCell>
                                 </TableRow>
                             )}

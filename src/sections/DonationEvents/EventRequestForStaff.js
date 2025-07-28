@@ -11,6 +11,7 @@ import { ArrowUpDown, Search, Calendar, MapPin, Users, Clock, Eye, FileText, Ref
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import { getMyRequests, getMyRequestById } from '@/apis/bloodDonation'
+import { useLanguage } from '@/context/language_context'
 
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
@@ -88,6 +89,7 @@ const formatCrudType = (crudType) => {
 }
 
 export default function EventRequestForStaff() {
+  const {t} = useLanguage();  
   const [requests, setRequests] = useState([])
   const [filteredRequests, setFilteredRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -264,15 +266,15 @@ export default function EventRequestForStaff() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                My Event Requests
+                {t?.eventRequestForStaff?.title}
               </CardTitle>
               <CardDescription>
-                View and track your donation event requests ({pagination.totalElements} total)
+                {t?.eventRequestForStaff?.description}
               </CardDescription>
             </div>
             <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
               <RefreshCw className="h-4 w-4 mr-2" />
-              {loading ? 'Loading...' : 'Refresh'}
+              {loading ? t?.blog?.loading : t?.blogManagement?.refresh}
             </Button>
           </div>
         </CardHeader>
@@ -287,7 +289,7 @@ export default function EventRequestForStaff() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search event requests..."
+                placeholder={t?.eventRequestForStaff?.searchPlaceholder}
                 className="pl-10"
                 value={filters.search}
                 onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
@@ -298,7 +300,7 @@ export default function EventRequestForStaff() {
               onValueChange={value => setFilters(f => ({ ...f, status: value }))}
             >
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t?.eventRequestForStaff?.status} />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map(opt => (
@@ -311,7 +313,7 @@ export default function EventRequestForStaff() {
               onValueChange={value => setFilters(f => ({ ...f, crudType: value }))}
             >
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Request Type" />
+                <SelectValue placeholder={t?.eventRequestForStaff?.requestType} />
               </SelectTrigger>
               <SelectContent>
                 {crudTypeOptions.map(opt => (
@@ -329,7 +331,7 @@ export default function EventRequestForStaff() {
               )}
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Requests per page:</span>
+              <span className="text-sm text-muted-foreground">{t?.eventRequestForStaff?.requestsPerPage}:</span>
               <Select
                 value={pagination.size.toString()}
                 onValueChange={handlePageSizeChange}
@@ -352,22 +354,28 @@ export default function EventRequestForStaff() {
               <TableRow>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('newDonationEventDto.name')}>
-                    Event Name <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventRequestForStaff?.table?.eventName} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('status')}>
-                    Status <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventRequestForStaff?.table?.status} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('crudType')}>
-                    Request Type <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventRequestForStaff?.table?.crudType} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Date & Time</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>
+                  {t?.eventRequestForStaff?.table?.location}
+                </TableHead>
+                <TableHead>
+                  {t?.eventRequestForStaff?.table?.dateTime}
+                </TableHead>
+                <TableHead>
+                  {t?.eventRequestForStaff?.table?.actions}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -376,7 +384,7 @@ export default function EventRequestForStaff() {
                   <TableCell colSpan={6} className="text-center py-8">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                      <span className="ml-2">Loading requests...</span>
+                      <span className="ml-2">{t?.eventRequestForStaff?.loading}</span>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -384,7 +392,7 @@ export default function EventRequestForStaff() {
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8">
                     <div className="text-muted-foreground">
-                      {requests.length === 0 ? 'No event requests found' : 'No requests match your filters'}
+                      {requests.length === 0 ? t?.eventRequestForStaff?.table?.noRequest :t?.eventRequestForStaff?.table?.noFilteredRequests }
                     </div>
                   </TableCell>
                 </TableRow>
@@ -396,7 +404,7 @@ export default function EventRequestForStaff() {
                       <TableCell>
                         <div className="font-medium">{displayData?.name || 'Untitled Event'}</div>
                         <div className="text-sm text-muted-foreground">
-                          Request ID: #{request.id}
+                          {t?.eventRequestForStaff?.table?.requestId}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -452,9 +460,9 @@ export default function EventRequestForStaff() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between px-2 py-4">
               <div className="text-sm text-muted-foreground">
-                Showing {pagination.page * pagination.size + 1} to{' '}
-                {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} of{' '}
-                {pagination.totalElements} requests
+                {t?.blogManagement?.showing} {pagination.page * pagination.size + 1} {t?.blogManagement?.to}{' '}
+                {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} {t?.blogManagement?.of}{' '}
+                {pagination.totalElements} {t?.blogManagement?.request}
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -463,7 +471,7 @@ export default function EventRequestForStaff() {
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page === 0 || loading}
                 >
-                  Previous
+                  {t?.blogManagement?.previous}
                 </Button>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -498,7 +506,7 @@ export default function EventRequestForStaff() {
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page >= pagination.totalPages - 1 || loading}
                 >
-                  Next
+                  {t?.blogManagement?.next}
                 </Button>
               </div>
             </div>
@@ -512,16 +520,16 @@ export default function EventRequestForStaff() {
           <DialogHeader className="pb-4 border-b">
             <DialogTitle className="flex items-center gap-2 text-xl">
               <FileText className="h-6 w-6 text-red-600" />
-              {selectedRequest?.crudType === 'CREATE' && 'New Event Request Details'}
-              {selectedRequest?.crudType === 'UPDATE' && 'Event Update Request Details'}
-              {selectedRequest?.crudType === 'DELETE' && 'Event Deletion Request Details'}
-              {!selectedRequest?.crudType && 'Event Request Details'}
+              {selectedRequest?.crudType === 'CREATE' && t?.eventRequestForStaff?.dialog?.titleCreate}
+              {selectedRequest?.crudType === 'UPDATE' && t?.eventRequestForStaff?.dialog?.titleUpdate}
+              {selectedRequest?.crudType === 'DELETE' && t?.eventRequestForStaff?.dialog?.titleDelete}
+              {!selectedRequest?.crudType && t?.eventRequestForStaff?.dialog?.titleDefault}
             </DialogTitle>
             <DialogDescription className="text-base">
-              {selectedRequest?.crudType === 'CREATE' && 'Review the details of your new event request'}
-              {selectedRequest?.crudType === 'UPDATE' && 'Review the proposed changes to your event'}
-              {selectedRequest?.crudType === 'DELETE' && 'Review the event that you requested to be deleted'}
-              {!selectedRequest?.crudType && 'Review your complete event request'}
+              {selectedRequest?.crudType === 'CREATE' && t?.eventRequestForStaff?.dialog?.descriptionCreate}
+              {selectedRequest?.crudType === 'UPDATE' && t?.eventRequestForStaff?.dialog?.descriptionUpdate}
+              {selectedRequest?.crudType === 'DELETE' && t?.eventRequestForStaff?.dialog?.descriptionDelete}
+              {!selectedRequest?.crudType && t?.eventRequestForStaff?.dialog?.descriptionDefault}
             </DialogDescription>
           </DialogHeader>
 
@@ -531,7 +539,7 @@ export default function EventRequestForStaff() {
               <div className="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl border border-red-200">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request Status</label>
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.requestStatus}</label>
                     <div className="mt-2">
                       <Badge variant="outline" className={`${getStatusBadge(selectedRequest.status)} text-sm px-3 py-1`}>
                         {selectedRequest.status}
@@ -539,7 +547,7 @@ export default function EventRequestForStaff() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request Type</label>
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.requestType}</label>
                     <div className="mt-2">
                       <Badge variant="outline" className={`${getCrudTypeBadge(selectedRequest.crudType)} text-sm px-3 py-1`}>
                         {formatCrudType(selectedRequest.crudType)}
@@ -547,7 +555,7 @@ export default function EventRequestForStaff() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">Request ID</label>
+                    <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.requestId}</label>
                     <p className="mt-2 text-lg font-bold text-red-800">#{selectedRequest.id}</p>
                   </div>
                 </div>
@@ -564,46 +572,46 @@ export default function EventRequestForStaff() {
                     <div className="bg-white border rounded-xl p-6 shadow-sm">
                       <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                         <Calendar className="h-5 w-5 text-red-600" />
-                        Event Information
+                        {t?.eventRequestForStaff?.dialog?.section?.eventInfo}
                       </h3>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Event Name</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.eventName}</label>
                             <p className="mt-1 text-lg font-semibold text-gray-900">{displayData?.name || 'N/A'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Hospital</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.hospital}</label>
                             <p className="mt-1 text-base text-gray-900">{displayData?.hospital || 'N/A'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Donation Date</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.donationDate}</label> 
                             <div className="mt-1 flex items-center gap-2">
                               <Calendar className="h-4 w-4 text-red-600" />
                               <p className="text-base font-medium text-gray-900">{formatDate(displayData?.donationDate)}</p>
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Donation Type</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.donationType}</label>
                             <p className="mt-1 text-base text-gray-900">{formatDonationType(displayData?.donationType)}</p>
                           </div>
                         </div>
                         
                         <div className="space-y-4">
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Address</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.address}</label>
                             <div className="mt-1 flex items-start gap-2">
                               <MapPin className="h-4 w-4 text-red-600 mt-0.5" />
                               <p className="text-base text-gray-900">{displayData?.address || 'N/A'}</p>
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">City</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.city}</label>
                             <p className="mt-1 text-base text-gray-900">{displayData?.city || 'N/A'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Time Slots</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.timeSlots}</label>
                             <div className="mt-1 flex items-center gap-2">
                               <Clock className="h-4 w-4 text-red-600" />
                               <p className="text-base font-medium text-gray-900">{getTimeSlotDisplay(displayData?.timeSlotDtos)}</p>
@@ -625,7 +633,7 @@ export default function EventRequestForStaff() {
                       <div className="bg-white border rounded-xl p-6 shadow-sm">
                         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                           <Clock className="h-5 w-5 text-red-600" />
-                          Time Slots Details
+                          {t?.eventRequestForStaff?.dialog?.section?.timeSlotsDetails}
                           <span className="text-sm font-normal text-gray-500 ml-2">
                             ({displayData.timeSlotDtos.length} {displayData.timeSlotDtos.length === 1 ? 'slot' : 'slots'})
                           </span>
@@ -642,7 +650,7 @@ export default function EventRequestForStaff() {
                                       <Clock className="h-4 w-4 text-white" />
                                     </div>
                                     <span className="font-semibold text-red-800">
-                                      Slot {index + 1}
+                                      {t?.eventRequestForStaff?.dialog?.section?.slot} {index + 1}
                                     </span>
                                   </div>
                                   <div className="text-xs text-red-600 font-medium uppercase tracking-wide">
@@ -657,7 +665,8 @@ export default function EventRequestForStaff() {
                                       {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                                     </div>
                                     <div className="text-sm text-red-600">
-                                      Duration: {(() => {
+                                      {t?.eventRequestForStaff?.dialog?.section?.duration} {(() => {
+
                                         try {
                                           const start = new Date(`2000-01-01T${slot.startTime}`)
                                           const end = new Date(`2000-01-01T${slot.endTime}`)
@@ -684,22 +693,22 @@ export default function EventRequestForStaff() {
                         <div className="bg-gray-50 border rounded-lg p-4">
                           <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                             <FileText className="h-4 w-4 text-red-600" />
-                            Summary
+                            {t?.eventRequestForStaff?.dialog?.section?.summary}
                           </h4>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4 text-red-600" />
-                              <span className="text-gray-600">Total Slots:</span>
+                              <span className="text-gray-600">{t?.eventRequestForStaff?.dialog?.section?.totalSlots}</span>
                               <span className="font-semibold text-gray-900">{displayData.timeSlotDtos.length}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4 text-red-600" />
-                              <span className="text-gray-600">Start Time:</span>
+                              <span className="text-gray-600">{t?.eventRequestForStaff?.dialog?.section?.startTime}</span>
                               <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[0]?.startTime)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4 text-red-600" />
-                              <span className="text-gray-600">End Time:</span>
+                              <span className="text-gray-600">{t?.eventRequestForStaff?.dialog?.section?.endTime}</span>
                               <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[displayData.timeSlotDtos.length - 1]?.endTime)}</span>
                             </div>
                           </div>
@@ -712,7 +721,7 @@ export default function EventRequestForStaff() {
                       <div className="bg-white border rounded-xl p-6 shadow-sm">
                         <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                           <FileText className="h-5 w-5 text-red-600" />
-                          Description
+                          {t?.eventRequestForStaff?.dialog?.section?.description}
                         </h3>
                         <div className="bg-gray-50 p-4 rounded-lg border">
                           <p className="text-gray-900 leading-relaxed">{displayData.description}</p>
@@ -729,7 +738,7 @@ export default function EventRequestForStaff() {
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Organization Name</label>
+                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.organizationName}</label>
                             <p className="mt-1 text-base font-semibold text-gray-900">{displayData.organizer.organizationName || 'N/A'}</p>
                           </div>
                           {displayData.organizer.email && (
@@ -740,7 +749,7 @@ export default function EventRequestForStaff() {
                           )}
                           {displayData.organizer.phoneNumber && (
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Phone</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.phone}</label>
                               <p className="mt-1 text-base text-gray-900">{displayData.organizer.phoneNumber}</p>
                             </div>
                           )}
@@ -755,27 +764,27 @@ export default function EventRequestForStaff() {
                       <div className="bg-white border rounded-xl p-6 shadow-sm">
                         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                           <ArrowUpDown className="h-5 w-5 text-red-600" />
-                          Changes Comparison
+                          {t?.eventRequestForStaff?.dialog?.section?.comparison}
                         </h3>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           {/* Original Data */}
                           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                            <h4 className="font-semibold text-red-800 mb-4">Original Event</h4>
+                            <h4 className="font-semibold text-red-800 mb-4">{t?.eventRequestForStaff?.dialog?.section?.original}</h4>
                             <div className="space-y-3">
                               <div>
-                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Name</label>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.name}</label>
                                 <p className="text-sm text-red-900">{originalData.name || 'N/A'}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Date</label>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.date}</label>
                                 <p className="text-sm text-red-900">{formatDate(originalData.donationDate)}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Time</label>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.time}</label>
                                 <p className="text-sm text-red-900">{getTimeSlotDisplay(originalData.timeSlotDtos)}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">Location</label>
+                                <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.location}</label>
                                 <p className="text-sm text-red-900">{originalData.hospital || 'N/A'}</p>
                               </div>
                             </div>
@@ -783,22 +792,22 @@ export default function EventRequestForStaff() {
                           
                           {/* New Data */}
                           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <h4 className="font-semibold text-green-800 mb-4">Updated Event</h4>
+                            <h4 className="font-semibold text-green-800 mb-4">{t?.eventRequestForStaff?.dialog?.section?.updated}</h4>
                             <div className="space-y-3">
                               <div>
-                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Name</label>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.name}</label>
                                 <p className="text-sm text-green-900">{displayData.name || 'N/A'}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Date</label>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.date}</label>
                                 <p className="text-sm text-green-900">{formatDate(displayData.donationDate)}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Time</label>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.time}</label>
                                 <p className="text-sm text-green-900">{getTimeSlotDisplay(displayData.timeSlotDtos)}</p>
                               </div>
                               <div>
-                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">Location</label>
+                                <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequestForStaff?.dialog?.section?.location}</label>  
                                 <p className="text-sm text-green-900">{displayData.hospital || 'N/A'}</p>
                               </div>
                             </div>
@@ -818,7 +827,7 @@ export default function EventRequestForStaff() {
               onClick={() => setViewDialogOpen(false)}
               className="px-6 py-2"
             >
-              Close
+              {t?.eventRequestForStaff?.dialog?.close}
             </Button>
           </DialogFooter>
         </DialogContent>

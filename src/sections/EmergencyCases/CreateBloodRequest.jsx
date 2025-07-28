@@ -2,6 +2,7 @@
 
 import { createRequest } from "@/apis/bloodrequest";
 import { searchProfiles } from "@/apis/profile";
+import { searchProfiles } from "@/apis/profile";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,12 +13,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, CheckCircle, Clock, CalendarIcon, Loader2, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertTriangle, CheckCircle, Clock, CalendarIcon, Loader2, Search, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from "react";
 import React, { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import vietnamProvinces from "@/data/vietnam-provinces.json";
 import { convertBloodType } from "@/utils/utils";
+import { useLanguage } from "@/context/language_context";
 
 // Custom debounce function
 const debounce = (func, wait) => {
@@ -33,6 +41,7 @@ const debounce = (func, wait) => {
 };
 
 export default function CreateBloodRequest() {
+  const {t} = useLanguage();
   const router = useRouter();
 
   const [bloodRequest, setBloodRequests] = useState({
@@ -60,10 +69,38 @@ export default function CreateBloodRequest() {
   // New profile creation states
   const [showNewProfileForm, setShowNewProfileForm] = useState(false);
   const [newProfile, setNewProfile] = useState({
+    profileId: null,
+    selectedProfile: null,
+    requiredDate: null,
+    urgency: "",
+    bloodType: "",
+    componentRequests: [],
+    medicalConditions: [],
+    additionalMedicalInformation: "",
+    additionalNotes: ""
+  });
+
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingRequestData, setPendingRequestData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Profile search states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  
+  // New profile creation states
+  const [showNewProfileForm, setShowNewProfileForm] = useState(false);
+  const [newProfile, setNewProfile] = useState({
     name: "",
+    personalId: "",
     personalId: "",
     phone: "",
     address: "",
+    ward: "",
+    district: "",
+    city: "",
     ward: "",
     district: "",
     city: "",
@@ -78,12 +115,22 @@ export default function CreateBloodRequest() {
   const [selectedWard, setSelectedWard] = useState("");
   const [availableDistricts, setAvailableDistricts] = useState([]);
   const [availableWards, setAvailableWards] = useState([]);
+    gender: "",
+    dateOfBirth: null
+  });
+
+  // Location selection state
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+  const [availableDistricts, setAvailableDistricts] = useState([]);
+  const [availableWards, setAvailableWards] = useState([]);
 
   const bloodComponents = [
-    { id: 1, type: "Whole", value: "WHOLE_BLOOD" },
-    { id: 2, type: "Red Blood Cells", value: "RED_BLOOD_CELLS" },
-    { id: 3, type: "Plasma", value: "PLASMA" },
-    { id: 4, type: "Platelets", value: "PLATELETS" },
+    { id: 1, type: t?.blood_components?.whole_blood?.name, value: "WHOLE_BLOOD" },
+    { id: 2, type: t?.blood_components?.red_blood_cells?.name, value: "RED_BLOOD_CELLS" },
+    { id: 3, type: t?.blood_components?.plasma?.name, value: "PLASMA" },
+    { id: 4, type: t?.blood_components?.platelets?.name, value: "PLATELETS" },
   ];
 
   const bloodTypes = [
@@ -100,8 +147,8 @@ export default function CreateBloodRequest() {
   const urgencyLevels = [
     {
       id: 1,
-      level: "Critical",
-      timeframe: "Within 2 hours",
+      level: t?.createBloodRequest?.urgency?.critical,
+      timeframe: t?.createBloodRequest?.bloodRequest?.urgency?.timeframes?.critical,
       icon: <AlertTriangle className="h-5 w-5" />,
       bgColor: "bg-red-50",
       borderColor: "border-red-200",
@@ -112,8 +159,8 @@ export default function CreateBloodRequest() {
     },
     {
       id: 2,
-      level: "Urgent",
-      timeframe: "Within 24 hours",
+      level: t?.createBloodRequest?.urgency?.urgent,
+      timeframe: t?.createBloodRequest?.bloodRequest?.urgency?.timeframes?.urgent,
       icon: <Clock className="h-5 w-5" />,
       bgColor: "bg-amber-50",
       borderColor: "border-amber-200",
@@ -124,8 +171,8 @@ export default function CreateBloodRequest() {
     },
     {
       id: 3,
-      level: "Normal",
-      timeframe: "Within 3 days",
+      level: t?.createBloodRequest?.urgency?.normal,
+      timeframe: t?.createBloodRequest?.bloodRequest?.urgency?.timeframes?.normal,
       icon: <CheckCircle className="h-5 w-5" />,
       bgColor: "bg-green-50",
       borderColor: "border-green-200",
@@ -139,64 +186,64 @@ export default function CreateBloodRequest() {
   const medicalConditions = [
     {
       id: 1,
-      condition: "Trauma/Emergency Surgery",
-      description: "Severe injury requiring immediate surgical intervention",
+      condition: t?.createBloodRequest?.medicalConditions?.trauma,
+      description: t?.createBloodRequest?.criticalNeeds?.severeInjury,
       urgencyLevel: "HIGH",
       enumValue: "TRAUMA_EMERGENCY_SURGERY"
     },
     {
       id: 2,
-      condition: "Severe Anemia",
-      description: "Critically low hemoglobin levels",
+      condition: t?.createBloodRequest?.medicalConditions?.severeAnemia,
+      description: t?.createBloodRequest?.criticalNeeds?.lowHemoglobin,
       urgencyLevel: "HIGH",
       enumValue: "SEVERE_ANEMIA"
     },
     {
       id: 3,
-      condition: "Active Bleeding",
-      description: "Ongoing blood loss from internal or external sources",
+      condition: t?.createBloodRequest?.medicalConditions?.activeBleeding,
+      description: t?.createBloodRequest?.criticalNeeds?.ongoingBloodLoss,
       urgencyLevel: "HIGH",
       enumValue: "ACTIVE_BLEEDING"
     },
     {
       id: 4,
-      condition: "Cardiac Surgery",
-      description: "Heart surgery requiring blood products",
+      condition: t?.createBloodRequest?.medicalConditions?.cardiacSurgery,
+      description: t?.createBloodRequest?.criticalNeeds?.heartSurgery,
       urgencyLevel: "MEDIUM",
       enumValue: "CARDIAC_SURGERY"
     },
     {
       id: 5,
-      condition: "Cancer Treatment",
-      description: "Chemotherapy-induced blood disorders",
+      condition: t?.createBloodRequest?.medicalConditions?.cancerTreatment,
+      description: t?.createBloodRequest?.criticalNeeds?.chemoDisorders,
       urgencyLevel: "MEDIUM",
       enumValue: "CANCER_TREATMENT"
     },
     {
       id: 6,
-      condition: "Organ Transplant",
-      description: "Major organ transplantation procedure",
+      condition: t?.createBloodRequest?.medicalConditions?.organTransplant,
+      description: t?.createBloodRequest?.criticalNeeds?.majorTransplant,
       urgencyLevel: "MEDIUM",
       enumValue: "ORGAN_TRANSPLANT"
     },
     {
       id: 7,
-      condition: "Planned Surgery",
-      description: "Elective surgical procedure",
+      condition: t?.createBloodRequest?.medicalConditions?.plannedSurgery,
+      description: t?.createBloodRequest?.criticalNeeds?.electiveSurgery,
       urgencyLevel: "LOW",
       enumValue: "PLANNED_SURGERY"
     },
     {
       id: 8,
-      condition: "Blood Disorder",
-      description: "Chronic blood-related conditions",
+      condition: t?.createBloodRequest?.medicalConditions?.bloodDisorder,
+      description: t?.createBloodRequest?.criticalNeeds?.chronicConditions,
       urgencyLevel: "LOW",
       enumValue: "BLOOD_DISORDER"
     },
     {
       id: 9,
-      condition: "Pregnancy Complications",
-      description: "Maternal or fetal complications requiring blood",
+      condition: t?.createBloodRequest?.medicalConditions?.pregnancyComplications,
+      description: t?.createBloodRequest?.criticalNeeds?.maternalFetalComplications,
       urgencyLevel: "MEDIUM",
       enumValue: "PREGNANCY_COMPLICATIONS"
     }
@@ -337,6 +384,104 @@ export default function CreateBloodRequest() {
       ...requestData,
       urgency: autoUrgency
     };
+      profileId: profile.id,
+      selectedProfile: profile,
+      // Auto-select blood type if profile has one
+      bloodType: profile.bloodType || prev.bloodType
+    }));
+    setSearchQuery(`${profile.name} - ${profile.personalId}`);
+    setShowSearchResults(false);
+  };
+
+  // Clear selected profile
+  const clearSelectedProfile = () => {
+    setBloodRequests(prev => {
+      // Only reset blood type if it was auto-selected from the profile
+      const shouldResetBloodType = prev.selectedProfile && 
+                                   prev.selectedProfile.bloodType === prev.bloodType;
+      
+      return {
+        ...prev,
+        profileId: null,
+        selectedProfile: null,
+        // Reset blood type only if it was auto-selected
+        bloodType: shouldResetBloodType ? "" : prev.bloodType
+      };
+    });
+    setSearchQuery("");
+    setSearchResults([]);
+    setShowSearchResults(false);
+  };
+
+  const handleDate = (date) => {
+    setBloodRequests((prev) => {
+      const updated = {
+        ...prev,
+        requiredDate: date,
+      };
+      // Auto-calculate urgency after setting date
+      return calculateUrgency(updated);
+    });
+  };
+
+  const handleMedicalCondition = (conditionId) => {
+    setBloodRequests((prev) => {
+      const condition = medicalConditions.find(c => c.id === conditionId);
+      const isSelected = prev.medicalConditions.some(c => c.id === conditionId);
+      
+      let updatedConditions;
+      if (isSelected) {
+        updatedConditions = prev.medicalConditions.filter(c => c.id !== conditionId);
+      } else {
+        updatedConditions = [...prev.medicalConditions, condition];
+      }
+      
+      const updated = {
+        ...prev,
+        medicalConditions: updatedConditions
+      };
+      
+      // Auto-calculate urgency after medical condition change
+      return calculateUrgency(updated);
+    });
+  };
+
+  const calculateUrgency = (requestData) => {
+    const { medicalConditions, requiredDate } = requestData;
+    
+    // Only auto-calculate urgency if both required date and medical conditions are selected
+    if (!requiredDate || medicalConditions.length === 0) {
+      return requestData; // Don't auto-calculate urgency
+    }
+    
+    // Check if any high-priority conditions are selected
+    const hasHighPriorityCondition = medicalConditions.some(c => c.urgencyLevel === "HIGH");
+    
+    // Calculate days until required date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reqDate = new Date(requiredDate);
+    reqDate.setHours(0, 0, 0, 0);
+    const daysUntilRequired = Math.ceil((reqDate - today) / (1000 * 60 * 60 * 24));
+    
+    let autoUrgency = requestData.urgency;
+    
+    // Auto-calculate urgency based on conditions and timing
+    if (hasHighPriorityCondition || daysUntilRequired <= 0) {
+      autoUrgency = "HIGH";
+    } else if (medicalConditions.some(c => c.urgencyLevel === "MEDIUM") || daysUntilRequired <= 1) {
+      autoUrgency = "MEDIUM";
+    } else if (daysUntilRequired <= 3) {
+      autoUrgency = "MEDIUM";
+    } else {
+      // If only low-priority conditions or longer timeframe
+      autoUrgency = autoUrgency || "LOW";
+    }
+    
+    return {
+      ...requestData,
+      urgency: autoUrgency
+    };
   };
 
   const handleBloodRequest = (e) => {
@@ -366,7 +511,7 @@ export default function CreateBloodRequest() {
     
     // Validate that a profile is selected
     if (!bloodRequest.profileId) {
-      toast.error("Please select a patient profile or create a new one");
+      toast.error(t?.createBloodRequest?.error?.noProfile);
       return;
     }
     
@@ -413,11 +558,11 @@ export default function CreateBloodRequest() {
     
     try {
       await createRequest(pendingRequestData);
-      toast.success("Blood request created successfully!");
+      toast.success(t?.createBloodRequest?.success);
       router.push("/staffs/emergency-request/list");
     } catch (error) {
       console.error(error);
-      toast.error("Submission failed. Please try again.");
+      toast.error(t?.createBloodRequest?.error?.submission)
     } finally {
       setIsSubmitting(false);
       setPendingRequestData(null);
@@ -519,7 +664,7 @@ export default function CreateBloodRequest() {
   const handleCreateNewProfile = () => {
     // Basic validation
     if (!newProfile.name || !newProfile.personalId || !newProfile.phone) {
-      toast.error("Please fill in all required fields (Name, Personal ID, Phone)");
+      toast.error(t?.createBlog?.errrorRequired);
       return;
     }
 
@@ -574,7 +719,7 @@ export default function CreateBloodRequest() {
     setAvailableDistricts([]);
     setAvailableWards([]);
 
-    toast.success("New profile created and selected");
+    toast.success(t?.createBloodRequest?.profileCreatedAndSelected);
   };
 
   // Cancel new profile creation
@@ -607,7 +752,7 @@ export default function CreateBloodRequest() {
           {/* Profile Search */}
           <div className="space-y-4">
             <Label htmlFor="profileSearch" className="font-semibold text-gray-800 text-sm">
-              Search Patient Profile *
+              {t?.createBloodRequest?.patientProfile?.search?.title}
             </Label>
             <div className="relative">
               <div className="relative">
@@ -616,7 +761,7 @@ export default function CreateBloodRequest() {
                   id="profileSearch"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  placeholder="Search by name, phone number, or personal ID..."
+                  placeholder={t?.createBloodRequest?.patientProfile?.search?.placeholder}
                   className="pl-10 h-[52px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 />
                 {isSearching && (
@@ -639,7 +784,7 @@ export default function CreateBloodRequest() {
                           <div className="flex-1">
                             <div className="font-medium text-gray-900">{profile.name}</div>
                             <div className="text-sm text-gray-500">
-                              ID: {profile.personalId} • Phone: {profile.phone}
+                              {t?.createBloodRequest?.patientProfile?.selectedProfile?.id} {profile.personalId} • {t?.createBloodRequest?.patientProfile?.selectedProfile?.phone} {profile.phone}
                             </div>
                             <div className="text-xs text-gray-400">
                               {profile.address}, {profile.ward}, {profile.district}, {profile.city}
@@ -651,7 +796,7 @@ export default function CreateBloodRequest() {
                   ) : (
                     <div className="px-4 py-3">
                       <div className="text-sm text-gray-500 mb-2">
-                        No profiles found. Would you like to create a new profile?
+                        {t?.createBloodRequest?.patientProfile?.search?.noResults}
                       </div>
                       <Button
                         type="button"
@@ -663,7 +808,7 @@ export default function CreateBloodRequest() {
                         }}
                         className="w-full"
                       >
-                        Create New Profile
+                        {t?.createBloodRequest?.patientProfile?.search?.search?.createNew}
                       </Button>
                     </div>
                   )}
@@ -681,7 +826,7 @@ export default function CreateBloodRequest() {
                   className="flex items-center gap-2"
                 >
                   <User className="h-4 w-4" />
-                  Create New Profile
+                  {t?.createBloodRequest?.patientProfile?.search?.search?.createNew}
                 </Button>
               </div>
             )}
@@ -690,7 +835,7 @@ export default function CreateBloodRequest() {
             {showNewProfileForm && (
               <div className="p-6 bg-gray-50 border border-gray-200 rounded-xl space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Create New Patient Profile</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t?.createBloodRequest?.patientProfile?.newProfile?.title}</h3>
                   <Button
                     type="button"
                     variant="ghost"
@@ -698,7 +843,7 @@ export default function CreateBloodRequest() {
                     onClick={cancelNewProfile}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    Cancel
+                    {t?.createBloodRequest?.patientProfile?.newProfile?.cancel}
                   </Button>
                 </div>
                 
@@ -706,7 +851,7 @@ export default function CreateBloodRequest() {
                   {/* Name */}
                   <div className="space-y-2">
                     <Label htmlFor="newProfileName" className="font-semibold text-gray-800 text-sm">
-                      Full Name *
+                     {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.name}
                     </Label>
                     <Input
                       id="newProfileName"
@@ -721,7 +866,7 @@ export default function CreateBloodRequest() {
                   {/* Personal ID */}
                   <div className="space-y-2">
                     <Label htmlFor="newProfilePersonalId" className="font-semibold text-gray-800 text-sm">
-                      Personal ID *
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.personalId}
                     </Label>
                     <Input
                       id="newProfilePersonalId"
@@ -736,7 +881,7 @@ export default function CreateBloodRequest() {
                   {/* Phone */}
                   <div className="space-y-2">
                     <Label htmlFor="newProfilePhone" className="font-semibold text-gray-800 text-sm">
-                      Phone Number *
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.phone}
                     </Label>
                     <Input
                       id="newProfilePhone"
@@ -750,7 +895,7 @@ export default function CreateBloodRequest() {
                   
                   {/* Gender */}
                   <div className="space-y-2">
-                    <Label className="font-semibold text-gray-800 text-sm">Gender</Label>
+                    <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.patientProfile?.search?.search?.fields?.gender}</Label>
                     <div className="flex gap-2">
                       <Button
                         type="button"
@@ -759,7 +904,7 @@ export default function CreateBloodRequest() {
                         onClick={() => handleNewProfileGender("MALE")}
                         className="flex-1"
                       >
-                        Male
+                        {t?.createBloodRequest?.patientProfile?.newProfile?.fields?.male}
                       </Button>
                       <Button
                         type="button"
@@ -768,14 +913,14 @@ export default function CreateBloodRequest() {
                         onClick={() => handleNewProfileGender("FEMALE")}
                         className="flex-1"
                       >
-                        Female
+                        {t?.createBloodRequest?.patientProfile?.newProfile?.fields?.female}
                       </Button>
                     </div>
                   </div>
                   
                   {/* Date of Birth */}
                   <div className="space-y-2">
-                    <Label className="font-semibold text-gray-800 text-sm">Date of Birth</Label>
+                    <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.patientProfile?.search?.search?.fields?.dob}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -860,7 +1005,7 @@ export default function CreateBloodRequest() {
                   
                   {/* Blood Type */}
                   <div className="space-y-2">
-                    <Label className="font-semibold text-gray-800 text-sm">Blood Type</Label>
+                    <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.patientProfile?.search?.search?.fields?.bloodType}</Label>
                     <div className="grid grid-cols-4 gap-2">
                       {bloodTypes.map((type) => (
                         <Button
@@ -882,7 +1027,7 @@ export default function CreateBloodRequest() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="newProfileAddress" className="font-semibold text-gray-800 text-sm">
-                      Address
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.address}
                     </Label>
                     <Input
                       id="newProfileAddress"
@@ -896,7 +1041,7 @@ export default function CreateBloodRequest() {
                   
                   <div className="space-y-2">
                     <Label className="font-semibold text-gray-800 text-sm">
-                      City/Province
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.city}
                     </Label>
                     <Select value={selectedCity} onValueChange={handleCityChange}>
                       <SelectTrigger className="h-[48px] bg-white rounded-xl border-2 border-gray-200">
@@ -914,7 +1059,7 @@ export default function CreateBloodRequest() {
                   
                   <div className="space-y-2">
                     <Label className="font-semibold text-gray-800 text-sm">
-                      District
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.district}
                     </Label>
                     <Select 
                       value={selectedDistrict} 
@@ -936,7 +1081,7 @@ export default function CreateBloodRequest() {
                   
                   <div className="space-y-2">
                     <Label className="font-semibold text-gray-800 text-sm">
-                      Ward
+                      {t?.createBloodRequest?.patientProfile?.search?.search?.fields?.ward}
                     </Label>
                     <Select 
                       value={selectedWard} 
@@ -970,7 +1115,7 @@ export default function CreateBloodRequest() {
                     onClick={handleCreateNewProfile}
                     className="bg-blue-600 hover:bg-blue-700"
                   >
-                    Create Profile
+                    {t?.createBloodRequest?.patientProfile?.newProfile?.createButton}
                   </Button>
                 </div>
               </div>
@@ -985,17 +1130,17 @@ export default function CreateBloodRequest() {
                     <div>
                       <h4 className="font-semibold text-blue-900">{bloodRequest.selectedProfile.name}</h4>
                       <p className="text-sm text-blue-700">
-                        Personal ID: {bloodRequest.selectedProfile.personalId}
+                        {t?.createBloodRequest?.patientProfile?.selectedProfile?.id}
                       </p>
                       <p className="text-sm text-blue-700">
-                        Phone: {bloodRequest.selectedProfile.phone}
+                        {t?.createBloodRequest?.patientProfile?.selectedProfile?.phone}
                       </p>
                       <p className="text-sm text-blue-700">
                         Address: {bloodRequest.selectedProfile.address}, {bloodRequest.selectedProfile.ward}, {bloodRequest.selectedProfile.district}, {bloodRequest.selectedProfile.city}
                       </p>
                       {bloodRequest.selectedProfile.bloodType && (
                         <p className="text-sm text-blue-700">
-                          Blood Type: {convertBloodType(bloodRequest.selectedProfile.bloodType)}
+                          {t?.createBloodRequest?.patientProfile?.selectedProfile?.bloodType}
                         </p>
                       )}
                     </div>
@@ -1007,13 +1152,12 @@ export default function CreateBloodRequest() {
                     onClick={clearSelectedProfile}
                     className="text-blue-600 hover:text-blue-800"
                   >
-                    Change
+                    {t?.createBloodRequest?.patientProfile?.search?.change}
                   </Button>
                 </div>
               </div>
             )}
           </div>
-
           {/* Date Selection */}
           <div className="space-y-2">
             <Label htmlFor="requiredDate" className="font-semibold text-gray-800 text-sm">Required Date *</Label>
@@ -1024,7 +1168,7 @@ export default function CreateBloodRequest() {
                   className="h-[52px] bg-neutral-50 rounded-xl border-2 border-gray-100 w-full justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {bloodRequest.requiredDate ? format(bloodRequest.requiredDate, "PPP") : "Select required date"}
+                  {bloodRequest.requiredDate ? format(bloodRequest.requiredDate, "PPP") : t?.createBloodRequest?.selectRequiredDate}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -1041,7 +1185,7 @@ export default function CreateBloodRequest() {
 
           {/* Component Selection with Volumes */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">Blood Components & Volumes *</Label>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.components?.label} *</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {bloodComponents.map((component) => {
                 const existing = bloodRequest.componentRequests.find(c => c.componentType === component.value);
@@ -1089,14 +1233,20 @@ export default function CreateBloodRequest() {
 
           {/* Blood Type */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">Blood Type Required *</Label>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.bloodType?.label}</Label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {bloodTypes.map((bloodType) => (
                 <Button
                   key={bloodType.id}
                   variant={bloodType.value === bloodRequest.bloodType ? "default" : "outline"}
+                  variant={bloodType.value === bloodRequest.bloodType ? "default" : "outline"}
                   type="button"
                   onClick={() => handleBloodType(bloodType.value)}
+                  className={`h-16 rounded-xl border-2 font-semibold text-lg transition-all ${
+                    bloodType.value === bloodRequest.bloodType
+                      ? "bg-red-600 text-white border-red-600"
+                      : "bg-neutral-50 border-gray-200 text-gray-700 hover:bg-red-50 hover:border-red-200"
+                  }`}
                   className={`h-16 rounded-xl border-2 font-semibold text-lg transition-all ${
                     bloodType.value === bloodRequest.bloodType
                       ? "bg-red-600 text-white border-red-600"
@@ -1111,8 +1261,8 @@ export default function CreateBloodRequest() {
 
           {/* Medical Conditions */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">Medical Conditions *</Label>
-            <p className="text-sm text-gray-600">Select applicable medical conditions. Urgency level will be automatically calculated based on your selections and required date.</p>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.medicalConditions?.label}</Label>
+            <p className="text-sm text-gray-600">{t?.createBloodRequest?.medicalConditions?.description}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {medicalConditions.map((condition) => {
                 const isSelected = bloodRequest.medicalConditions.some(c => c.id === condition.id);
@@ -1144,8 +1294,8 @@ export default function CreateBloodRequest() {
                               ? 'bg-yellow-100 text-yellow-800' 
                               : 'bg-green-100 text-green-800'
                           }`}>
-                            {condition.urgencyLevel === 'HIGH' ? 'Critical' : 
-                             condition.urgencyLevel === 'MEDIUM' ? 'Urgent' : 'Normal'} Priority
+                            {condition.urgencyLevel === 'HIGH' ? t?.createBloodRequest?.bloodRequest?.urgency?.critical : 
+                             condition.urgencyLevel === 'MEDIUM' ? t?.createBloodRequest?.bloodRequest?.urgency?.urgent : t?.createBloodRequest?.bloodRequest?.urgency?.normal} {t?.blogRequest?.priority}
                           </span>
                         </div>
                       </div>
@@ -1158,7 +1308,7 @@ export default function CreateBloodRequest() {
 
           {/* Urgency */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">Urgency Level *</Label>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.urgency?.label}*</Label>
             <p className="text-sm text-gray-600">
               {bloodRequest.urgency ? 
                 "Urgency level automatically calculated based on medical conditions and required date. You can override if needed." :
@@ -1173,6 +1323,8 @@ export default function CreateBloodRequest() {
                     flex flex-col items-center justify-center h-[84px] 
                     rounded-xl border-2 ${urgency.borderColor} ${urgency.hoverColor} cursor-pointer
                     ${urgency.value === bloodRequest.urgency ? 'ring-2 ring-offset-2 ring-red-500' : ''}`}
+                    rounded-xl border-2 ${urgency.borderColor} ${urgency.hoverColor} cursor-pointer
+                    ${urgency.value === bloodRequest.urgency ? 'ring-2 ring-offset-2 ring-red-500' : ''}`}
                   onClick={() => handleUrgency(urgency.value)}
                 >
                   <div className="flex items-center">
@@ -1181,7 +1333,7 @@ export default function CreateBloodRequest() {
                   </div>
                   <p className={`font-semibold ${urgency.textColor} text-sm mt-1`}>{urgency.timeframe}</p>
                   {urgency.value === bloodRequest.urgency && (
-                    <p className="text-xs text-gray-600 mt-1">Auto-selected</p>
+                    <p className="text-xs text-gray-600 mt-1">{t?.createBloodRequest?.urgency?.autoSelected}</p>
                   )}
                 </div>
               ))}
@@ -1191,34 +1343,122 @@ export default function CreateBloodRequest() {
           {/* Notes */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="additionalMedicalInformation" className="font-semibold text-gray-800 text-sm">Additional Medical Information *</Label>
+              <Label htmlFor="additionalMedicalInformation" className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.notes?.medicalInfo?.label}</Label>
               <Textarea
                 id="additionalMedicalInformation"
                 name="additionalMedicalInformation"
-                placeholder="Describe any additional medical information, symptoms, or special requirements..."
+                placeholder={t?.createBloodRequest?.notes?.medicalInfo?.placeholder}
                 className="min-h-[100px] bg-neutral-50 rounded-xl border-2 border-gray-100"
                 onChange={handleBloodRequest}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="additionalNotes" className="font-semibold text-gray-800 text-sm">Additional Notes</Label>
+              <Label htmlFor="additionalNotes" className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.notes?.additional?.label}</Label>
               <Textarea
                 id="additionalNotes"
                 name="additionalNotes"
-                placeholder="Any other relevant information..."
+                placeholder={t?.createBloodRequest?.notes?.additional?.placeholder}     
                 className="min-h-[100px] bg-neutral-50 rounded-xl border-2 border-gray-100"
+                onChange={handleBloodRequest}
                 onChange={handleBloodRequest}
               />
             </div>
           </div>
+          </div>
 
           {/* Submit */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">Cancel</Button>
-            <Button type="submit" className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg">Submit Blood Request</Button>
+            <Button type="button" variant="outline" className="h-[60px] rounded-xl border-2 font-semibold text-gray-500">{t?.createBloodRequest?.buttons?.cancel}</Button>
+            <Button type="submit" className="h-[60px] rounded-xl font-semibold bg-gradient-to-r from-red-600 to-red-600 shadow-lg">{t?.createBloodRequest?.buttons?.submit}</Button>
           </div>
         </form>
       </CardContent>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelRequestCreation()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirm Blood Request</DialogTitle>
+            <DialogDescription>
+              Please review the blood request details before submitting. This will create an emergency blood request.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {pendingRequestData && (
+            <div className="space-y-2 py-4">
+              {bloodRequest.selectedProfile && (
+                <>
+                  <div><strong>Patient Name:</strong> {bloodRequest.selectedProfile.name}</div>
+                  <div><strong>Personal ID:</strong> {bloodRequest.selectedProfile.personalId}</div>
+                  <div><strong>Phone:</strong> {bloodRequest.selectedProfile.phone}</div>
+                  {bloodRequest.selectedProfile.address && (
+                    <div><strong>Address:</strong> {bloodRequest.selectedProfile.address}, {bloodRequest.selectedProfile.ward}, {bloodRequest.selectedProfile.district}, {bloodRequest.selectedProfile.city}</div>
+                  )}
+                  {bloodRequest.selectedProfile.bloodType && (
+                    <div><strong>Patient Blood Type:</strong> {convertBloodType(bloodRequest.selectedProfile.bloodType)}</div>
+                  )}
+                  {bloodRequest.selectedProfile.isNew && (
+                    <div className="text-sm text-blue-600 font-medium">* This is a new profile that will be created</div>
+                  )}
+                </>
+              )}
+              <div><strong>Blood Type Requested:</strong> {bloodRequest.bloodType}</div>
+              <div><strong>Required Date:</strong> {bloodRequest.requiredDate ? format(bloodRequest.requiredDate, "PPP") : "Not specified"}</div>
+              <div><strong>Urgency:</strong> {bloodRequest.urgency}</div>
+              {bloodRequest.componentRequests && bloodRequest.componentRequests.length > 0 && (
+                <div>
+                  <strong>Components Requested:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {bloodRequest.componentRequests.map((comp, index) => (
+                      <li key={index}>
+                        {comp.componentType.replace(/_/g, ' ')} - Volume: {comp.volume}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bloodRequest.medicalConditions && bloodRequest.medicalConditions.length > 0 && (
+                <div>
+                  <strong>Medical Conditions:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {bloodRequest.medicalConditions.map((condition, index) => (
+                      <li key={index}>{condition.condition}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bloodRequest.additionalMedicalInformation && (
+                <div><strong>Additional Medical Info:</strong> {bloodRequest.additionalMedicalInformation}</div>
+              )}
+            </div>
+          )}
+          
+          <DialogFooter className="sm:justify-start">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelRequestCreation}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmSubmitRequest}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Request...
+                </>
+              ) : (
+                'Confirm & Submit Request'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelRequestCreation()}>

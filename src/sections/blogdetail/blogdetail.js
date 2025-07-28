@@ -5,9 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '@/context/language_context';
 import { BASE_URL } from '@/global-config';
 
 export default function BlogDetail() {
+  const { t } = useLanguage();
   const { id } = useParams();
   const [relatedPosts, setRelatedPosts] = useState([]);
   const { blogs, selectedBlog, selectedBlogById } = useBlogs();

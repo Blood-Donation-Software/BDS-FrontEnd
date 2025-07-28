@@ -182,6 +182,10 @@ export default function DashboardForStaff() {
               <FileText className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
+              <div className="text-2xl font-bold">{mockData.overview.bloodRequests}</div>
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="text-red-600 font-medium">{mockData.overview.urgentRequests} {t?.dashboardStaff?.urgent}</span>
+              </div>
               <div className="text-2xl font-bold text-blue-600">{dashboardData?.blogStats?.published || 0}</div>
               <p className="text-xs text-muted-foreground">
                 Đang hoạt động
@@ -198,6 +202,7 @@ export default function DashboardForStaff() {
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{dashboardData?.donationEventStats?.total || 0}</div>
               <p className="text-xs text-muted-foreground">
+                <span className="text-green-600">-15%</span> {t?.dashboardStaff?.comparedToLastMonth}
                 <span className="text-green-600">{dashboardData?.donationEventStats?.completed || 0}</span> hoàn thành, 
                 <span className="text-orange-600 ml-1">{dashboardData?.donationEventStats?.available || 0}</span> đang hoạt động
               </p>

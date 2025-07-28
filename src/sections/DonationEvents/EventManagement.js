@@ -12,7 +12,7 @@ import { format, parseISO } from 'date-fns'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { getAllEvents, getEventsByDateRange, getEventDonors } from '@/apis/bloodDonation'
-
+import { useLanguage } from '@/context/language_context'
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
   { value: 'PENDING', label: 'Pending' },
@@ -43,6 +43,7 @@ const formatDonationType = (type) => {
 }
 
 export default function EventManagement() {
+  const { t } = useLanguage()
   const router = useRouter()
   const [events, setEvents] = useState([])
   const [filtered, setFiltered] = useState([])
@@ -164,14 +165,14 @@ export default function EventManagement() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Blood Donation Events
+                {t?.eventManagement?.title}
               </CardTitle>
               <CardDescription>
-                Manage and view all blood donation events ({pagination.totalElements} total)
+                {t?.eventManagement?.description}
               </CardDescription>
             </div>
             <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
-              {loading ? 'Loading...' : 'Refresh'}
+              {loading ? t?.eventManagement?.loading : t?.eventManagement?.refresh}
             </Button>
           </div>
         </CardHeader>
@@ -186,7 +187,7 @@ export default function EventManagement() {
             <div className="relative w-2xl flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search events..."
+                placeholder={t?.eventManagement?.searchPlaceholder}
                 className="pl-8"
                 value={filters.search}
                 onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
@@ -197,7 +198,7 @@ export default function EventManagement() {
               onValueChange={value => setFilters(f => ({ ...f, status: value }))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t?.eventManagement?.status} />
               </SelectTrigger>
               <SelectContent>
                 {statusOptions.map(opt => (
@@ -210,7 +211,7 @@ export default function EventManagement() {
               onValueChange={value => setFilters(f => ({ ...f, donationType: value }))}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Donation Type" />
+                <SelectValue placeholder={t?.eventManagement?.donationType} />
               </SelectTrigger>
               <SelectContent>
                 {donationTypeOptions.map(opt => (
@@ -228,7 +229,7 @@ export default function EventManagement() {
               )}
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Events per page:</span>
+              <span className="text-sm text-muted-foreground"> {t?.eventManagement?.eventsPerPage}</span>
               <Select
                 value={pagination.size.toString()}
                 onValueChange={handlePageSizeChange}
@@ -251,28 +252,28 @@ export default function EventManagement() {
               <TableRow>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('name')}>
-                    Name <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventManagement?.name} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('hospital')}>
-                    Location <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventManagement?.location} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('donationDate')}>
-                    Date <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventManagement?.date} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead>{t?.eventManagement?.status}</TableHead>
+                <TableHead>{t?.eventManagement?.tableHeaders?.type}</TableHead>
                 <TableHead>
                   <Button variant="ghost" onClick={() => handleSort('totalMemberCount')}>
-                    Capacity <ArrowUpDown className="ml-2 h-4 w-4" />
+                    {t?.eventManagement?.tableHeaders?.capacity} <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>                
-                <TableHead>Time Slots</TableHead>
-                <TableHead>Organizer</TableHead>
+                <TableHead>{t?.eventManagement?.tableHeaders?.timeSlots}</TableHead>
+                <TableHead>{t?.eventManagement?.tableHeaders?.organizer}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>              
@@ -281,14 +282,14 @@ export default function EventManagement() {
                 <TableCell colSpan={9} className="text-center py-8">
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                    <span className="ml-2">Loading events...</span>
+                    <span className="ml-2">{t?.eventManagement?.loading}</span>
                   </div>
                 </TableCell>
               </TableRow>
             ) : filtered.length === 0 ? (<TableRow>
               <TableCell colSpan={9} className="text-center py-8">
                 <div className="text-muted-foreground">
-                  {events.length === 0 ? 'No events found' : 'No events match your filters'}
+                  {events.length === 0 ? t?.eventManagement?.noEventsFound : t?.eventManagement?.noEventsFiltered}
                 </div>
               </TableCell>
             </TableRow>) : (
@@ -338,7 +339,7 @@ export default function EventManagement() {
                       <Users className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium text-red-600">{event.registeredMemberCount || 0}</span>
                       <span className="text-muted-foreground">/{event.totalMemberCount}</span>
-                      <span className="text-xs text-muted-foreground ml-1">registered</span>
+                      <span className="text-xs text-muted-foreground ml-1">{t?.eventManagement?.tableHeaders?.registered}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -351,7 +352,7 @@ export default function EventManagement() {
                             {slot.maxCapacity}
                           </Badge>
                         </div>
-                      )) || <span className="text-muted-foreground">No slots</span>}
+                      )) || <span className="text-muted-foreground">{t?.eventManagement?.tableHeaders?.noSlots}</span>}
                     </div>
                   </TableCell>                      
                   <TableCell>
@@ -361,7 +362,7 @@ export default function EventManagement() {
                         <div className="text-muted-foreground">{event.organizer.contactPersonName}</div>
                       </div>
                     ) : (
-                      <span className="text-muted-foreground">No organizer</span>
+                      <span className="text-muted-foreground">{t?.eventManagement?.tableHeaders?.noOrganizer}</span>
                     )}
                   </TableCell>                      
                   <TableCell>
@@ -378,9 +379,9 @@ export default function EventManagement() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between px-2 py-4">
               <div className="text-sm text-muted-foreground">
-                Showing {pagination.page * pagination.size + 1} to{' '}
+                {t?.eventManagement?.showing} {pagination.page * pagination.size + 1} to{' '}
                 {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} of{' '}
-                {pagination.totalElements} events
+                {pagination.totalElements} {t?.eventManagement?.events}
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -389,7 +390,7 @@ export default function EventManagement() {
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page === 0 || loading}
                 >
-                  Previous
+                  {t?.eventManagement?.previous}
                 </Button>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -424,7 +425,7 @@ export default function EventManagement() {
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page >= pagination.totalPages - 1 || loading}
                 >
-                  Next
+                  {t?.eventManagement?.next}
                 </Button>
               </div>
             </div>

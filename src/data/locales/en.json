@@ -1,0 +1,1929 @@
+{
+  "auth": {
+    "createAccount": "Create Account",
+    "register": "Register",
+    "login": "Login",
+    "logout": "Logout",
+    "forgot_password": "Forgot Password",
+    "reset_password": "Reset Password",
+    "new_password": "New Password",
+    "confirm_newPassword": "Confirm Password",
+    "email": "Email",
+    "password": "Password",
+    "loginWithGoogle": "Login with Google",
+    "registerWithGoogle": "Register with Google",
+    "loginWithGitHub": "Login with GitHub",
+    "No_account_yet": "No account yet?",
+    "alreadyhadAccount": "Already have an account?",
+    "registerNow": "Register Now",
+    "loginNow": "Login Now",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password",
+    "placeholder": {
+      "email": "Please enter your email before resending OTP!",
+      "OtpReSend": "OTP has been resent successfully!",
+      "OtpReSendError!": "Failed to resend OTP!",
+      "blank": "Fields must not be bank!",
+      "passwordMismatch": "Passwords does not match!"
+    }
+  },
+  "Account": {
+    "ADMIN": "Administrator",
+    "STAFF": "Staff",
+    "MEMBER": "Member",
+    "GUEST": "Guest"
+  },
+  "user": {
+    "profile": "Profile",
+    "blood_type": "Blood Type",
+    "location": "Location",
+    "contact": "Contact",
+    "update_profile": "Update Profile",
+    "change_avatar": "Change Avatar",
+    "role": "Role",
+    "status": "Status",
+    "enable_account": "Enable Account",
+    "disable_account": "Disable Account"
+  },
+  "navbar": {
+    "donate_blood": "Donate Blood",
+    "find_donor": "Find Donor",
+    "profile": "Profile",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "language": "Language",
+    "change_language": "Change language"
+  },
+  "greeting": {
+    "hello": "Hello",
+    "welcome": "Welcome to Blood Donation!",
+    "slogan": "Blood binds, love connects",
+    "explain": "HopeWell connects blood donors to those fighting for survival. Every donation you make becomes someone's second chance."
+  },
+  "form": {
+    "search": "Search",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "bloodRequest": {
+    "title": "Blood Request",
+    "create_request": "Create Blood Request",
+    "request_list": "Blood Request List",
+    "request_detail": "Blood Request Detail",
+    "my_requests": "My Requests",
+    "status": "Status",
+    "created_at": "Created At",
+    "updated_at": "Updated At"
+  },
+  "bloodStock": {
+    "title": "Blood Stock",
+    "facility": "Medical Facility",
+    "stock_list": "Blood Stock List",
+    "blood_group": "Blood Group",
+    "quantity": "Quantity"
+  },
+  "bloodDonation": {
+    "title": "Blood Donation Event",
+    "list_event": "List Donation Events",
+    "event_detail": "Event Detail",
+    "register_event": "Register for Event",
+    "my_registrations": "My Registrations",
+    "date": "Date",
+    "location": "Location",
+    "organizer": "Organizer"
+  },
+  "eventRegistration": {
+    "title": "Event Registration",
+    "register": "Register",
+    "cancel_registration": "Cancel Registration",
+    "registration_list": "Registration List",
+    "status": "Status"
+  },
+  "checkin": {
+    "title": "Check-in",
+    "checkin_now": "Check-in Now",
+    "checkin_history": "Check-in History",
+    "status": "Status"
+  },
+  "blog": {
+    "title": "Blog",
+    "blog_list": "Blog List",
+    "blog_detail": "Blog Detail", 
+    "create_blog": "Create Blog",
+    "blog": "Blog",
+    "no_blogs": "It looks like there are no articles related to your search",
+    "edit_blog": "Edit Blog",
+    "delete_blog": "Delete Blog",
+    "loading": "Loading...",
+    "back": "Back",
+    "latest_posts": "Latest Posts",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "notification": {
+    "title": "Notification",
+    "no_notification": "No notifications",
+    "mark_all_as_read": "Mark all as read"
+  },
+  "error": {
+    "not_found": "Not Found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "internal_server_error": "Internal Server Error",
+    "network_error": "Network Error",
+    "required": "This field is required",
+    "invalid_email": "Invalid email address",
+    "password_mismatch": "Passwords do not match"
+  },
+  "validation": {
+    "required": "Required",
+    "invalid_email": "Invalid email",
+    "min_length": "Minimum length is {{min}}",
+    "max_length": "Maximum length is {{max}}"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save"
+  },
+  "example": {
+    "nameExample": "John Doe",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "confirmPasswordExample": "Re-enter your password"
+  },
+  "message": {
+    "welcome": "Welcome to the Blood Donation System",
+    "donation_success": "Thank you for your donation!",
+    "registration_success": "Registration successful!",
+    "update_success": "Profile updated successfully!",
+    "delete_success": "Deleted successfully!",
+    "error_occurred": "An error occurred, please try again later.",
+    "plsE": "Please enter your email."
+  },
+  "aboutUs": {
+    "Dedication": "Dedication",
+    "Professionalism": "Professionalism",
+    "Transparency": "Transparency",
+    "Efficiency": "Efficiency",
+    "about": {
+      "page_title": "About Us",
+      "page_subtitle": "Learn about our mission, vision and core values",
+      "vision": {
+        "title": "Vision",
+        "content": [
+          "To become Vietnam's leading blood donation center, pioneering the application of modern technology to efficiently manage and distribute blood, ensuring a safe and adequate blood supply for the whole society.",
+          "We aim to build a sustainable blood donation system where every citizen can easily participate in humanitarian blood donation activities, helping to save millions of patients' lives."
+        ]
+      },
+      "mission": {
+        "title": "Mission",
+        "content": [
+          "Connecting compassionate hearts with those in need through organizing professional, safe and effective blood donation activities.",
+          "We are committed to providing high-quality blood donation services, ensuring scientific and absolutely safe procedures for blood donors, while managing blood sources transparently and efficiently."
+        ]
+      },
+      "core_values": {
+        "title": "Core Values",
+        "subtitle": "The values that guide and shape all our activities in our development journey",
+        "values": [
+          {
+            "title": "Dedication",
+            "description": "We always prioritize the safety and health of blood donors, delivering every service with wholehearted dedication and meticulous care."
+          },
+          {
+            "title": "Professionalism",
+            "description": "Our team of highly experienced doctors, internationally standardized procedures, and modern equipment ensure the highest service quality."
+          },
+          {
+            "title": "Transparency",
+            "description": "All activities are conducted transparently and openly, safeguarding the rights and trust of blood donors."
+          },
+          {
+            "title": "Efficiency",
+            "description": "The spirit of compassion and sharing drives us to continuously strive for the health of the community."
+          }
+        ]
+      }
+    }
+  },
+  "homePage": {
+    "Name": "Blood Donation Management System",
+    "Center_Name": "HopeWell Medical Center",
+    "Description": "Connecting blood donors with those in need, efficiently managing resources and the donation process",
+    "RegisterToBloodDonation": "Register to Donate Blood",
+    "LearnMore": "Learn More",
+    "ImpactTitle": "Our Impact",
+    "Impact1": "Blood Donations",
+    "Impact2": "Campaigns",
+    "Impact3": "Patients Saved",
+    "Impact4": "Emergency Support",
+    "ProcessTitle": "Blood Donation Process",
+    "Step1Title": "Register",
+    "Step1Desc": "Fill in your information and undergo initial health screening",
+    "Step2Title": "Health Screening",
+    "Step2Desc": "Get a basic health check and blood test",
+    "Step3Title": "Donate Blood",
+    "Step3Desc": "The blood donation process takes about 10–15 minutes",
+    "TestimonialTitle": "Inspiring Stories",
+    "DonorRole": "Frequent Blood Donor",
+    "DonorQuote": "Donating blood not only helps others but also makes me feel more useful. HopeWell always provides the best support for donors.",
+    "RecipientRole": "Blood Recipient",
+    "RecipientQuote": "Thanks to the blood from HopeWell, I survived a critical surgery. Thank you to all the donors who saved my life.",
+    "CTA_Title": "You Can Save a Life Today",
+    "CTA_Description": "Just 15 minutes of donating blood can give 3 people a chance to live",
+    "CTA_Button1": "Register to Donate Now",
+    "CTA_Button2": "Contact Us"
+  },
+  "header": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact Us ",
+    "donationEvents": "Donation Events",
+    "donate_blood": "Donate Blood",
+    "blog": "Blog",
+    "events": "Events",
+    "bloodCompatibility": "Blood Compatibility Lookup",
+    "no_blogs": "It looks like there are no articles related to your search",
+    "search_placeholder": "Search for articles, events, or blood types...",
+    "clear_search": "Clear Search",
+    "search": "Search",
+    "author": "Author"
+  },
+  "notifications": {
+    "logout": {
+      "success": "Logout successful!",
+      "error": "Logout failed, please try again later!",
+      "unknownError": "Unknown error"
+    }
+  },
+  "dropDownMenu": {
+    "profile": "Profile",
+    "dashBoard": "Dashboard",
+    "settings": "Settings",
+    "dashboard": "Dashboard",
+    "donationHistory": "Donation History",
+    "dashReport": "Dashboard & Report",
+    "accountManagement": "Account Management",
+    "profileManager": "Profile Management",
+    "eventRequest": "Event Request",
+    "blogRequest": "Blog Request"
+  },
+  "system": {
+    "details_info": "Please provide detailed information about your blood donation request.",
+    "unmatched_pass": "The passwords you entered do not match. Please try again.",
+    "change_passwordSuccess": "Password changed successfully!",
+    "update_profile_success": "Profile updated successfully!",
+    "delete_account_success": "Account deleted successfully!",
+    "email_sent": "An email has been sent to your registered email address.",
+    "email_not_found": "Email not found. Please check and try again.",
+    "password_reset_success": "Password reset successfully. You can now log in with your new password.",
+    "password_reset_failed": "Password reset failed. Please try again later."
+  },
+  "footer": {
+    "about": "A system connecting blood donors and recipients, ensuring safe, sufficient, and timely blood supplies.",
+    "quick_links": "Quick Links",
+    "register_donate": "Register to Donate",
+    "emergency_request": "Emergency Request",
+    "compatibility_lookup": "Compatibility Lookup",
+    "blog": "Blog",
+    "contact": "Contact",
+    "address": "123 Medical Street, Binh Thanh District, Ho Chi Minh City",
+    "phone": "+84 123 456 789",
+    "email": "contact@hopewell.vn",
+    "newsletter": "Newsletter",
+    "subscribe_info": "Subscribe to receive the latest information about blood donation campaigns and emergency news.",
+    "placeholder_email": "Your email",
+    "submit": "Submit",
+    "rights_reserved": "© 2025 Hopewell. All rights reserved.",
+    "built_with": "Built with",
+    "by_team": "by the Hopewell Team"
+  },
+  "blood_compatibility": {
+    "title": "Blood Compatibility Lookup",
+    "subtitle": "Check compatibility between blood types and blood components",
+    "step1": "1. Select blood component",
+    "step2": "2. Select your blood type",
+    "donate_tab": "Can donate to",
+    "receive_tab": "Can receive from",
+    "select_blood_type_notice": "Please select a blood type to view results",
+    "info_section_title": "Important Information:",
+    "info_1": "• O- is a universal donor (can donate to all blood types)",
+    "info_2": "• AB+ is a universal recipient (can receive from all blood types)",
+    "info_3": "• Rh-negative can donate to Rh-positive, but not the other way around",
+    "component_info_title": "Blood Component Information",
+    "compatible_label": "Compatible"
+  },
+  "blood_components": {
+    "whole_blood": {
+      "name": "Whole Blood",
+      "description": "Whole blood contains all the components of blood, including red blood cells, white blood cells, platelets, and plasma."
+    },
+    "red_blood_cells": {
+      "name": "Red Blood Cells",
+      "description": "Red blood cells carry oxygen from the lungs to tissues throughout the body. Essential in treating anemia."
+    },
+    "platelets": {
+      "name": "Platelets",
+      "description": "Platelets help blood clot and prevent bleeding. Commonly used in cancer treatments."
+    },
+    "plasma": {
+      "name": "Plasma",
+      "description": "Plasma is the liquid part of blood, containing proteins and nutrients. Important for treating burns and shock."
+    }
+  },
+  "donationEvents": {
+    "title": "Blood Donation Events",
+    "description": "Join voluntary blood donation events to help save lives. Every drop you give can bring hope to someone in need.",
+    "searchPlaceholder": "Search for events, locations, addresses, or cities...",
+    "dateRangePlaceholder": "Select date range",
+    "sortAsc": "Sort from oldest to newest",
+    "sortDesc": "Sort from newest to oldest",
+    "sortByDate": "Sort by date",
+    "noEventTitle": "No events found",
+    "noEventDescription": "Try adjusting filters or search keywords",
+    "fullLabel": "Full",
+    "register": "Register to join",
+    "loginToRegister": "Log in to register",
+    "fullSlot": "Fully booked",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "ONGOING": "Ongoing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "donationType": {
+      "WHOLE_BLOOD": "Whole Blood",
+      "PLASMA": "Plasma",
+      "PLATELETS": "Platelets",
+      "DOUBLE_RED_CELLS": "Red Blood Cells"
+    },
+    "organizer": {
+      "title": "Organizer"
+    },
+    "location": {
+      "label": "Location"
+    },
+    "date": {
+      "label": "Date"
+    },
+    "timeSlot": {
+      "label": "Time Slot",
+      "none": "No time slot",
+      "multiple": "{{count}} different time slots"
+    },
+    "registration": {
+      "label": "Registered",
+      "of": "people registered"
+    },
+    "error": {
+      "title": "Error",
+      "loading": "Loading events...",
+      "notFound": "Unable to load event list"
+    }
+  },
+  "createEvent": {
+    "title": "Create New Blood Donation Event Request",
+    "description": "Submit a request for a new blood donation campaign",
+    "tabs": {
+      "event": "Create Request",
+      "organizer": "Add Organizer"
+    },
+    "eventInfo": {
+      "title": "Event Information",
+      "fields": {
+        "name": "Event Name *",
+        "namePlaceholder": "Blood Donation Drive 2025",
+        "donationType": "Donation Type *",
+        "donationTypePlaceholder": "Select donation type",
+        "organizer": {
+          "title": "Organizer (Optional)",
+          "selectPlaceholder": "Select an organizer (optional)",
+          "noOrganizers": "No organizers found",
+          "addButton": "Add New Organizer",
+          "loadingOrganizers": "Loading organizers..."
+        },
+        "location": {
+          "title": "Location Details",
+          "hospital": "Hospital/Venue Name *",
+          "hospitalPlaceholder": "Community Center, Hospital, etc.",
+          "address": "Street Address *",
+          "addressPlaceholder": "123 Main Street",
+          "city": "Province/City *",
+          "cityPlaceholder": "Select province",
+          "district": "District *",
+          "districtPlaceholder": "Select district",
+          "selectProvinceFirst": "Select province first",
+          "selectDistrictFirst": "Select disctrict first",
+          "ward": "Ward *",
+          "wardPlaceholder": "Select ward"
+        },
+        "date": "Event Date *",
+        "datePlaceholder": "Pick a date",
+        "capacity": "Total Capacity (Auto-calculated) *",
+        "capacityNote": "This is automatically calculated from the sum of all time slot capacities",
+        "timeSlots": {
+          "title": "Time Slots",
+          "totalCapa": "Total Capacity",
+          "people": "people",
+          "addButton": "Add Time Slot",
+          "conflictWarning": "This time slot conflicts with another time slot",
+          "startTime": "Start Time",
+          "endTime": "End Time",
+          "maxCapacity": "Max Capacity",
+          "remove": "Remove",
+          "summary": " conflicting slots detected"
+        }
+      }
+    },
+    "organizerInfo": {
+      "title": "Add New Organizer",
+      "fields": {
+        "orgName": "Organization Name *",
+        "orgNamePlaceholder": "Red Cross Vietnam",
+        "organizerName": "Organizer Name *",
+        "contactPerson": "Contact Person Name *",
+        "contactPersonPlaceholder": "John Doe",
+        "email": "Email Address *",
+        "emailPlaceholder": "contact@organization.org",
+        "phone": "Phone Number",
+        "phonePlaceholder": "0123456789",
+        "website": "Website URL (Optional)",
+        "websitePlaceholder": "https://www.organization.org",
+        "description": "Description (Optional)",
+        "descriptionPlaceholder": "Brief description of the organization and its mission...",
+        "address": {
+          "title": "Address Information (Optional)",
+          "street": "Street Address",
+          "streetPlaceholder": "123 Organization Street",
+          "city": "Province/City",
+          "cityPlaceholder": "Select province",
+          "district": "District",
+          "districtPlaceholder": "Select district",
+          "selectProvinceFirst": "Select province first",
+          "selectDistrictFirst": "Select disctrict first",
+          "ward": "Ward",
+          "wardPlaceholder": "Select ward"
+        }
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit Request",
+      "submitting": "Submitting Request...",
+      "back": "Back to Event",
+      "createOrganizer": "Create Organizer",
+      "creatingOrganizer": "Creating Organizer..."
+    },
+    "error": {
+      "startTime_required": "Start time is required",
+      "startTime_invalidFormat": "Invalid time format",
+      "endTime_required": "End time is required",
+      "endTime_invalidFormat": "Invalid time format",
+      "endTime_afterStart": "End time must be after start time",
+      "maxCapacity_min": "Capacity must be at least 1",
+      "maxCapacity_max": "Capacity cannot exceed 100",
+      "timeSlots_noOverlap": "Time slots cannot overlap with each other",
+      "timeSlots_min": "At least one time slot is required",
+      "timeSlots_max": "Maximum 10 time slots allowed",
+      "event_name_min": "Event name must be at least 5 characters",
+      "event_name_max": "Event name cannot exceed 200 characters",
+      "event_hospital_min": "Hospital/Location must be at least 3 characters",
+      "event_hospital_max": "Hospital/Location cannot exceed 200 characters",
+      "event_address_min": "Address must be at least 10 characters",
+      "event_address_max": "Address cannot exceed 300 characters",
+      "event_city_required": "City is required",
+      "event_district_required": "District is required",
+      "event_ward_required": "Ward is required",
+      "event_donationDate_required": "Donation date is required",
+      "event_donationDate_future": "Donation date must be today or in the future",
+      "event_donationType_required": "Please select a donation type",
+      "event_totalMemberCount_min": "Total capacity must be at least 1",
+      "event_totalMemberCount_max": "Total capacity cannot exceed 10000",
+      "organizer_organizationName_min": "Organization name must be at least 2 characters",
+      "organizer_organizationName_max": "Organization name cannot exceed 200 characters",
+      "organizer_contactPersonName_min": "Contact person name must be at least 2 characters",
+      "organizer_contactPersonName_max": "Contact person name cannot exceed 100 characters",
+      "organizer_email_invalid": "Please provide a valid email address",
+      "organizer_phoneNumber_invalid": "Phone number must be exactly 10 digits",
+      "organizer_address_max": "Address cannot exceed 300 characters",
+      "organizer_description_max": "Description cannot exceed 1000 characters",
+      "organizer_websiteUrl_invalid": "Please provide a valid website URL"
+    },
+    "confirmation": {
+      "title": "Confirm Event Creation",
+      "description": "Are you sure you want to create this blood donation event? Please review the details before confirming.",
+      "eventName": "Event Name",
+      "hospital": "Hospital",
+      "date": "Date",
+      "location": "Location",
+      "totalCapacity": "Total Capacity",
+      "donationType": "Donation Type",
+      "timeSlots": "Time Slots",
+      "timeSlotItem": "{startTime} - {endTime} (Max: {maxCapacity} people)",
+      "organizer": "Organizer",
+      "cancel": "Cancel",
+      "confirm": "Confirm & Create Event",
+      "creating": "Creating Event..."
+    }
+  },
+  "donateEdetailFmember": {
+    "donateEdetailFmember": {
+      "title": "Event Details",
+      "backToEvents": "Back to Events",
+      "location": "Location",
+      "address": "Address",
+      "date": "Date",
+      "donationType": "Donation Type",
+      "donationTypeMap": {
+        "WHOLE_BLOOD": "Whole Blood",
+        "PLASMA": "Plasma",
+        "PLATELETS": "Platelets",
+        "DOUBLE_RED_CELLS": "Double Red Cells"
+      },
+      "organizer": "Organizer",
+      "contact": "Contact",
+      "email": "Email",
+      "notFound": "Event not found",
+      "loading": "Loading event information...",
+      "notSpecified": "Not specified",
+      "timeSlots": "Time Slots",
+      "slotCapacity": "{{count}} slots",
+      "selectToChoose": "Tap to select",
+      "selected": "Selected",
+      "selectedSlot": "Selected Time Slot",
+      "registerThisSlot": "Register for this time slot",
+      "registering": "Processing...",
+      "eventStats": "Event Statistics",
+      "registeredCount": "Registered:",
+      "capacity": "Capacity:",
+      "slotCount": "Number of slots:",
+      "eventFull": "Event is full",
+      "registrationGuide": "Registration Guide",
+      "guideSelected": {
+        "title": "Time slot selected!",
+        "desc": "Click \"Register for this time slot\" to confirm your registration."
+      },
+      "guideUnselected": {
+        "title": "How to register:",
+        "steps": [
+          "1. Select a time slot from the available options",
+          "2. Click the \"Register for this time slot\" button",
+          "3. You will receive a confirmation email"
+        ]
+      },
+      "toast": {
+        "noEventId": "No event ID",
+        "cannotLoad": "Unable to load event information",
+        "selectTimeSlot": "Please select a time slot",
+        "registerError": "An error occurred while navigating"
+      }
+    }
+  },
+  "dashboard": {
+    "header": {
+      "title": "Track your blood donation history"
+    },
+    "userWel": {
+      "welcome": "Welcome, ",
+      "messsage": "Thank you for saving lives with your blood donation!"
+    },
+    "errors": {
+      "donationHistory": {
+        "fetchFailed": "Failed to load donation history",
+        "tryAgain": "Please try again later",
+        "noData": "No donation history found"
+      },
+      "general": {
+        "fetchFailed": "Failed to load data",
+        "serverError": "Server error"
+      }
+    },
+    "noti": {
+      "error": {
+        "donationHistory": "Failed to load donation history"
+      }
+    },
+    "StatisticsCard": {
+      "total": "Total Registrations",
+      "done": "Completed",
+      "totalVolume": "Total Blood Volume Donated (ml)",
+      "latest": "Latest donation"
+    },
+    "donateHistory": {
+      "title": "Donation History",
+      "description": "Track your past donations and their impact",
+      "noData": "No donation history found",
+      "loading": "Loading donation history...",
+      "tryAgain": "Please try again",
+      "columns": {
+        "date": "Date",
+        "type": "Donation Type",
+        "volume": "Volume (ml)",
+        "status": "Status"
+      },
+      "statusMap": {
+        "COMPLETED": "Completed",
+        "PENDING": "Pending",
+        "CANCELLED": "Cancelled"
+      },
+      "callToAction": {
+        "joinEvents": "Join blood donation events to build your history here",
+        "participateButton": "Participate in blood donation events"
+      }
+    },
+    "admin": {
+      "totalAcc": "Total Accounts",
+      "pendingEvents": "Pending Events",
+      "pendingBlogPosts": "Pending Blog Posts",
+      "totalDonations": "Total Donations",
+      "users": "Users",
+      "calendar": "Calendar",
+      "documents": "Documents",
+      "hearts": "Hearts"
+    }
+  },
+  "dashboardStaff": {
+    "title": "Staff Dashboard",
+    "subtitle": "Manage blood donation requests and donors",
+    "today": "Today",
+    "thisWeek": "This week",
+    "thisMonth": "This month",
+    "totalDonors": "Total Donors",
+    "activeDonors": "Active Donors",
+    "currentRequests": "Current Requests",
+    "avgResponseTime": "Avg. Response Time",
+    "comparedToLastMonth": "compared to last month",
+    "comparedToLastWeek": "compared to last week",
+    "urgent": "urgent",
+    "bloodInventory": "Blood Inventory",
+    "bloodInventoryDesc": "Current status of blood types",
+    "unit": "unit",
+    "lack": "Lack",
+    "enough": "Enough",
+    "recentRequests": "Recent Requests",
+    "recentRequestsDesc": "Latest blood donation requests",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "urgent": "Urgent",
+      "new": "New"
+    },
+    "action": {
+      "process": "Process",
+      "detail": "Detail"
+    },
+    "nearbyDonors": "Nearby Donors",
+    "nearbyDonorsDesc": "List of donors in the area",
+    "lastDonation": "Last donation",
+    "responseRate": "Response rate",
+    "call": "Call",
+    "invite": "Invite to donate",
+    "todayActivities": "Today's Activities",
+    "todayActivitiesDesc": "Activity history of the day",
+    "quickActions": "Quick Actions",
+    "quickActionUrgent": "Urgent Request",
+    "quickActionFindDonor": "Find Donor",
+    "quickActionUpdateInventory": "Update Inventory",
+    "quickActionDonationHistory": "Donation History"
+  },
+  "blogManagement": {
+    "title": "Blog Management",
+    "subtitle": "Manage and review blog posts",
+    "total": "posts",
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "searchPlaceholder": "Search blogs...",
+    "status": {
+      "all": "All Statuses",
+      "published": "Published",
+      "deleted": "Deleted",
+      "status": "Status"
+    },
+    "showing": "Showing",
+    "request": "requests",
+    "of": "of",
+    "to": "to",
+    "blogs": "blogs",
+    "blogsPerPage": "Blogs per page:",
+    "table": {
+      "title": "Title",
+      "status": "Status",
+      "author": "Author",
+      "actions": "Actions"
+    },
+    "loadingBlogs": "Loading blogs...",
+    "noBlogsFound": "No blogs found",
+    "noBlogsMatch": "No blogs match your filters",
+    "untitled": "Untitled",
+    "unknown": "Unknown",
+    "deleteTitle": "Delete Blog",
+    "deleteDesc": "Are you sure you want to delete this blog? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "previous": "Previous",
+    "next": "Next",
+    "detailsTitle": "Blog Details",
+    "detailsDesc": "Review the complete blog post details",
+    "authorName": "Author Name",
+    "createdDate": "Created Date",
+    "blogId": "Blog ID",
+    "lastUpdated": "Last Updated",
+    "thumbnail": "Thumbnail",
+    "blogContent": "Blog Content",
+    "noContent": "No content available",
+    "close": "Close",
+    "editBlog": "Edit Blog",
+    "errorLoad": "Failed to load blogs. Please try again.",
+    "errorLoadToast": "Failed to load blogs",
+    "successDelete": "Request of deletion submitted!",
+    "errorDelete": "Failed to delete blog"
+  },
+  "createBlog": {
+    "back": "Back",
+    "title": "Create New Blog Post",
+    "submit": "Submit for Publication",
+    "submitting": "Submitting...",
+    "titleLabel": "Title *",
+    "titlePlaceholder": "Enter your blog title...",
+    "titleRequired": "Title is required",
+    "titleMax": "Title must not exceed 100 characters",
+    "thumbnailLabel": "Thumbnail Image *",
+    "thumbnailClick": "Click to upload thumbnail",
+    "thumbnailNote": "PNG, JPG, GIF up to 5MB",
+    "thumbnailRequired": "Thumbnail image is required",
+    "thumbnailUploaded": "Uploaded",
+    "thumbnailRequiredShort": "Required",
+    "contentLabel": "Content *",
+    "contentPlaceholder": "Start writing your blog post...",
+    "contentRequired": "Content must be at least 10 characters long",
+    "publication": "Publication",
+    "publicationNote": "Your blog will be submitted for review. Administrators will approve or reject your submission.",
+    "quickStats": "Quick Stats",
+    "titleLength": "Title Length:",
+    "contentLength": "Content Length:",
+    "thumbnail": "Thumbnail:",
+    "guidelines": "Guidelines",
+    "uploadFromComputer": "Upload from Computer",
+    "addFromUrl": "Add from URL",
+    "guidelinesList": [
+      "Title should be clear and descriptive",
+      "Content must be at least 10 characters",
+      "Use appropriate formatting for readability",
+      "Thumbnail image should be relevant to content",
+      "All submissions are subject to review"
+    ],
+    "uploaded": "Uploaded",
+    "required": "Required",
+    "remove": "Remove",
+    "saveDraft": "Save as Draft",
+    "preview": "Preview",
+    "previewComing": "Preview functionality coming soon!",
+    "successDraft": "Blog request submitted successfully! It will be reviewed by administrators.",
+    "successSubmit": "Blog submitted for publication! It will be reviewed by administrators.",
+    "errorRequired": "Please fill in all required fields",
+    "errorSaveDraft": "Failed to save draft. Please try again.",
+    "errorSubmit": "Failed to submit blog. Please try again.",
+    "errorImageType": "Please select an image file",
+    "errorImageSize": "Image size should be less than 5MB",
+    "errorImageRead": "Failed to read image file",
+    "errorImageAdd": "Failed to add image",
+    "errorImageDrop": "Please drop an image file",
+    "errorImageDropProcess": "Failed to process dropped image",
+    "errorImagePaste": "Failed to process pasted image",
+    "processingImage": "Processing image...",
+    "imageAdded": "Image uploaded and added to blog content",
+    "imageDropped": "Image dropped and added to blog content",
+    "imagePasted": "Pasted image added to blog content",
+    "imageUrl": "Add from URL",
+    "imageUrlInvalid": "Please enter a valid URL starting with http:// or https://",
+    "imageUrlNotImage": "The URL doesn't appear to be an image. Continue anyway?",
+    "imageUrlAdded": "Image added from URL",
+    "imageSizeErrror": "Image size exceeds 5MB. Please select a smaller image.",
+    "errorAddImageUrl": "Failed to add image from URL:",
+    "failedToLoadImage": "Failed to load image. Please check the URL and try again.",
+    "errorProcessingDroppedImage": "Failed to process dropped image:"
+  },
+  "BlogEditor": {
+    "errorTitleRequired": "Title is required",
+    "errorTitleTooLong": "Title must not exceed 100 characters",
+    "errorContentTooShort": "Content must be at least 10 characters long",
+    "errorThumbnailRequired": "Thumbnail image is required",
+    "errorFormIncomplete": "Please fill in all required fields",
+    "successDraft": "Blog request submitted successfully! It will be reviewed by administrators.",
+    "errorSaveDraft": "Failed to save draft. Please try again.",
+    "errorSaveDraftWithMessage": "Failed to save draft:",
+    "successSubmit": "Blog submitted for publication! It will be reviewed by administrators.",
+    "errorSubmit": "Failed to submit blog. Please try again.",
+    "errorSubmitWithMessage": "Failed to submit blog:"
+  },
+  "staffBlogRequest": {
+    "title": "My Blog Requests",
+    "description": "View and track your blog post submissions)",
+    "search_placeholder": "Search blog requests...",
+    "status_filter_label": "Status",
+    "crud_type_filter_label": "Request Type",
+    "no_requests_found": "No blog requests found",
+    "no_requests_filtered": "No requests match your filters",
+    "loading_requests": "Loading requests...",
+    "refresh": "Refresh",
+    "refreshing": "Loading...",
+    "request_id": "Request ID: ",
+    "status_all": "All Statuses",
+    "status_pending": "Pending",
+    "status_approved": "Approved",
+    "status_rejected": "Rejected",
+    "type_all": "All Request Types",
+    "type_create": "Create Blog",
+    "type_update": "Update Blog",
+    "type_delete": "Delete Blog",
+    "content_preview": "Content Preview",
+    "actions": "Actions",
+    "requests_per_page": "Requests per page:",
+    "showing_requests": "Showing {{from}} to {{to}} of {{total}} requests",
+    "previous": "Previous",
+    "next": "Next",
+    "dialog_title_create": "New Blog Request Details",
+    "dialog_title_update": "Blog Update Request Details",
+    "dialog_title_delete": "Blog Deletion Request Details",
+    "dialog_title_default": "Blog Request Details",
+    "dialog_desc_create": "Review the details of your new blog submission request",
+    "dialog_desc_update": "Review the proposed changes to your existing blog",
+    "dialog_desc_delete": "Review the blog that you requested to be deleted",
+    "dialog_desc_default": "Review your complete blog post submission",
+    "field_title": "Title",
+    "field_request_status": "Request Status",
+    "field_request_type": "Request Type",
+    "field_request_id": "Request ID",
+    "field_blog_status": "Blog Status",
+    "field_thumbnail": "Thumbnail",
+    "field_blog_content": "Blog Content",
+    "no_content_available": "No content available",
+    "close": "Close",
+    "error_loading_requests": "Failed to load blog requests. Please try again.",
+    "showing": "Showing",
+    "to": "to",
+    "request": "Request"
+  },
+  "eventManagement": {
+    "title": "Blood Donation Events",
+    "description": "Manage and view all blood donation events",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "searchPlaceholder": "Search events...",
+    "status": "Status",
+    "donationType": "Donation Type",
+    "eventsPerPage": "Events per page:",
+    "showingEvents": "Showing {showing} of {total} events",
+    "noEventsFound": "No events found",
+    "noEventsMatchFilters": "No events match your filters",
+    "loadingEvents": "Loading events...",
+    "tableHeaders": {
+      "name": "Name",
+      "location": "Location",
+      "date": "Date",
+      "status": "Status",
+      "type": "Type",
+      "capacity": "Capacity",
+      "timeSlots": "Time Slots",
+      "organizer": "Organizer"
+    },
+    "registered": "registered",
+    "noSlots": "No slots",
+    "noOrganizer": "No organizer",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "statusOptions": {
+      "all": "All Statuses",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "donationTypeOptions": {
+      "all": "All Types",
+      "wholeBlood": "Whole Blood",
+      "plasma": "Plasma",
+      "platelets": "Platelets"
+    }
+  },
+  "checkinPage": {
+    "for": "for ",
+  "approveCheckIn": "Approve Check-in",
+  "rejectCheckIn": "Reject Check-in",
+  "confirmCheckIn": "Confirm Check-in",
+  "confirmRejection": "Confirm Rejection",
+  "confirmCheckInMessage": "Are you sure you want to check in for ",
+  "confirmRejectionMessage": "Are you sure you want to reject the check-in for ",
+  "cancel": "Cancel",
+    "errorParsingHealthSurvey": "Error parsing health survey data",
+    "getCheckinError": "Error getting check-in info:",
+    "getDonorSuccess": "Donor information retrieved successfully",
+    "pleaseSelectFirst": "Please select an ongoing event first",
+    "selectEvent": "Select Ongoing Event",
+    "ongoingEvents": "Ongoing Donation Events",
+    "noOngoingEvents": "No ongoing donation events found",
+    "noActiveEvents": "There are currently no active donation events available for check-in.",
+    "QRerror": "QR scan Error",
+    "qrScanner": "QR Code Scanner",
+    "scannerInstruction": "Point your camera at a QR code to scan",
+    "selectEventPrompt": "Please select an event above to start scanning QR codes",
+    "scannerError": "Scanner Error",
+    "qrScanned": "QR Code Scanned",
+    "manualCheckin": "Check-in by Personal ID (CMND/CCCD)",
+    "personalId": "Personal ID",
+    "enterPersonalId": "Enter Personal ID manually",
+    "retrievingInfo": "Retrieving Info...",
+    "getDonorInfo": "Get Donor Information",
+    "useIfNoQR": "Use this if QR scanning is not available",
+    "personalDetails": "Personal Details",
+    "gender": "Gender",
+    "question1": "1. Have you donated blood before?",
+    "answer1_yes": "Yes, I have donated blood",
+    "answer1_no": "No, this is my first time",
+    "question2": "2. Do you currently have any health issues?",
+    "answer2_yes": "Yes, I have health problems",
+    "answer2_no": "No, I am completely healthy",
+    "currentHealth": "Current health status:",
+    "question3": "3. Have you ever had any serious illness?",
+    "answer3_yes": "Yes, I had a serious illness",
+    "answer3_no": "No, I have never had any serious illness",
+    "question4": "4. Have you participated in any of the following activities in the last 3 months?",
+    "answer4_yes": "Yes (surgery, vaccination, tattooing, etc.)",
+    "answer4_no": "No special activities",
+    "registrationTime": "Registration Time",
+    "noSurveyInfo": "No health survey information",
+    "approveCheckin": "Approve Check-in",
+    "rejectCheckin": "Reject Check-in",
+    "healthSurveyInfo": "Health Survey Information",
+    "donationExperience": "Donation Experience:",
+    "hasDonatedBefore": "Has donated blood before",
+    "firstTimeDonor": "First-time donor",
+    "healthStatus": "Health Status:",
+    "hasHealthIssues": "Has health issues",
+    "healthy": "Healthy",
+    "pastDiseases": "Past Diseases:",
+    "hadSeriousIllness": "Had serious illness",
+    "noSeriousIllness": "No serious illness",
+    "recentActivities": "Recent Activities:",
+    "specialActivities": "Had special activities",
+    "noSpecialActivities": "No special activities",
+    "checkinActions": "Check-in Actions",
+    "scanAnotherQR": "Scan another QR",
+    "goBack": "Back to Home",
+    "pendingInstruction": "After reviewing the information, please select the appropriate action:",
+    "titleHealthSurvey": "Health Survey Information",
+    "experienceLabel": "Blood donation experience:",
+    "experienceYes": "Previously donated blood",
+    "experienceNo": "First time",
+    "experienceDetails": "Experience details",
+    "healthStatusLabel": "Health status:",
+    "healthStatusYes": "Has health issues",
+    "healthStatusNo": "Healthy",
+    "healthStatusDetails": "Health details",
+    "pastDiseasesLabel": "Past diseases:",
+    "pastDiseasesYes": "Had serious illness",
+    "pastDiseasesNo": "Never had serious illness",
+    "pastDiseasesDetails": "Disease details",
+    "recentActivitiesLabel": "Recent activities:",
+    "recentActivitiesYes": "Has special activities",
+    "recentActivitiesNo": "No special activities",
+    "recentActivitiesDetails": "Activity details",
+    "titleCheckin": "Check-in Actions",
+    "approvedTitle": "Donor has been approved",
+    "approvedDesc": "The decision has been made. The donor can proceed with blood donation.",
+    "rejectedTitle": "Donor has been rejected",
+    "rejectedDesc": "The decision has been made. The donor cannot donate blood this time.",
+    "back": "Back to home",
+    "scanAnother": "Scan another QR",
+    "pendingActionPrompt": "After reviewing the information, please select an appropriate action:",
+    "approve": "Approve donation",
+    "reject": "Reject donation",
+    "processing": "Processing...",
+    "title": "Blood Donor Check-in",
+    "loading": "Loading information...",
+    "plsWait": "Please wait...",
+    "error": {
+      "title": "An error occurred",
+      "invalidToken": "Invalid token or Event ID",
+      "notFound": "Registration information not found",
+      "expiredToken": "Invalid or expired token",
+      "serverError": "Server error:",
+      "generic": "An error occurred while loading information",
+      "plsCheckQR": "Please check your QR code and try again."
+    },
+    "backButton": "Back",
+    "donorInfo": {
+      "title": "Donor Information",
+      "name": "Full Name",
+      "phone": "Phone Number",
+      "personalId": "ID Card/Passport",
+      "dateOfBirth": "Date of Birth",
+      "address": "Address",
+      "status": "Status"
+    },
+    "currentStatus": "Current Status:",
+    "status": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "checkedIn": "Checked In",
+      "unknown": "Unknown"
+    },
+    "healthSurvey": {
+      "title": "Health Survey",
+      "experience": "Donation Experience:",
+      "experienceYes": "Has donated before",
+      "experienceNo": "First time",
+      "currentHealth": "Current Health Status:",
+      "healthyStatus": "Healthy",
+      "unhealthyStatus": "Has health issues",
+      "pastDiseases": "Past Diseases:",
+      "hasPastDiseases": "Has had serious diseases",
+      "noPastDiseases": "No serious diseases",
+      "recentActivities": "Recent Activities:",
+      "hasRecentActivities": "Has special activities",
+      "noRecentActivities": "No special activities"
+    },
+    "checkInActions": {
+      "checkSuccess": "Check-in successful!",
+      "checking": "Checking in donor with action:",
+      "title": "Check-in Actions",
+      "approveButton": "Approve Check-in",
+      "rejectButton": "Reject Check-in",
+      "alreadyApproved": "This donor has already been approved for check-in.",
+      "alreadyRejected": "This donor has been rejected for check-in.",
+      "pendingDescription": "Please review the donor's information and health survey before making a decision.",
+      "approveSuccess": "Check-in approved successfully! The donor has been checked in.",
+      "rejectSuccess": "Check-in rejected successfully! The donor has been notified.",
+      "approveError": "Unable to approve. Please try again.",
+      "rejectError": "Unable to reject. Please try again."
+    }
+  },
+  "StockView":{
+  "filters": {
+    "title": "Filters",
+    "description": "Filter blood units by specific criteria",
+    "search_placeholder": "Search blood units...",
+    "bloodType": "All blood types",
+    "componentType": "All components",
+    "expiryStatus": "All expiry status",
+    "expiry": {
+      "expired": "Expired",
+      "critical": "Critical (≤7 days)",
+      "warning": "Warning (≤30 days)",
+      "good": "Good (>30 days)"
+    }
+  },
+  "add": {
+    "button": "Add Blood Unit",
+    "title": "Add Blood Unit",
+    "bloodType": { "label": "Blood Type" },
+    "componentType": { "label": "Component Type" },
+    "quantity": { "label": "Quantity" },
+    "expiryDate": {
+      "label": "Expiry Date",
+      "placeholder": "Select expiry date"
+    },
+    "submit": "Add",
+    "error": {
+      "missingFields": "Please fill in all required fields including expiry date.",
+      "generic": "Failed to add blood unit. Please try again.",
+      "optimisticLock": "Failed to add: The stock record was changed or deleted. Please refresh and try again."
+    },
+    "success": "Blood unit added successfully!",
+    "fallback": { "success": "Blood unit added locally!" }
+  },
+  "table": {
+    "title": "Blood Stock Inventory",
+    "total": "Total units: ",
+    "headers": {
+      "bloodType": "Blood Type",
+      "component": "Component",
+      "quantity": "Quantity",
+      "volume": "Volume (ml)",
+      "expiryDate": "Expiry Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "no_results": "No blood units found matching your criteria.",
+    "actions": {
+      "delete": "Delete"
+    }
+  },
+  "status": {
+    "expired": "Expired",
+    "critical": "Critical",
+    "warning": "Warning",
+    "good": "Good"
+  },
+  "loading": "Loading blood stock...",
+  "delete": {
+    "success": "Blood unit deleted successfully!",
+    "error": "Failed to delete blood unit. Please try again."
+  }
+},
+"sidebar": {
+  "dashboard": "Dashboard",
+  "blogManagement": "Blog Management",
+  "newBlog": "New Blog",
+  "blogList": "Blog List",
+  "createBlog": "Create Blog",
+  "blogRequests": "Blog Requests",
+  "donationEvents": "Donation Events",
+  "newEvent": "New Event",
+  "eventList": "Event List",
+  "createEvent": "Create Event",
+  "checkIn": "Check In",
+  "eventRequests": "Event Requests",
+  "bloodRequests": "Blood Requests",
+  "newRequest": "New Request",
+  "requestList": "Request List",
+  "createRequest": "Create Request",
+  "bloodStock": "Blood Stock",
+  "stockView": "Stock View"
+},
+
+ "blogRequest": {
+  "request":"requests",
+  "to":"to",
+    "full_name": "Full Name",
+    "blood_group": "Blood Group",
+    "priority_level": "Priority Level",
+    "status": "Status",
+    "action": "Action",
+    "emergency": "Emergency",
+    "high": "High",
+    "normal": "Normal",
+    "pending": "Pending",
+    "processing": "Processing",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "details": "Details",
+    "process": "Process",
+    "cancel": "Cancel",
+    "no_requests": "No requests found",
+    "enough_blood": "Enough Blood",
+    "lack_blood": "Lack of Blood",
+    "request_completed": "Request Completed",
+    "request_detail": "Blood Request Details",
+    "request_detail_desc": "Detailed information about the blood donation request",
+    "patient_info": "Patient Information",
+    "request_info": "Request Information",
+    "phone": "Phone Number",
+    "id_card": "National ID",
+    "patient_blood_group": "Patient's Blood Group",
+    "address": "Address",
+    "required_blood_group": "Required Blood Group",
+    "priority": "Priority",
+    "current_status": "Current Status",
+    "needed_date": "Needed Date",
+    "components_needed": "Required Blood Components",
+    "disease_status": "Disease Status",
+    "additional_info": "Additional Information",
+    "medical_info": "Medical Information",
+    "notes": "Notes",
+    "unit": "Unit",
+    "BlogRequests": "Blog Requests",
+  "ReviewAndManageBlogSubmissions": "Review and manage blog post submissions",
+  "TotalRequests": "total",
+  "Refresh": "Refresh",
+  "Loading": "Loading...",
+  "SearchBlogRequests": "Search blog requests...",
+  "Status": "Status",
+  "RequestType": "Request Type",
+  "ShowingOf": "Showing",
+  "Of": "of",
+  "Requests": "requests",
+  "RequestsPerPage": "Requests per page:",
+  "Title": "Title",
+  "Author": "Author",
+  "ContentPreview": "Content Preview",
+  "Actions": "Actions",
+  "LoadingRequests": "Loading requests...",
+  "NoBlogRequestsFound": "No blog requests found",
+  "NoRequestsMatchFilters": "No requests match your filters",
+  "Untitled": "Untitled",
+  "RequestID": "Request ID:",
+  "NoContentAvailable": "No content available",
+  "View": "View",
+  "Approve": "Approve",
+  "Reject": "Reject",
+  "PreviousPage": "Previous page",
+  "NextPage": "Next page",
+  "ViewBlogRequest": "View Blog Request",
+  "Close": "Close",
+  "BlogTitle": "Blog Title",
+  "BlogContent": "Blog Content",
+  "ApproveRequest": "Approve Request",
+  "RejectRequest": "Reject Request",
+  "AreYouSureApprove": "Are you sure you want to approve this blog request?",
+  "AreYouSureReject": "Are you sure you want to reject this blog request?",
+  "Cancel": "Cancel",
+  "ConfirmApprove": "Yes, Approve",
+  "ConfirmReject": "Yes, Reject",
+  "AllStatuses": "All Statuses",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "AllRequestTypes": "All Request Types",
+  "CreateBlog": "Create Blog",
+  "UpdateBlog": "Update Blog",
+  "DeleteBlog": "Delete Blog",
+  "FailedToLoadBlogRequests": "Failed to load blog requests",
+  "BlogRequestApprovedSuccessfully": "Blog request approved successfully!",
+  "BlogRequestRejectedSuccessfully": "Blog request rejected successfully!",
+  "FailedToApproveBlogRequest": "Failed to approve blog request:",
+  "FailedToRejectBlogRequest": "Failed to reject blog request:",
+  "FailedToLoadBlogRequestDetails": "Failed to load blog request details"
+  },
+  "eventRequestForStaff": {
+    "title": "My Event Requests",
+    "description": "View and track your donation event requests)",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "searchPlaceholder": "Search event requests...",
+    "status": "Status",
+    "requestType": "Request Type",
+    "requestsPerPage": "Requests per page:",
+    "table": {
+      "eventName": "Event Name",
+      "status": "Status",
+      "crudType": "Request Type",
+      "location": "Location",
+      "dateTime": "Date & Time",
+      "actions": "Actions",
+      "loading": "Loading requests...",
+      "noRequests": "No event requests found",
+      "noFilteredRequests": "No requests match your filters",
+      "requestId": "Request ID: #"
+    },
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total} requests",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "dialog": {
+      "titleCreate": "New Event Request Details",
+      "titleUpdate": "Event Update Request Details",
+      "titleDelete": "Event Deletion Request Details",
+      "titleDefault": "Event Request Details",
+      "descriptionCreate": "Review the details of your new event request",
+      "descriptionUpdate": "Review the proposed changes to your event",
+      "descriptionDelete": "Review the event that you requested to be deleted",
+      "descriptionDefault": "Review your complete event request",
+      "requestStatus": "Request Status",
+      "requestType": "Request Type",
+      "requestId": "Request ID",
+      "section": {
+        "eventInfo": "Event Information",
+        "eventName": "Event Name",
+        "hospital": "Hospital",
+        "donationDate": "Donation Date",
+        "donationType": "Donation Type",
+        "address": "Address",
+        "city": "City",
+        "timeSlots": "Time Slots",
+        "maxParticipants": "Max Participants",
+        "timeSlotDetails": "Time Slots Details",
+        "slot": "Slot ",
+        "available": "Available",
+        "duration": "Duration: ",
+        "summary": "Summary",
+        "totalSlots": "Total Slots:",
+        "startTime": "Start Time:",
+        "endTime": "End Time:",
+        "description": "Description",
+        "organizerInfo": "Organizer Information",
+        "organizationName": "Organization Name",
+        "email": "Email",
+        "phone": "Phone",
+        "comparison": "Changes Comparison",
+        "original": "Original Event",
+        "updated": "Updated Event",
+        "name": "Name",
+        "date": "Date",
+        "time": "Time",
+        "location": "Location"
+      },
+      "close": "Close"
+    },
+    "errors": {
+      "fetchFailed": "Failed to load event requests. Please try again.",
+      "viewFailed": "Failed to load request details"
+    }
+  },
+  
+  "createBloodRequest": {
+    "selectRequiredDate": "Select required date",
+    "profileCreatedAndSelected": "New profile created and selected"
+,
+    "pageTitle": "Create Blood Request",
+    "profileSearch": {
+      "label": "Search for Patient Profile",
+      "placeholder": "Enter name or personal ID",
+      "noResults": "No profiles found",
+      "error": "Failed to search profiles. Please try again.",
+      "createNew": "Create New Profile"
+    },
+    "newProfile": {
+      "title": "Create New Patient Profile",
+      "name": "Full Name",
+      "personalId": "Personal ID",
+      "phone": "Phone Number",
+      "address": "Address",
+      "city": "City",
+      "district": "District",
+      "ward": "Ward",
+      "bloodType": "Blood Type",
+      "gender": "Gender",
+      "dateOfBirth": "Date of Birth",
+      "submit": "Create Profile"
+    },
+    "bloodRequest": {
+      "requiredDate": "Required Date",
+      "urgency": {
+        "label": "Urgency Level",
+        "critical": "Critical",
+        "urgent": "Urgent",
+        "normal": "Normal",
+        "timeframes": {
+          "critical": "Within 2 hours",
+          "urgent": "Within 24 hours",
+          "normal": "Within 3 days"
+        }
+      },
+      "bloodType": "Blood Type",
+      "components": {
+        "label": "Blood Components",
+        "whole": "Whole Blood",
+        "redCells": "Red Blood Cells",
+        "plasma": "Plasma",
+        "platelets": "Platelets"
+      },
+      "medicalConditions": {
+        "label": "Medical Conditions",
+        "trauma": "Trauma/Emergency Surgery",
+        "anemia": "Severe Anemia",
+        "bleeding": "Active Bleeding",
+        "cardiac": "Cardiac Surgery",
+        "cancer": "Cancer Treatment",
+        "transplant": "Organ Transplant",
+        "planned": "Planned Surgery",
+        "disorder": "Blood Disorder",
+        "pregnancy": "Pregnancy Complications"
+      },
+      "additionalInfo": "Additional Medical Information",
+      "notes": "Additional Notes"
+    },
+    "submit": "Submit Blood Request",
+    "confirmDialog": {
+      "title": "Confirm Blood Request",
+      "message": "Are you sure you want to submit this blood request?",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "success": "Blood request created successfully!",
+    "error": {
+      "noProfile": "Please select a patient profile or create a new one",
+      "submission": "Submission failed. Please try again."
+    },
+    "criticalNeeds": {
+  "severeInjury": "Severe injury requiring immediate surgical intervention",
+  "lowHemoglobin": "Critically low hemoglobin levels",
+  "ongoingBloodLoss": "Ongoing blood loss from internal or external sources",
+  "heartSurgery": "Heart surgery requiring blood products",
+  "chemoDisorders": "Chemotherapy-induced blood disorders",
+  "organTransplant": "Major organ transplantation procedure",
+  "electiveSurgery": "Elective surgical procedure",
+  "chronicConditions": "Chronic blood-related conditions",
+  "maternalComplications": "Maternal or fetal complications requiring blood"
+},
+
+  "patientProfile": {
+    "search": {
+      "title": "Search Patient Profile *",
+      "placeholder": "Search by name, phone number, or personal ID...",
+      "noResults": "No profiles found. Would you like to create a new profile?",
+      "createNew": "Create New Profile",
+      "change": "Change"
+    },
+    "newProfile": {
+      "title": "Create New Patient Profile",
+      "cancel": "Cancel",
+      "fields": {
+        "name": "Full Name *",
+        "personalId": "Personal ID *",
+        "phone": "Phone Number *",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "dob": "Date of Birth",
+        "bloodType": "Blood Type",
+        "address": "Address",
+        "city": "City/Province",
+        "district": "District",
+        "ward": "Ward"
+      },
+      "createButton": "Create Profile"
+    },
+    "selectedProfile": {
+      "id": "Personal ID:",
+      "phone": "Phone:",
+      "address": "Address:",
+      "bloodType": "Blood Type:"
+    }
+  },
+    "components": {
+      "label": "Blood Components & Volumes *"
+    },
+    "bloodType": {
+      "label": "Blood Type Required *"
+    },
+    "medicalConditions": {
+      "label": "Medical Conditions *",
+      "description": "Select applicable medical conditions. Urgency level will be automatically calculated based on your selections and required date."
+    },
+    "urgency": {
+      "label": "Urgency Level *",
+      "description": "Urgency level automatically calculated based on medical conditions and required date. You can override if needed.",
+      "autoSelected": "Auto-selected",
+      "levels": {
+        "HIGH": {
+          "label": "Critical",
+          "timeframe": "Within 4 hours"
+        },
+        "MEDIUM": {
+          "label": "Urgent",
+          "timeframe": "Within 24 hours"
+        },
+        "LOW": {
+          "label": "Normal",
+          "timeframe": "Within 72 hours"
+        }
+      }
+    },
+    "notes": {
+      "medicalInfo": {
+        "label": "Additional Medical Information *",
+        "placeholder": "Describe any additional medical information, symptoms, or special requirements..."
+      },
+      "additional": {
+        "label": "Additional Notes",
+        "placeholder": "Any other relevant information..."
+      }
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit Blood Request"
+    }
+  },
+  "confirmationDialog": {
+    "title": "Confirm Blood Request",
+    "description": "Please review the blood request details before submitting. This will create an emergency blood request.",
+    "details": {
+      "patientName": "Patient Name:",
+      "personalId": "Personal ID:",
+      "phone": "Phone:",
+      "address": "Address:",
+      "patientBloodType": "Patient Blood Type:",
+      "newProfileNote": "* This is a new profile that will be created",
+      "bloodTypeRequested": "Blood Type Requested:",
+      "requiredDate": "Required Date:",
+      "urgency": "Urgency:",
+      "componentsRequested": "Components Requested:",
+      "medicalConditions": "Medical Conditions:",
+      "additionalMedicalInfo": "Additional Medical Info:"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirm": "Confirm & Submit Request",
+      "creating": "Creating Request..."
+    }
+  },
+  "profilePage": {
+    "header": {
+      "title": "Personal Information",
+      "description": "Manage your personal information and account settings"
+    },
+    "avatarCard": {
+      "title": "No name",
+      "roleBadges": {
+        "ADMIN": "Administrator",
+        "STAFF": "Staff",
+        "MEMBER": "Member",
+        "GUEST": "Guest",
+        "UNKNOWN": "Unknown"
+      },
+      "infoFields": {
+        "email": "Email",
+        "emailPlaceholder": "No email",
+        "phone": "Phone",
+        "phonePlaceholder": "Not updated",
+        "address": "Address",
+        "addressPlaceholder": "Not updated",
+        "bloodType": "Blood Type"
+      }
+    },
+    "avatarDialog": {
+      "title": "Update Avatar",
+      "description": "Select a new image for your profile picture (max 5MB)",
+      "selectLabel": "Select Image",
+      "cancelButton": "Cancel",
+      "uploadButton": "Update",
+      "uploading": "Uploading...",
+      "error": {
+        "size": "Image size must not exceed 5MB",
+        "type": "Please select an image file",
+        "auth": "Please select an image and ensure you're logged in"
+      },
+      "success": "Avatar updated successfully!"
+    },
+    "profileForm": {
+      "title": "Detailed Information",
+      "description": "Update your personal information",
+      "buttons": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      },
+      "sections": {
+        "personalInfo": {
+          "title": "Personal Information",
+          "fields": {
+            "name": {
+              "label": "Full Name *",
+              "placeholder": "Enter full name"
+            },
+            "phone": {
+              "label": "Phone Number",
+              "placeholder": "Enter phone number"
+            },
+            "personalId": {
+              "label": "ID Number",
+              "placeholder": "Enter ID number"
+            },
+            "dateOfBirth": {
+              "label": "Date of Birth"
+            },
+            "gender": {
+              "label": "Gender",
+              "options": {
+                "male": "Male",
+                "female": "Female",
+                "other": "Other",
+                "placeholder": "Select gender"
+              }
+            },
+            "bloodType": {
+              "label": "Blood Type",
+              "options": {
+                "A_POSITIVE": "A+",
+                "A_NEGATIVE": "A-",
+                "B_POSITIVE": "B+",
+                "B_NEGATIVE": "B-",
+                "AB_POSITIVE": "AB+",
+                "AB_NEGATIVE": "AB-",
+                "O_POSITIVE": "O+",
+                "O_NEGATIVE": "O-",
+                "placeholder": "Select blood type"
+              }
+            }
+          }
+        },
+        "addressInfo": {
+          "title": "Address Information",
+          "fields": {
+            "address": {
+              "label": "Address",
+              "placeholder": "Enter address"
+            },
+            "city": {
+              "label": "City/Province",
+              "placeholder": "Select city/province"
+            },
+            "district": {
+              "label": "District",
+              "placeholder": {
+                "noCity": "Please select city/province first",
+                "select": "Select district"
+              }
+            },
+            "ward": {
+              "label": "Ward",
+              "placeholder": {
+                "noDistrict": "Please select district first",
+                "select": "Select ward"
+              }
+            }
+          }
+        },
+        "donationHistory": {
+          "title": "Donation History",
+          "fields": {
+            "lastDonation": "Last Donation Date",
+            "nextDonation": "Next Eligible Donation Date"
+          }
+        }
+      }
+    },
+    "validation": {
+      "name": {
+        "min": "Name must be at least 2 characters",
+        "max": "Name must not exceed 100 characters"
+      },
+      "phone": {
+        "invalid": "Phone number must be 10 digits"
+      },
+      "personalId": {
+        "invalid": "ID number must be 12 digits"
+      },
+      "dateOfBirth": {
+        "invalid": "Age must be between 16 and 100"
+      },
+      "address": {
+        "max": "Address must not exceed 255 characters"
+      }
+    },
+    "notifications": {
+      "success": "Profile updated successfully!",
+      "error": {
+        "default": "Update failed! Please try again",
+        "connection": "Connection error: {message}",
+        "invalidData": "Invalid data"
+      }
+    },
+    "error": {
+  "size": "Image size must not exceed 5MB",
+  "type": "Please select an image file",
+  "auth": "Please select an image and ensure you're logged in",
+      "upload": "Avatar upload error:",
+      "generic": "Error:",
+      "failed": "Failed to update avatar! Please try again"
+},
+    "loading": "Loading...",
+   "profileUpdate": {
+    "success": "Profile updated successfully!",
+    "error": {
+      "invalidData": "Invalid data",
+      "connection": "Connection error:",
+      "generic": "Update failed! Please try again"
+    }
+  }
+},
+"settingPage": {
+    "header": {
+      "title": "Settings",
+      "description": "Manage your account settings and preferences"
+    },
+    "accountInfo": {
+      "title": "Account Information",
+      "description": "Basic information about your account",
+      "fields": {
+        "email": "Email",
+        "name": "Full Name",
+        "role": "Role",
+        "joinDate": "Join Date",
+        "notUpdated": "Not updated"
+      },
+      "roles": {
+        "admin": "Administrator",
+        "staff": "Staff",
+        "member": "Member",
+        "guest": "Guest"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage how you receive notifications",
+      "marketingEmails": {
+        "label": "Marketing emails",
+        "description": "Receive news and promotional emails"
+      }
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "Update your password to secure your account",
+      "fields": {
+        "current": "Current Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password"
+      },
+      "button": "Change Password",
+      "changing": "Changing...",
+      "errors": {
+        "mismatch": "Password confirmation does not match!",
+        "length": "New password must be at least 6 characters!",
+        "generic": "An error occurred while changing password!"
+      },
+      "success": "Password changed successfully!"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Language and timezone settings",
+      "language": {
+        "label": "Language",
+        "options": {
+          "vi": "Vietnamese",
+          "en": "English"
+        }
+      },
+      "timezone": {
+        "label": "Timezone",
+        "options": {
+           "Asia_Ho_Chi_Minh": "Vietnam (GMT+7)",
+          "utc": "UTC (GMT+0)",
+          "America_New_York": "New York (GMT-5)"
+        }
+      }
+    },
+    "saveButton": {
+      "label": "Save Settings",
+      "saving": "Saving..."
+    },
+    "toasts": {
+      "settingsSuccess": "Settings saved successfully!",
+      "settingsError": "An error occurred while saving settings!"
+    }
+  },
+  "RecentActivity": {
+    "title": "Recent Activity",
+    "userCreated": "New user account",
+    "wasCreated": "was created",
+    "eventRequest": "New event request  needs approval",
+    "blogApproved": "Blog post was approved",
+    "time_2h": "2 hours ago",
+    "time_5h": "5 hours ago",
+    "time_yesterday": "Yesterday"
+  } ,
+  "accountManagement": {
+    "searchPlaceholder": "Search accounts...",
+    "allRoles": "All Roles",
+    "admin": "Admin",
+    "staff": "Staff",
+    "member": "Member",
+    "transporter": "Transporter",
+    "allStatus": "All Status",
+    "enable": "Enable",
+    "disable": "Disable",
+    "addUser": "Add User",
+    "addNewUser": "Add New User",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "status": "Status",
+    "avatarUrl": "Avatar (URL)",
+    "saveUser": "Save User",
+    "name": "Name",
+    "lastLogin": "Last login:",
+    "actions": "Actions",
+    "systemMessages": {
+      "cannotLoadAccounts": "Cannot load account list!",
+      "fillEmailPassword": "Please enter email and password",
+      "createUserFailed": "Failed to create account!",
+      "createUserSuccess": "Account created successfully!"
+    }
+  },
+  "profileManagement":{
+    "viewDetails": "View Details",
+  "EditProfile": "Edit Profile",
+  "CreateProfile": "Create Profile",
+  "UpdateProfileInformationBelow": "Update the profile information below.",
+  "CreateProfileWithInformationBelow": "Create the profile with information below.",
+  "FullName": "Full Name",
+  "FullNamePattern": "Full name must include first name and last name",
+  "PhoneNumber": "Phone Number",
+  "PhoneNumberPattern": "Please enter a valid Vietnamese phone number (e.g., 0912345678)",
+  "PersonalID": "Personal ID",
+  "DateOfBirth": "Date of Birth",
+  "LastDonationDate": "Last Donation Date",
+  "BloodType": "Blood Type",
+  "SelectBloodType": "Select blood type",
+  "Gender": "Gender",
+  "SelectGender": "Select gender",
+  "CityProvince": "City/Province",
+  "SelectCityProvince": "Select city/province",
+  "District": "District",
+  "SelectDistrict": "Select district",
+  "Ward": "Ward",
+  "SelectWard": "Select ward",
+  "Address": "Address",
+  "Status": "Status",
+  "SelectStatus": "Select status",
+  "Cancel": "Cancel",
+  "Updating": "Updating...",
+  "Creating": "Creating...",
+  "SaveChanges": "Save Changes",
+  "CreateProfileButton": "Create Profile",
+  "APlus": "A+",
+  "AMinus": "A-",
+  "BPlus": "B+",
+  "BMinus": "B-",
+  "ABPlus": "AB+",
+  "ABMinus": "AB-",
+  "OPlus": "O+",
+  "OMinus": "O-",
+  "Male": "Male",
+  "Female": "Female",
+  "Available": "Available",
+  "Unavailable": "Unavailable",
+  "SearchProfiles": "Search profiles...",
+  "CreateNewProfile": "Create New Profile",
+  "Name": "Name",
+  "Phone": "Phone",
+  "BloodTypeShort": "Blood Type",
+  "LastDonation": "Last Donation",
+  "Actions": "Actions",
+  "ViewHistory": "View History",
+  "Edit": "Edit",
+  "NoProfilesFound": "No profiles found.",
+  "DonationHistory": "Donation History",
+  "Close": "Close",
+  "Date": "Date",
+  "AmountMl": "Amount (ml)",
+  "NoDonationHistoryAvailable": "No donation history available."
+},
+"eventRequest":{
+  "BloodDonationEventRequests": "Blood Donation Event Requests",
+  "ReviewAndManageRequests": "Review and manage pending blood donation event requests",
+  "TotalRequests": "total",
+  "Loading": "Loading...",
+  "Refresh": "Refresh",
+  "FailedToLoadRequests": "Failed to load event requests. Please try again.",
+  "FailedToLoadEventRequests": "Failed to load event requests",
+  "SearchRequests": "Search requests...",
+  "Status": "Status",
+  "RequestType": "Request Type",
+  "ShowingOf": "Showing",
+  "Of": "of",
+  "Requests": "requests",
+  "RequestsPerPage": "Requests per page:",
+  "EventName": "Event Name",
+  "Location": "Location",
+  "Date": "Date",
+  "CrudType": "CRUD Type",
+  "Actions": "Actions",
+  "View": "View",
+  "Approve": "Approve",
+  "Reject": "Reject",
+  "NoRequestsFound": "No requests found.",
+  "PreviousPage": "Previous Page",
+  "NextPage": "Next Page",
+  "RequestDetails": "Request Details",
+  "Close": "Close",
+  "requestType": "Request Type",
+  "EventInformation": "Event Information",
+  "Name": "Name",
+  "Hospital": "Hospital",
+  "Address": "Address",
+  "City": "City",
+  "DonationDate": "Donation Date",
+  "TimeSlots": "Time Slots",
+  "DonationType": "Donation Type",
+  "Organizer": "Organizer",
+  "OrganizationName": "Organization Name",
+  "ContactPerson": "Contact Person",
+  "ContactEmail": "Contact Email",
+  "ContactPhone": "Contact Phone",
+  "OriginalEventInformation": "Original Event Information",
+  "ApproveRequest": "Approve Request",
+  "RejectRequest": "Reject Request",
+  "AreYouSureApprove": "Are you sure you want to approve this request?",
+  "AreYouSureReject": "Are you sure you want to reject this request?",
+  "Cancel": "Cancel",
+  "Confirm": "Confirm",
+  "RequestApprovedSuccessfully": "Request approved successfully",
+  "RequestRejectedSuccessfully": "Request rejected successfully",
+  "FailedToApproveRequest": "Failed to approve request",
+  "FailedToRejectRequest": "Failed to reject request",
+  "AllStatuses": "All Statuses",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "AllRequestTypes": "All Request Types",
+  "CreateEvent": "Create Event",
+  "UpdateEvent": "Update Event",
+  "DeleteEvent": "Delete Event",
+  "NA": "N/A",
+  "Slots": "slots"
+}
+}
+
+  
+
+
+

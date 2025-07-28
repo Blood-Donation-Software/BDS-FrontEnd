@@ -5,12 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/context/language_context';
 import { BASE_URL } from '@/global-config';
 
 export default function BlogList() {
   const [posts, setPosts] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useLanguage();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const postsPerPage = 6;
@@ -23,6 +25,7 @@ export default function BlogList() {
     setCurrentPage(1);
   }, [searchTerm]);
 
+
   const handleClick = (post) => {
     selectedBlogById(post.id);
     router.push(`/blog/${post.id}`);
@@ -30,7 +33,12 @@ export default function BlogList() {
 
 
   // Logic tìm kiếm theo ký tự trong tiêu đề và chỉ hiển thị blog có status ACTIVE
+  // Logic tìm kiếm theo ký tự trong tiêu đề và chỉ hiển thị blog có status ACTIVE
   const filteredPosts = blogs.filter(post => {
+    // Chỉ hiển thị blog có status là ACTIVE
+    if (post.status !== 'ACTIVE') {
+      return false;
+    }
     // Chỉ hiển thị blog có status là ACTIVE
     if (post.status !== 'ACTIVE') {
       return false;
