@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useLanguage } from '@/context/language_context'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -36,7 +37,7 @@ import Html5QrcodePlugin from '@/components/qrcode-scanner/qrScanner';
 
 export default function CheckInPage() {
     const router = useRouter();
-
+const {t} = useLanguage();
     // State management
     const [scannedToken, setScannedToken] = useState('');
     const [personalId, setPersonalId] = useState('');
@@ -61,7 +62,7 @@ export default function CheckInPage() {
     const onScanFailure = (error) => {
         // Handle scan failure - usually this is just when no QR code is in view
         // We don't need to show error for every failed scan attempt
-        console.debug('QR scan error:', error);
+        console.debug(t?.checkinPage?.QRerror, error);
     };
 
     // Fetch ongoing events on component mount
@@ -91,7 +92,7 @@ export default function CheckInPage() {
     // Handle token received (either from QR scan or manual input)
     const handleTokenReceived = async (token) => {
         if (!selectedEventId.trim()) {
-            toast.error('Please select an ongoing event first');
+            toast.error(t?.checkinPage?.plaease?.pleaseSelectFirst);
             return;
         }
 
@@ -104,9 +105,10 @@ export default function CheckInPage() {
         try {
             const response = await getCheckinInfo(selectedEventId, token);
             setDonorInfo(response);
-            toast.success('Donor information retrieved successfully');
+            toast.success(t?.checkinPage?.getDonorSuccess);
         } catch (error) {
-            console.error('Error getting check-in info:', error);
+            console.error(t?.checkinPage?.getCheckinError, error);
+          
             if (error.response) {
                 if (error.response.status === 400) {
                     toast.error(error.response.data || 'Invalid token or event ID');
@@ -200,14 +202,14 @@ export default function CheckInPage() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Calendar className="h-5 w-5 text-blue-500" />
-                                Select Ongoing Event
+                                {t?.checkinPage?.pleaseSelectFirst}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
                                 <div className="flex gap-4 items-end">
                                     <div className="flex-1">
-                                        <Label htmlFor="eventSelect">Ongoing Donation Events</Label>
+                                        <Label htmlFor="eventSelect">   </Label>
                                         <Select
                                             value={selectedEventId}
                                             onValueChange={setSelectedEventId}
@@ -237,7 +239,7 @@ export default function CheckInPage() {
                                             className="flex items-center gap-2"
                                         >
                                             <RefreshCw className={`h-4 w-4 ${loadingEvents ? 'animate-spin' : ''}`} />
-                                            Refresh
+                                            {t?.eventManagement?.refresh}
                                         </Button>
                                     </div>
                                 </div>
@@ -249,21 +251,21 @@ export default function CheckInPage() {
                                             <div className="flex items-center gap-2">
                                                 <Heart className="h-4 w-4 text-red-500" />
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Event Name</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.createEvent?.confirmation?.eventName}</p>
                                                     <p className="text-blue-900 font-semibold">{selectedEvent.name}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Building2 className="h-4 w-4 text-blue-500" />
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Hospital</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.createEvent?.confirmation?.hospital}</p>
                                                     <p className="text-blue-900">{selectedEvent.hospital}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="h-4 w-4 text-green-500" />
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Date</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.createEvent?.confirmation?.date}</p>
                                                     <p className="text-blue-900">{selectedEvent.donationDate}</p>
                                                 </div>
                                             </div>
@@ -282,8 +284,8 @@ export default function CheckInPage() {
                                         <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Calendar className="h-8 w-8 text-yellow-600" />
                                         </div>
-                                        <p className="text-gray-600 mb-2">No ongoing donation events found</p>
-                                        <p className="text-sm text-gray-500">There are currently no active donation events available for check-in.</p>
+                                        <p className="text-gray-600 mb-2">{t?.checkinPage?.noOngoingEvents}</p>
+                                        <p className="text-sm text-gray-500">{t?.checkinPage?.noOngiongEvents}</p>
                                     </div>
                                 )}
                             </div>
@@ -296,7 +298,7 @@ export default function CheckInPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <QrCode className="h-5 w-5 text-purple-500" />
-                                    QR Code Scanner
+                                    {t?.checkinPage?.qeScanner}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -305,7 +307,7 @@ export default function CheckInPage() {
                                         <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
                                             <QrCode className="h-8 w-8 text-purple-600" />
                                         </div>
-                                        <p className="text-gray-600 mb-4">Point your camera at a QR code to scan</p>
+                                        <p className="text-gray-600 mb-4">{t?.checkinPage?.ScannerInstruction}</p>
                                         
                                         {/* QR Scanner Component - Always visible */}
                                         {selectedEventId ? (
@@ -323,7 +325,7 @@ export default function CheckInPage() {
                                         ) : (
                                             <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                                                 <p className="text-sm text-yellow-700">
-                                                    Please select an event above to start scanning QR codes
+                                                {t?.checkinPage?.selectEventPrompt}
                                                 </p>
                                             </div>
                                         )}
@@ -333,7 +335,7 @@ export default function CheckInPage() {
                                         <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                                             <div className="flex items-center gap-2 text-red-700">
                                                 <AlertTriangle className="h-5 w-5" />
-                                                <span className="font-medium">Scanner Error</span>
+                                                <span className="font-medium"> {t?.checkinPage?.scannerError}</span>
                                             </div>
                                             <p className="text-sm text-red-600 mt-1">{scannerError}</p>
                                         </div>
@@ -343,7 +345,7 @@ export default function CheckInPage() {
                                         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                                             <div className="flex items-center gap-2 text-green-700 mb-2">
                                                 <CheckCircle className="h-5 w-5" />
-                                                <span className="font-medium">QR Code Scanned</span>
+                                                <span className="font-medium"> {t?.checkinPage?.qrScanned}</span>
                                             </div>
                                             <p className="text-sm text-green-600 font-mono break-all">
                                                 {scannedToken}
@@ -359,13 +361,13 @@ export default function CheckInPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Search className="h-5 w-5 text-blue-500" />
-                                    Check-in by Personal ID (CMND/CCCD)
+                                    {t?.checkinPage?.manualCheckin}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
                                     <div>
-                                        <Label htmlFor="manualToken">Personal ID</Label>
+                                        <Label htmlFor="manualToken">{t?.checkinPage?.personalId}</Label>
                                         <Input
                                             id="manualToken"
                                             value={personalId}
@@ -382,18 +384,18 @@ export default function CheckInPage() {
                                         {loading ? (
                                             <>
                                                 <RefreshCw className="h-4 w-4 animate-spin" />
-                                                Retrieving Info...
+                                                {t?.checkinPage?.retrievingInfo}
                                             </>
                                         ) : (
                                             <>
                                                 <Search className="h-4 w-4" />
-                                                Get Donor Information
+                                                {t?.checkinPage?.getDonorInfo}
                                             </>
                                         )}
                                     </Button>
 
                                     <div className="text-center text-sm text-gray-500">
-                                        <p>Use this if QR scanning is not available</p>
+                                        <p>{t?.checkinPage?.useIfNoQR}</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -406,7 +408,7 @@ export default function CheckInPage() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2 text-blue-800">
                                     <User className="h-5 w-5" />
-                                    Donor Information
+                                   {t?.checkingPage?.donnorInfo?.title}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -414,46 +416,46 @@ export default function CheckInPage() {
                                     {/* Profile Information */}
                                     <div className="space-y-4">
                                         <h3 className="font-semibold text-blue-900 border-b border-blue-200 pb-2">
-                                            Personal Details
+                                            {t?.checkinPage?.personalDetails}
                                         </h3>
 
                                         <div className="space-y-3">
                                             <div>
-                                                <p className="text-sm font-medium text-blue-700">Full Name</p>
+                                                <p className="text-sm font-medium text-blue-700">{t?.auth?.fullName}</p>
                                                 <p className="text-blue-900 font-semibold">{donorInfo.profile?.name}</p>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Personal ID</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.checkinPage?.personalId}</p>
                                                     <p className="text-blue-900">{donorInfo.profile?.personalId}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Phone</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.checkinPage?.donnaorInfo?.phone}</p>
                                                     <p className="text-blue-900">{donorInfo.profile?.phone}</p>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Blood Type</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.user?.blood_Type}</p>
                                                     <Badge variant="outline" className="text-red-600 border-red-300">
                                                         {convertBloodType(donorInfo.profile?.bloodType) || 'Unknown'}
                                                     </Badge>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-medium text-blue-700">Gender</p>
+                                                    <p className="text-sm font-medium text-blue-700">{t?.checkinPage?.gender}</p>
                                                     <p className="text-blue-900">{donorInfo.profile?.gender}</p>
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <p className="text-sm font-medium text-blue-700">Date of Birth</p>
+                                                <p className="text-sm font-medium text-blue-700">{t?.checkinPage?.donnorInfo?.dateOfBirth}</p>
                                                 <p className="text-blue-900">{donorInfo.profile?.dateOfBirth}</p>
                                             </div>
 
                                             <div>
-                                                <p className="text-sm font-medium text-blue-700">Address</p>
+                                                <p className="text-sm font-medium text-blue-700">{t?.donateEdetailFmemeber?.donateEdetailFmember?.address}</p>
                                                 <p className="text-blue-900">
                                                     {donorInfo.profile?.address}, {donorInfo.profile?.ward}, {donorInfo.profile?.district}, {donorInfo.profile?.city}
                                                 </p>
@@ -464,7 +466,7 @@ export default function CheckInPage() {
                                     {/* Health Survey Information */}
                                     <div className="space-y-4">
                                         <h3 className="font-semibold text-blue-900 border-b border-blue-200 pb-2">
-                                            Health Survey
+                                            {t?.checkinPage?.healthSurvey?.title}
                                         </h3>
 
                                         {donorInfo.jsonForm && (() => {
@@ -480,7 +482,7 @@ export default function CheckInPage() {
                                                 console.error('Error parsing jsonForm:', e);
                                                 return (
                                                     <div className="text-sm text-red-600 bg-red-50 p-3 rounded">
-                                                        Error parsing health survey data
+                                                        {t?.checkinPage?.errorParsingHealthSurvey}
                                                     </div>
                                                 );
                                             }
@@ -490,17 +492,17 @@ export default function CheckInPage() {
                                                     {/* Question 1: Blood Donation Experience */}
                                                     <div>
                                                         <p className="text-sm font-medium text-blue-700 mb-2">
-                                                            1. Anh/chị đã từng hiến máu trước đây chưa?
+                                                            {t?.checkinPage?.question1}
                                                         </p>
                                                         <p className="text-blue-900">
                                                             {formData.experience === 'yes' 
-                                                                ? 'Có, tôi đã từng hiến máu' 
-                                                                : 'Không, đây là lần đầu tiên'
+                                                                ? t?.checkinPage?.answer1_Yes
+                                                                : t?.checkinPage?.answer1_No
                                                             }
                                                         </p>
                                                         {formData.experience === 'yes' && formData.experienceDetails && (
                                                             <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
-                                                                <p className="font-medium text-blue-700 mb-1">Chi tiết kinh nghiệm:</p>
+                                                                <p className="font-medium text-blue-700 mb-1">{t?.checkinPage?.experienceDetails}</p>
                                                                 <p>{formData.experienceDetails}</p>
                                                             </div>
                                                         )}
@@ -509,17 +511,17 @@ export default function CheckInPage() {
                                                     {/* Question 2: Current Health Issues */}
                                                     <div>
                                                         <p className="text-sm font-medium text-blue-700 mb-2">
-                                                            2. Hiện tại anh/chị có đang mắc bệnh gì không?
+                                                            {t?.checkinPage?.question2}
                                                         </p>
                                                         <p className="text-blue-900">
                                                             {formData.currentIllness === 'yes' 
-                                                                ? 'Có, tôi đang có vấn đề sức khỏe' 
-                                                                : 'Không, tôi hoàn toàn khỏe mạnh'
+                                                                ? t?.checkinPage?.answer2_Yes
+                                                                : t?.checkinPage?.answer2_No
                                                             }
                                                         </p>
                                                         {formData.currentIllness === 'yes' && formData.currentIllnessDetails && (
                                                             <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
-                                                                <p className="font-medium text-blue-700 mb-1">Tình trạng sức khỏe hiện tại:</p>
+                                                                <p className="font-medium text-blue-700 mb-1">{t?.checkinPage?.currentHealth}</p>
                                                                 <p>{formData.currentIllnessDetails}</p>
                                                             </div>
                                                         )}
@@ -528,17 +530,17 @@ export default function CheckInPage() {
                                                     {/* Question 3: Past Diseases */}
                                                     <div>
                                                         <p className="text-sm font-medium text-blue-700 mb-2">
-                                                            3. Anh/chị đã từng mắc các bệnh nghiêm trọng nào không?
+                                                            {t?.checkinPage?.question3}
                                                         </p>
                                                         <p className="text-blue-900">
                                                             {formData.pastDiseases === 'yes' 
-                                                                ? 'Có, tôi đã từng mắc bệnh nghiêm trọng' 
-                                                                : 'Không, tôi chưa từng mắc bệnh nghiêm trọng'
+                                                                ? t?.checkinPage?.answer3_Yes
+                                                                : t?.checkinPage?.answer3_No
                                                             }
                                                         </p>
                                                         {formData.pastDiseases === 'yes' && formData.pastDiseasesDetails && (
                                                             <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
-                                                                <p className="font-medium text-blue-700 mb-1">Các bệnh đã từng mắc:</p>
+                                                                <p className="font-medium text-blue-700 mb-1">{t?.checkinPage?.pastDiseases}</p>
                                                                 <p>{formData.pastDiseasesDetails}</p>
                                                             </div>
                                                         )}
@@ -547,17 +549,17 @@ export default function CheckInPage() {
                                                     {/* Question 4: Recent Activities */}
                                                     <div>
                                                         <p className="text-sm font-medium text-blue-700 mb-2">
-                                                            4. Trong 3 tháng gần đây, anh/chị có thực hiện các hoạt động sau không?
+                                                            {t?.checkinPage?.question4}
                                                         </p>
                                                         <p className="text-blue-900">
                                                             {formData.recentActivities === 'yes' 
-                                                                ? 'Có (phẫu thuật, tiêm vaccine, xăm mình, v.v.)' 
-                                                                : 'Không có hoạt động đặc biệt nào'
+                                                                ? t?.checkinPage?.answer4_Yes
+                                                                : t?.checkinPage?.answer4_No
                                                             }
                                                         </p>
                                                         {formData.recentActivities === 'yes' && formData.recentActivitiesDetails && (
                                                             <div className="mt-2 text-sm text-blue-600 bg-blue-100 p-3 rounded">
-                                                                <p className="font-medium text-blue-700 mb-1">Các hoạt động đã thực hiện:</p>
+                                                                <p className="font-medium text-blue-700 mb-1">{t?.checkinPagePastDiseases}</p>
                                                                 <p>{formData.recentActivitiesDetails}</p>
                                                             </div>
                                                         )}
@@ -565,7 +567,7 @@ export default function CheckInPage() {
 
                                                     {/* Registration Time */}
                                                     <div className="pt-3 border-t border-blue-200">
-                                                        <p className="text-sm font-medium text-blue-700">Thời gian đăng ký</p>
+                                                        <p className="text-sm font-medium text-blue-700">{t?.checkinPage?.registrationTime}</p>
                                                         <p className="text-blue-900">
                                                             {formData.submittedAt 
                                                                 ? new Date(formData.submittedAt).toLocaleString('vi-VN')
@@ -579,7 +581,7 @@ export default function CheckInPage() {
 
                                         {!donorInfo.jsonForm && (
                                             <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded">
-                                                Không có thông tin khảo sát sức khỏe
+                                                {t?.checkinPage?.noSurveyInfo}
                                             </div>
                                         )}
                                     </div>
@@ -593,7 +595,7 @@ export default function CheckInPage() {
                             className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
                         >
                             <UserCheck className="h-4 w-4" />
-                            Approve Check-in
+                            {t?.checkinPage?.approveCheckIn}
                         </Button>
                         <Button
                             onClick={() => handleCheckInAction('reject')}
@@ -602,7 +604,7 @@ export default function CheckInPage() {
                             className="flex items-center gap-2"
                         >
                             <UserX className="h-4 w-4" />
-                            Reject Check-in
+                            {t?.checkinPage?.rejectCheckIn}
                         </Button>
                                     </div>
                                 </div>
@@ -617,12 +619,12 @@ export default function CheckInPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
-                            {actionType === 'approve' ? 'Confirm Check-in' : 'Confirm Rejection'}
+                            {actionType === 'approve' ? t?.checkinPage?.confirmCheckIn : t?.checkinPage?.confirmRejection}
                         </DialogTitle>
                         <DialogDescription>
                             {actionType === 'approve'
-                                ? `Are you sure you want to check in ${donorInfo?.profile?.name} for ${selectedEvent?.name}?`
-                                : `Are you sure you want to reject the check-in for ${donorInfo?.profile?.name}?`
+                                ? `${t?.checkinPage?.confirmCheckInMessage} ${donorInfo?.profile?.name} ${t?.checkinPage?.for} ${selectedEvent?.name}?`
+                                : `${t?.checkinPage?.confirmRejectionMessage} ${donorInfo?.profile?.name} ${t?.checkinPage?.for} ${selectedEvent?.name}?`
                             }
                         </DialogDescription>
                     </DialogHeader>
@@ -632,7 +634,7 @@ export default function CheckInPage() {
                             variant="outline"
                             onClick={() => setShowConfirmDialog(false)}
                         >
-                            Cancel
+                            {t?.checkinPage?.cancel}
                         </Button>
                         <Button
                             onClick={confirmCheckInAction}
@@ -642,10 +644,10 @@ export default function CheckInPage() {
                             {processingAction ? (
                                 <>
                                     <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                                    Processing...
+                                    {t.checkinPage?.processing}
                                 </>
                             ) : (
-                                actionType === 'approve' ? 'Confirm Check-in' : 'Confirm Rejection'
+                                actionType === 'approve' ? t?.checkinPage?.confirmCheckIn : t?.checkinPage?.confirmRejection
                             )}
                         </Button>
                     </DialogFooter>

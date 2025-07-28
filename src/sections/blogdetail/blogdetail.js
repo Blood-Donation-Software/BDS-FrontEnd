@@ -5,9 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useBlogs } from '@/context/blogInfo_context';
 import { useParams } from 'next/navigation';
+import { useLanguage } from '@/context/language_context';
 import { BASE_URL } from '@/global-config';
 
 export default function BlogDetail() {
+  const { t } = useLanguage();
   const { id } = useParams();
   const [relatedPosts, setRelatedPosts] = useState([]);
   const { blogs, selectedBlog, selectedBlogById } = useBlogs();
@@ -48,7 +50,7 @@ export default function BlogDetail() {
   }
 
   if (!blog) {
-    return <div>Loading...</div>;
+    return <div>{t?.blog?.loading}</div>;
   }
 
   return (
@@ -60,7 +62,7 @@ export default function BlogDetail() {
             href="/blog"
             className="text-gray-600 hover:text-gray-800"
           >
-            ← Quay lại
+            {t?.blog?.back}
           </Link>
           <span className="text-gray-500 ml-auto">{blog.creationDate ? new Date(blog.creationDate).toLocaleDateString('vi-VN') : ''}</span>
         </div>
@@ -80,6 +82,10 @@ export default function BlogDetail() {
           src={`${BASE_URL}/${blog.thumbnail}`}
           alt="Blog thumbnail"
           className="w-full object-cover rounded-lg border"
+        <img
+          src={`${BASE_URL}/${blog.thumbnail}`}
+          alt="Blog thumbnail"
+          className="w-full object-cover rounded-lg border"
         />
       </div>
 
@@ -91,7 +97,7 @@ export default function BlogDetail() {
 
       {/* Related posts */}
       <div className="border-t pt-8">
-        <h2 className="text-2xl font-bold mb-6">Bài viết gần đây</h2>
+        <h2 className="text-2xl font-bold mb-6">{t?.blog?.latest_posts}</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {relatedPosts.map((related) => (
             <Link
@@ -101,6 +107,10 @@ export default function BlogDetail() {
             >
               <div className="bg-white rounded-lg shadow-md overflow-hidden max-w-xs w-full mx-auto">
                 <div className="relative h-32 w-full">
+                  <img
+                    src={`${BASE_URL}/${blog.thumbnail}`}
+                    alt="Blog thumbnail"
+                    className="object-cover rounded-lg border"
                   <img
                     src={`${BASE_URL}/${blog.thumbnail}`}
                     alt="Blog thumbnail"

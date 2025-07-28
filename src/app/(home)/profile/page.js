@@ -21,6 +21,7 @@ import { BASE_URL } from "@/global-config";
 import vietnamProvinces from "@/data/vietnam-provinces.json";
 import { Camera, Edit2, Save, X, User, Mail, Phone, MapPin, Calendar, IdCard, Droplets } from "lucide-react";
 import { convertBloodType } from "@/utils/utils";
+import { useLanguage } from "@/context/language_context";
 
 // Sort provinces alphabetically for better UX
 const sortedProvinces = vietnamProvinces.sort((a, b) => a.name.localeCompare(b.name, 'vi', { numeric: true }));
@@ -69,6 +70,7 @@ const handleUpdateProfile = async (profileData) => {
 };
 
 export default function ProfilePage() {
+  const {t} = useLanguage();
   const { profile, account, fetchUserProfile, isLoading, userRole } = useUserProfile();
   
   // Form state with React Hook Form
@@ -175,13 +177,13 @@ export default function ProfilePage() {
     if (file) {
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Kích thước ảnh không được vượt quá 5MB");
+        toast.error(t?.profilePage?.error?.size);
         return;
       }
 
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error("Vui lòng chọn file ảnh");
+        toast.error(t?.profilePage?.avatarDialog?.error?.type);
         return;
       }
 
@@ -197,14 +199,14 @@ export default function ProfilePage() {
   // Upload avatar function
   const handleAvatarUpload = async () => {
     if (!avatarFile || !account?.id) {
-      toast.error("Vui lòng chọn ảnh và đảm bảo đã đăng nhập");
+      toast.error(t?.profilePage?.avatarDialog?.error?.auth);
       return;
     }
 
     setUploadingAvatar(true);
     try {
       await uploadAvatar(account.id, avatarFile);
-      toast.success("Cập nhật ảnh đại diện thành công!");
+      toast.success(t?.profilePage?.avatarDialog?.success);
       
       // Refresh user profile to get updated avatar
       await fetchUserProfile();
@@ -215,11 +217,11 @@ export default function ProfilePage() {
       setAvatarDialogOpen(false);
       
     } catch (error) {
-      console.error("Avatar upload error:", error);
+      console.error(t?.profilePage?.error?.upload, error);
       if (error?.response?.data?.message) {
-        toast.error(`Lỗi: ${error.response.data.message}`);
+        toast.error(`${t?.profilePage?.error?.generic} ${error.response.data.message}`);
       } else {
-        toast.error("Cập nhật ảnh đại diện thất bại! Vui lòng thử lại");
+        toast.error(t?.profilePage?.error?.failed);
       }
     } finally {
       setUploadingAvatar(false);
@@ -259,27 +261,27 @@ export default function ProfilePage() {
       });
 
       await updateProfile(profileData);
-      toast.success("Cập nhật thông tin thành công!");
+      toast.success(profilePage?.profileUpdate?.success);
       
       // Refresh user profile to get updated data
       await fetchUserProfile();
       setIsEditing(false);
       
     } catch (error) {
-      console.error("Profile update error:", error);
+      console.error(t?.profilePage?.error?.generic, error);
       
       // Handle different types of errors
       if (error?.response?.data?.message) {
-        toast.error(`Lỗi: ${error.response.data.message}`);
+        toast.error(`${t?.profilePage?.error?.generic} ${error.response.data.message}`);
       } else if (error?.response?.data) {
         const errorMessage = typeof error.response.data === 'string' 
           ? error.response.data 
-          : "Dữ liệu không hợp lệ";
+          : t?.profilePage?.error?.invalidData;
         toast.error(errorMessage);
       } else if (error?.message) {
-        toast.error(`Lỗi kết nối: ${error.message}`);
+        toast.error(`${t?.profilePage?.profileUpdate?.error?.connection} ${error.message}`);
       } else {
-        toast.error("Cập nhật thất bại! Vui lòng thử lại");
+        toast.error(t?.profilePage?.profileUpdate?.error?.generic);
       }
     }
   };
@@ -304,11 +306,11 @@ export default function ProfilePage() {
 
   const getRoleText = (role) => {
     switch (role) {
-      case 'ADMIN': return 'Quản trị viên';
-      case 'STAFF': return 'Nhân viên';
-      case 'MEMBER': return 'Thành viên';
-      case 'GUEST': return 'Khách';
-      default: return 'Chưa xác định';
+      case 'ADMIN': return t?.profilePage?.avatarCard?.roleBadges?.ADMIN;
+      case 'STAFF': return t?.profilePage?.avatarCard?.roleBadges?.STAFF;
+      case 'MEMBER': return t?.profilePage?.avatarCard?.roleBadges?.MEMBER;
+      case 'GUEST': return t?.profilePage?.avatarCard?.roleBadges?.GUEST;
+      default: return t?.profilePage?.avatarCard?.roleBadges?.UNKNOWN;
     }
   };
 
@@ -328,10 +330,10 @@ export default function ProfilePage() {
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 flex items-center gap-3">
               <User className="h-8 w-8 text-blue-600" />
-              Thông tin cá nhân
+              {t?.profilePage?.profileForm?.sections?.personalInfo?.title}
             </h1>
             <p className="text-gray-600 mt-2 text-base sm:text-lg">
-              Quản lý thông tin cá nhân và cài đặt tài khoản của bạn
+              {t?.profilePage?.header?.description}
             </p>
           </div>
 
@@ -363,9 +365,9 @@ export default function ProfilePage() {
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-md">
                         <DialogHeader>
-                          <DialogTitle>Cập nhật ảnh đại diện</DialogTitle>
+                          <DialogTitle>{t?.profilePage?.avatarDialog?.title}</DialogTitle>
                           <DialogDescription>
-                            Chọn ảnh mới để làm ảnh đại diện (tối đa 5MB)
+                            {t?.profilePage?.avatarDialog?.description}
                           </DialogDescription>
                         </DialogHeader>
                         
@@ -381,7 +383,7 @@ export default function ProfilePage() {
                           </div>
                           
                           <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="avatar-file">Chọn ảnh</Label>
+                            <Label htmlFor="avatar-file">{t?.profilePage?.avatarDialog?.Dialog?.selectLabel}</Label>
                             <Input 
                               id="avatar-file" 
                               type="file" 
@@ -390,20 +392,20 @@ export default function ProfilePage() {
                               className="cursor-pointer"
                             />
                           </div>
-                          
+                          {t?.profilePage?.profileForm?.buttons?.cancel}
                           <div className="flex gap-2 justify-end">
                             <Button 
                               variant="outline" 
                               onClick={handleAvatarCancel}
                               disabled={uploadingAvatar}
                             >
-                              Hủy
+                              
                             </Button>
                             <Button 
                               onClick={handleAvatarUpload}
                               disabled={!avatarFile || uploadingAvatar}
                             >
-                              {uploadingAvatar ? "Đang tải..." : "Cập nhật"}
+                              {uploadingAvatar ? t?.profilePage?.loading : t?.profilePage?.profileForm?.buttons?.upload}  
                             </Button>
                           </div>
                         </div>
@@ -412,7 +414,7 @@ export default function ProfilePage() {
                   </div>
 
                   <CardTitle className="text-xl font-semibold">
-                    {watch("name") || "Chưa có tên"}
+                    {watch("name") || t?.profilePage?.avatarCard?.intoFields?.namePlaceholder}
                   </CardTitle>
                   <CardDescription className="flex items-center justify-center gap-2">
                     <Badge className={getRoleBadgeColor(userRole)}>
@@ -427,23 +429,23 @@ export default function ProfilePage() {
                       <Mail className="h-4 w-4 text-gray-500" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-gray-600">Email</p>
-                        <p className="font-medium truncate">{account?.email || "Chưa có email"}</p>
+                        <p className="font-medium truncate">{account?.email || t?.profilePage?.avatarCard?.intoFields?.emailPlaceholder}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <Phone className="h-4 w-4 text-gray-500" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-600">Số điện thoại</p>
-                        <p className="font-medium truncate">{watch("phone") || "Chưa cập nhật"}</p>
+                        <p className="text-sm text-gray-600">{t?.profilePage?.avatarCard?.intoFields?.phone}</p>
+                        <p className="font-medium truncate">{watch("phone") || t?.profilePage?.avatarCard?.intoFields?.phonePlaceholder}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <MapPin className="h-4 w-4 text-gray-500" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-600">Địa chỉ</p>
-                        <p className="font-medium truncate">{watch("address") || "Chưa cập nhật"}</p>
+                        <p className="text-sm text-gray-600">{t?.profilePage?.avatarCard?.intoFields?.address}</p>
+                        <p className="font-medium truncate">{watch("address") || t?.profilePage?.avatarCard?.intoFields?.addressPlaceholder}</p>
                       </div>
                     </div>
 
@@ -451,7 +453,7 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <Droplets className="h-4 w-4 text-red-500" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-red-600">Nhóm máu</p>
+                          <p className="text-sm text-red-600">{t?.profilePage?.avatarCard?.intoFields?.bloodType}</p>
                           <p className="font-medium text-red-700">{convertBloodType(watch("bloodType"))}</p>
                         </div>
                       </div>
@@ -469,9 +471,9 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-3">
                       <Edit2 className="h-5 w-5 text-blue-600" />
                       <div>
-                        <CardTitle className="text-xl">Thông tin chi tiết</CardTitle>
+                        <CardTitle className="text-xl">{t?.profilePage?.profileForm?.title}</CardTitle>
                         <CardDescription>
-                          Cập nhật thông tin cá nhân của bạn
+                          {t?.profilePage?.profileForm?.description}
                         </CardDescription>
                       </div>
                     </div>
@@ -479,17 +481,17 @@ export default function ProfilePage() {
                     {!isEditing ? (
                       <Button onClick={() => setIsEditing(true)} variant="outline" className="gap-2">
                         <Edit2 className="h-4 w-4" />
-                        Chỉnh sửa
+                        {t?.profilePage?.profileForm?.buttons?.edit}
                       </Button>
                     ) : (
                       <div className="flex gap-2">
                         <Button onClick={handleCancel} variant="outline" disabled={isSubmitting} className="gap-2">
                           <X className="h-4 w-4" />
-                          Hủy
+                          {t?.profilePage?.profileForm?.buttons?.cancel}
                         </Button>
                         <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting} className="gap-2">
                           <Save className="h-4 w-4" />
-                          {isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}
+                          {isSubmitting ? t?.profilePage?.profileForm?.buttons?.saving : t?.profilePage?.profileForm?.buttons?.save}
                         </Button>
                       </div>
                     )}
@@ -503,7 +505,7 @@ export default function ProfilePage() {
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                           <User className="h-5 w-5 text-blue-600" />
-                          Thông tin cá nhân
+                          {t?.profilePage?.profileForm?.sections?.personalInfo?.title}
                         </h3>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -513,11 +515,12 @@ export default function ProfilePage() {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>
-                                  Họ và tên <span className="text-red-500">*</span>
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.name?.label}
+                                  <span className="text-red-500">*</span>
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Nhập họ và tên"
+                                    placeholder={t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.name?.placeholder}
                                     disabled={!isEditing}
                                     className={!isEditing ? "bg-gray-50" : ""}
                                     {...field}
@@ -533,10 +536,12 @@ export default function ProfilePage() {
                             name="phone"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Số điện thoại</FormLabel>
+                                <FormLabel>
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.phone?.label}
+                                </FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Nhập số điện thoại"
+                                    placeholder={t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.phone?.placeholder}   
                                     disabled={!isEditing}
                                     className={!isEditing ? "bg-gray-50" : ""}
                                     {...field}
@@ -552,10 +557,12 @@ export default function ProfilePage() {
                             name="personalId"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Số CCCD/CMND</FormLabel>
+                                <FormLabel>
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.personalId?.label}
+                                </FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Nhập số CCCD/CMND"
+                                    placeholder={t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.personalId?.placeholder}    
                                     disabled={!isEditing}
                                     className={!isEditing ? "bg-gray-50" : ""}
                                     {...field}
@@ -573,7 +580,7 @@ export default function ProfilePage() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <Calendar className="h-4 w-4" />
-                                  Ngày sinh
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.dateOfBirth?.label}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -593,7 +600,9 @@ export default function ProfilePage() {
                             name="gender"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Giới tính</FormLabel>
+                                <FormLabel>
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.gender?.label}
+                                </FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
                                   defaultValue={field.value}
@@ -601,13 +610,18 @@ export default function ProfilePage() {
                                 >
                                   <FormControl>
                                     <SelectTrigger className={!isEditing ? "bg-gray-50" : ""}>
-                                      <SelectValue placeholder="Chọn giới tính" />
+                                      <SelectValue placeholder={t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.gender?.placeholder} />    
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    <SelectItem value="MALE">Nam</SelectItem>
-                                    <SelectItem value="FEMALE">Nữ</SelectItem>
-                                    <SelectItem value="OTHER">Khác</SelectItem>
+                                    <SelectItem value="MALE">
+                                      {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.gender?.options?.male}
+                                    </SelectItem>
+                                    <SelectItem value="FEMALE">
+                                      {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.gender?.options?.female}
+                                    </SelectItem>
+                                    <SelectItem value="OTHER">
+                                      {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.gender?.options?.other}                                 </SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -622,7 +636,7 @@ export default function ProfilePage() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <Droplets className="h-4 w-4" />
-                                  Nhóm máu
+                                  {t?.profilePage?.profileForm?.sections?.personalInfo?.fields?.bloodType?.label}
                                 </FormLabel>
                                 <Select
                                   onValueChange={field.onChange}
@@ -658,7 +672,7 @@ export default function ProfilePage() {
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                           <MapPin className="h-5 w-5 text-blue-600" />
-                          Thông tin địa chỉ
+                          {t?.profilePage?.profileForm?.sections?.addressInfo?.title}
                         </h3>
                         
                         <div className="space-y-4">
@@ -667,10 +681,12 @@ export default function ProfilePage() {
                             name="address"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Địa chỉ</FormLabel>
+                                <FormLabel>
+                                  {t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.address?.label}
+                                </FormLabel>
                                 <FormControl>
                                   <Input
-                                    placeholder="Nhập địa chỉ"
+                                    placeholder={t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.address?.placeholder}
                                     disabled={!isEditing}
                                     className={!isEditing ? "bg-gray-50" : ""}
                                     {...field}
@@ -687,7 +703,9 @@ export default function ProfilePage() {
                               name="city"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Tỉnh/Thành phố</FormLabel>
+                                  <FormLabel>
+                                    {t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.city?.label}
+                                  </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
@@ -695,7 +713,7 @@ export default function ProfilePage() {
                                   >
                                     <FormControl>
                                       <SelectTrigger className={!isEditing ? "bg-gray-50" : ""}>
-                                        <SelectValue placeholder="Chọn tỉnh/thành phố" />
+                                        <SelectValue placeholder={t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.city?.placeholder} />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -716,7 +734,9 @@ export default function ProfilePage() {
                               name="district"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Quận/Huyện</FormLabel>
+                                  <FormLabel>
+                                    {t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.district?.label}
+                                  </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
@@ -724,7 +744,7 @@ export default function ProfilePage() {
                                   >
                                     <FormControl>
                                       <SelectTrigger className={(!isEditing || !watchedCity) ? "bg-gray-50" : ""}>
-                                        <SelectValue placeholder={!watchedCity ? "Vui lòng chọn tỉnh/thành phố trước" : "Chọn quận/huyện"} />
+                                        <SelectValue placeholder={!watchedCity ? t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.district?.placeholder?.noCity : t?.profile?.profileForm?.sections?.addressInfo?.fields?.district?.placeholder?.select} />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -745,7 +765,9 @@ export default function ProfilePage() {
                               name="ward"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Phường/Xã</FormLabel>
+                                  <FormLabel>
+                                    {t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.ward?.label}
+                                  </FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
@@ -753,7 +775,7 @@ export default function ProfilePage() {
                                   >
                                     <FormControl>
                                       <SelectTrigger className={(!isEditing || !watchedDistrict) ? "bg-gray-50" : ""}>
-                                        <SelectValue placeholder={!watchedDistrict ? "Vui lòng chọn quận/huyện trước" : "Chọn phường/xã"} />
+                                        <SelectValue placeholder={!watchedDistrict ? t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.ward?.placeholder?.noDistrict : t?.profilePage?.profileForm?.sections?.addressInfo?.fields?.ward?.placeholder?.select} />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -779,13 +801,13 @@ export default function ProfilePage() {
                           <div className="space-y-4">
                             <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                               <Droplets className="h-5 w-5 text-red-600" />
-                              Lịch sử hiến máu
+                              {t?.profilePage?.profileForm?.sections?.donationHistory?.title}
                             </h3>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {profile?.lastDonationDate && (
                                 <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Ngày hiến máu gần nhất</Label>
+                                  <Label className="text-sm font-medium">{t?.profilePage?.profileForm?.sections?.donationHistory?.fields?.lastDonation}</Label>
                                   <Input
                                     type="date"
                                     value={profile.lastDonationDate}
@@ -797,7 +819,7 @@ export default function ProfilePage() {
 
                               {profile?.nextEligibleDonationDate && (
                                 <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Ngày có thể hiến máu tiếp theo</Label>
+                                  <Label className="text-sm font-medium">{t?.profilePage?.profileForm?.sections?.donationHistory?.fields?.nextDonation}</Label>
                                   <Input
                                     type="date"
                                     value={profile.nextEligibleDonationDate}

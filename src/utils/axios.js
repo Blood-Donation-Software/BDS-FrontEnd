@@ -46,7 +46,7 @@ export const endpoint = {
     genAvatar: (name,rounded) => `${AVATAR_URL}/api/?name=${name}&rounded=${rounded}`,
     getAccount: `${BASE_URL}/api/user/account`,
     updateAvatar: (accountId) => `${BASE_URL}/api/user/account/${accountId}/avatar`,
-    getDonationHistory: `${BASE_URL}/api/user/profile/history`,
+    getDonationHistory: `${BASE_URL}/api/user/profile/history`, 
     profile: `${BASE_URL}/api/user/info`,
     updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,

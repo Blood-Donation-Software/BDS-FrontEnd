@@ -1,11 +1,14 @@
+'use client'
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import {useLanguage} from "@/context/language_context";
 
 export default function AdminDashboard() {
+    const {t} = useLanguage();
     const dashboardStats = [
-        { title: 'Total Accounts', value: '1,245', change: '+12%', icon: 'users' },
-        { title: 'Pending Events', value: '8', change: '+3', icon: 'calendar' },
-        { title: 'Pending Blog Posts', value: '14', change: '-2', icon: 'document' },
-        { title: 'Total Donations', value: '867', change: '+23%', icon: 'heart' }
+        { title: t?.dashboard?.admin?.totalAcc, value: '1,245', change: '+12%', icon: t?.dashboard?.users },
+        { title: t?.dashboard?.admin?.pendingEvents, value: '8', change: '+3', icon: t?.dashboard?.calendar },
+        { title: t?.dashboard?.admin?.pendingBlogPosts, value: '14', change: '-2', icon: t?.dashboard?.documents },
+        { title: t?.dashboard?.admin?.totalDonations, value: '867', change: '+23%', icon: t?.dashboard?.hearts }
     ];
     const getStatIcon = (icon) => {
         switch (icon) {
@@ -63,7 +66,7 @@ export default function AdminDashboard() {
                 {/* Recent Activity */}
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
                     <div className="px-6 py-4 border-b border-gray-200">
-                        <h3 className="font-medium text-gray-900">Recent Activity</h3>
+                        <h3 className="font-medium text-gray-900">{t?.RecentActivity?.title}</h3>
                     </div>
                     <div className="p-6">
                         <div className="space-y-6">
@@ -77,8 +80,8 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-900">New user account <span className="font-medium">John Smith</span> was created</p>
-                                    <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                    <p className="text-sm text-gray-900">{t?.RecentActivity?.userCreated} <span className="font-medium">John Smith</span> {t?.RecentActivity?.wasCreated}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t?.RecentActivity?.time_2h}</p>
                                 </div>
                             </div>
 

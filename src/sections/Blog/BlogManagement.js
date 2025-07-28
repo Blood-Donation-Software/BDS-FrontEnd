@@ -14,6 +14,7 @@ import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import { getAllBlogs, deleteBlog } from '@/apis/blog'
 import { BASE_URL } from '@/global-config'
+import { useLanguage } from '@/context/language_context'
 
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
@@ -41,6 +42,7 @@ const formatStatus = (status) => {
 }
 
 export default function BlogManagement() {
+    const { t } = useLanguage()
     const [blogs, setBlogs] = useState([])
     const [filteredBlogs, setFilteredBlogs] = useState([])
     const [loading, setLoading] = useState(true)
@@ -84,8 +86,8 @@ export default function BlogManagement() {
         }
       } catch (error) {
         console.error('Error fetching blogs:', error)
-        setError('Failed to load blogs. Please try again.')
-        toast.error('Failed to load blogs')
+        setError(t?.blogManagement?.errorLoad)
+        toast.error(t?.blogManagement?.errorLoadToast)
       } finally {
         setLoading(false)
       }
@@ -149,12 +151,12 @@ export default function BlogManagement() {
       try {
         setActionLoading(true)
         await deleteBlog(blogId)
-        toast.success('Request of deletion submitted!')
+        toast.success(t?.blogManagement?.successDelete)
         await fetchBlogs(pagination.page, pagination.size)
       } catch (error) {
         console.error('Error deleting blog:', error)
         const errorMessage = error.response?.data?.message || error.message
-        toast.error(`Failed to delete blog: ${errorMessage}`)
+        toast.error(`${t?.blogManagement?.errorDelete}: ${errorMessage}`)
       } finally {
         setActionLoading(false)
       }
@@ -186,16 +188,16 @@ export default function BlogManagement() {
                         <div>
                             <CardTitle className="flex items-center gap-2">
                                 <BookOpen className="h-5 w-5" />
-                                Blog Management
+                                {t?.blogManagement?.title}
                             </CardTitle>
                             <p className="text-sm text-muted-foreground mt-1">
-                                Manage and review blog posts ({pagination.totalElements} total)
+                                {t?.blogManagement?.subtitle} ({pagination.totalElements} {t?.blogManagement?.total})
                             </p>
                         </div>
                         <div className="flex gap-2">
                             <Button onClick={handleRefresh} disabled={loading} variant="outline">
                                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                                {loading ? 'Loading...' : 'Refresh'}
+                                {loading ? t?.blogManagement?.loading : t?.blogManagement?.refresh}
                             </Button>
                         </div>
                     </div>
@@ -212,7 +214,7 @@ export default function BlogManagement() {
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Search blogs..."
+                                placeholder={t?.blogManagement?.searchPlaceholder}
                                 className="pl-10"
                                 value={filters.search}
                                 onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
@@ -223,7 +225,7 @@ export default function BlogManagement() {
                             onValueChange={value => setFilters(f => ({ ...f, status: value }))}
                         >
                             <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Status" />
+                                <SelectValue placeholder={t?.blogManagement?.status?.status} />
                             </SelectTrigger>
                             <SelectContent>
                                 {statusOptions.map(opt => (
@@ -237,11 +239,11 @@ export default function BlogManagement() {
                     <div className="flex justify-between items-center mb-4">
                         <div className="text-sm text-muted-foreground">
                             {pagination.totalElements > 0 && (
-                                `Showing ${Math.min(filteredBlogs.length, pagination.size)} of ${pagination.totalElements} blogs`
+                                `${t?.blogManagement?.showing} ${Math.min(filteredBlogs.length, pagination.size)} ${t?.blogManagement?.of} ${pagination.totalElements} ${t?.blogManagement?.blogs}`
                             )}
                         </div>
                         <div className="flex items-center space-x-2">
-                            <span className="text-sm text-muted-foreground">Blogs per page:</span>
+                            <span className="text-sm text-muted-foreground">{t?.blogManagement?.blogsPerPage}</span>
                             <Select
                                 value={pagination.size.toString()}
                                 onValueChange={handlePageSizeChange}
@@ -264,16 +266,16 @@ export default function BlogManagement() {
                             <TableRow>
                                 <TableHead>
                                     <Button variant="ghost" onClick={() => handleSort('title')}>
-                                        Title <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        {t?.blogManagement?.table?.title} <ArrowUpDown className="ml-2 h-4 w-4" />
                                     </Button>
                                 </TableHead>
                                 <TableHead>
                                     <Button variant="ghost" onClick={() => handleSort('status')}>
-                                        Status <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        {t?.blogManagement?.table?.status} <ArrowUpDown className="ml-2 h-4 w-4" />
                                     </Button>
                                 </TableHead>
-                                <TableHead>Author</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead>{t?.blogManagement?.table?.author}</TableHead>
+                                <TableHead>{t?.blogManagement?.table?.actions}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -282,7 +284,7 @@ export default function BlogManagement() {
                                     <TableCell colSpan={5} className="text-center py-8">
                                         <div className="flex items-center justify-center">
                                             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                                            <span className="ml-2">Loading blogs...</span>
+                                            <span className="ml-2">{t?.blogManagement?.loadingBlogs}</span>
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -290,7 +292,7 @@ export default function BlogManagement() {
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-8">
                                         <div className="text-muted-foreground">
-                                            {blogs.length === 0 ? 'No blogs found' : 'No blogs match your filters'}
+                                            {blogs.length === 0 ? t?.blogManagement?.noBlogsFound : t?.blogManagement?.noBlogsMatch}
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -298,7 +300,7 @@ export default function BlogManagement() {
                                 filteredBlogs.filter(blog => blog && blog.id).map((blog) => (
                                     <TableRow key={blog.id} className="hover:bg-muted/50">
                                         <TableCell>
-                                            <div className="font-medium">{blog.title || 'Untitled'}</div>
+                                            <div className="font-medium">{blog.title || t?.blogManagement?.untitled}</div>
                                             <div className="text-sm text-muted-foreground">
                                                 ID: #{blog.id}
                                             </div>
@@ -310,7 +312,7 @@ export default function BlogManagement() {
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-sm">
-                                                {blog.authorName || 'Unknown'}
+                                                {blog.authorName || t?.blogManagement?.unknown}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -340,18 +342,18 @@ export default function BlogManagement() {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle>Delete Blog</AlertDialogTitle>
+                                                            <AlertDialogTitle>{t?.blogManagement?.deleteTitle}</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                Are you sure you want to delete this blog? This action cannot be undone.
+                                                                {t?.blogManagement?.deleteDesc}
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogCancel>{t?.blogManagement?.cancel}</AlertDialogCancel>
                                                             <AlertDialogAction 
                                                                 onClick={() => handleDeleteBlog(blog.id)}
                                                                 className="bg-red-600 hover:bg-red-700"
                                                             >
-                                                                Delete
+                                                                {t?.blogManagement?.delete}
                                                             </AlertDialogAction>
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>
@@ -368,9 +370,7 @@ export default function BlogManagement() {
                     {pagination.totalPages > 1 && (
                         <div className="flex items-center justify-between px-2 py-4">
                             <div className="text-sm text-muted-foreground">
-                                Showing {pagination.page * pagination.size + 1} to{' '}
-                                {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} of{' '}
-                                {pagination.totalElements} blogs
+                                {t?.blogManagement?.showing} {pagination.page * pagination.size + 1} {t?.blogManagement?.to} {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} {t?.blogManagement?.of} {pagination.totalElements} {t?.blogManagement?.blogs}
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Button
@@ -379,7 +379,7 @@ export default function BlogManagement() {
                                     onClick={() => handlePageChange(pagination.page - 1)}
                                     disabled={pagination.page === 0 || loading}
                                 >
-                                    Previous
+                                    {t?.blogManagement?.previous}
                                 </Button>
                                 <div className="flex items-center space-x-1">
                                     {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -414,7 +414,7 @@ export default function BlogManagement() {
                                     onClick={() => handlePageChange(pagination.page + 1)}
                                     disabled={pagination.page >= pagination.totalPages - 1 || loading}
                                 >
-                                    Next
+                                    {t?.blogManagement?.next}
                                 </Button>
                             </div>
                         </div>
@@ -428,10 +428,10 @@ export default function BlogManagement() {
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <BookOpen className="h-5 w-5" />
-                            Blog Details
+                            {t?.blogManagement?.detailsTitle}
                         </DialogTitle>
                         <DialogDescription>
-                            Review the complete blog post details
+                            {t?.blogManagement?.detailsDesc}
                         </DialogDescription>
                     </DialogHeader>
                     
@@ -440,15 +440,15 @@ export default function BlogManagement() {
                             {/* Blog Info */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Title</label>
-                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.title || 'Untitled'}</p>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.table?.title}</label>
+                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.title || t?.blogManagement?.untitled}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Author Name</label>
-                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.authorName || 'Unknown'}</p>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.authorName}</label>
+                                    <p className="mt-1 text-sm text-gray-900">{selectedBlog.authorName || t?.blogManagement?.unknown}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Status</label>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.table?.status}</label>
                                     <div className="mt-1">
                                         <Badge variant="outline" className={getStatusBadge(selectedBlog.status)}>
                                             {formatStatus(selectedBlog.status)}
@@ -456,15 +456,15 @@ export default function BlogManagement() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Created Date</label>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.createdDate}</label>
                                     <p className="mt-1 text-sm text-gray-900">{formatDate(selectedBlog.creationDate)}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Blog ID</label>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.blogId}</label>
                                     <p className="mt-1 text-sm text-gray-900">#{selectedBlog.id}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Last Updated</label>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.lastUpdated}</label>
                                     <p className="mt-1 text-sm text-gray-900">{formatDate(selectedBlog.lastModifiedDate)}</p>
                                 </div>
                             </div>
@@ -472,7 +472,7 @@ export default function BlogManagement() {
                             {/* Thumbnail */}
                             {selectedBlog.thumbnail && (
                                 <div>
-                                    <label className="text-sm font-medium text-gray-500">Thumbnail</label>
+                                    <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.thumbnail}</label>
                                     <div className="mt-2">
                                         <img
                                             src={`${BASE_URL}/${selectedBlog.thumbnail}`} 
@@ -485,10 +485,10 @@ export default function BlogManagement() {
 
                             {/* Content */}
                             <div>
-                                <label className="text-sm font-medium text-gray-500">Blog Content</label>
+                                <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.blogContent}</label>
                                 <div 
-                                    className="mt-2 prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
-                                    dangerouslySetInnerHTML={{ __html: selectedBlog.content || 'No content available' }}
+                                className="mt-2 prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
+                                dangerouslySetInnerHTML={{ __html: selectedBlog.content || t?.blogManagement?.noContent }}
                                 />
                             </div>
                         </div>
@@ -496,7 +496,7 @@ export default function BlogManagement() {
                     
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-                            Close
+                            {t?.blogManagement?.close}
                         </Button>
                         <Button 
                             onClick={() => {
@@ -504,7 +504,7 @@ export default function BlogManagement() {
                             }}
                             className="bg-blue-600 hover:bg-blue-700"
                         >
-                            Edit Blog
+                            {t?.blogManagement?.editBlog}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

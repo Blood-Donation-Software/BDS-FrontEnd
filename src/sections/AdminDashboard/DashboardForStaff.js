@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
+import { useLanguage } from '@/context/language_context';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -142,6 +143,7 @@ const bloodTypeLabels = {
 
 export default function DashboardForStaff() {
   const [selectedTimeframe, setSelectedTimeframe] = useState('today');
+  const { t } = useLanguage();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -169,21 +171,21 @@ export default function DashboardForStaff() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Staff Dashboard</h1>
-            <p className="text-gray-600">Quản lý yêu cầu hiến máu và người hiến</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t?.dashboardStaff?.title}</h1>
+            <p className="text-gray-600">{t?.dashboardStaff?.subtitle}</p>
           </div>
           <div className="flex gap-2">
             <Button variant={selectedTimeframe === 'today' ? 'default' : 'outline'} 
                     onClick={() => setSelectedTimeframe('today')}>
-              Hôm nay
+              {t?.dashboardStaff?.today}
             </Button>
             <Button variant={selectedTimeframe === 'week' ? 'default' : 'outline'}
                     onClick={() => setSelectedTimeframe('week')}>
-              Tuần này
+              {t?.dashboardStaff?.thisWeek}
             </Button>
             <Button variant={selectedTimeframe === 'month' ? 'default' : 'outline'}
                     onClick={() => setSelectedTimeframe('month')}>
-              Tháng này
+              {t?.dashboardStaff?.thisMonth}
             </Button>
           </div>
         </div>
@@ -192,52 +194,52 @@ export default function DashboardForStaff() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tổng người hiến</CardTitle>
+              <CardTitle className="text-sm font-medium">{t?.dashboardStaff?.totalDonors}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockData.overview.totalDonors.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+12%</span> so với tháng trước
+                <span className="text-green-600">+12%</span> {t?.dashboardStaff?.comparedToLastMonth}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Người hiến hoạt động</CardTitle>
+              <CardTitle className="text-sm font-medium">{t?.dashboardStaff?.activeDonors}</CardTitle>
               <UserCheck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockData.overview.activeDonors.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">+8%</span> so với tuần trước
+                <span className="text-green-600">+8%</span> {t?.dashboardStaff?.comparedToLastWeek}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Yêu cầu hiện tại</CardTitle>
+              <CardTitle className="text-sm font-medium">{t?.dashboardStaff?.currentRequests}</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockData.overview.bloodRequests}</div>
               <div className="flex items-center space-x-2 text-xs">
-                <span className="text-red-600 font-medium">{mockData.overview.urgentRequests} khẩn cấp</span>
+                <span className="text-red-600 font-medium">{mockData.overview.urgentRequests} {t?.dashboardStaff?.urgent}</span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Thời gian phản hồi TB</CardTitle>
+              <CardTitle className="text-sm font-medium">{t?.dashboardStaff?.avgResponseTime}</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockData.overview.averageResponseTime}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">-15%</span> so với tháng trước
+                <span className="text-green-600">-15%</span> {t?.dashboardStaff?.comparedToLastMonth}
               </p>
             </CardContent>
           </Card>
@@ -250,9 +252,9 @@ export default function DashboardForStaff() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Droplet className="h-5 w-5 text-red-500" />
-                Tồn kho máu
+                {t?.dashboardStaff?.bloodInventory}
               </CardTitle>
-              <CardDescription>Trạng thái hiện tại của các nhóm máu</CardDescription>
+              <CardDescription>{t?.dashboardStaff?.bloodInventoryDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {Object.entries(mockData.bloodInventory).map(([type, data]) => (
@@ -260,9 +262,9 @@ export default function DashboardForStaff() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">{bloodTypeLabels[type]}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">{data.available} đơn vị</span>
+                      <span className="text-sm text-gray-600">{data.available} {t?.dashboardStaff?.unit}</span>
                       <Badge variant={data.available < data.critical ? 'destructive' : 'secondary'}>
-                        {data.available < data.critical ? 'Thiếu' : 'Đủ'}
+                        {data.available < data.critical ? t?.dashboardStaff?.lack : t?.dashboardStaff?.enough}
                       </Badge>
                     </div>
                   </div>
@@ -277,9 +279,9 @@ export default function DashboardForStaff() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-orange-500" />
-                Yêu cầu gần đây
+                {t?.dashboardStaff?.recentRequests}
               </CardTitle>
-              <CardDescription>Các yêu cầu hiến máu mới nhất</CardDescription>
+              <CardDescription>{t?.dashboardStaff?.recentRequestsDesc}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -310,12 +312,12 @@ export default function DashboardForStaff() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={getStatusColor(request.status)}>
-                        {request.status === 'pending' && 'Chờ xử lý'}
-                        {request.status === 'processing' && 'Đang xử lý'}
-                        {request.status === 'completed' && 'Hoàn thành'}
+                        {request.status === 'pending' && t?.dashboardStaff?.status?.pending}
+                        {request.status === 'processing' && t?.dashboardStaff?.status?.processing}
+                        {request.status === 'completed' && t?.dashboardStaff?.status?.completed}
                       </Badge>
                       <Button size="sm" variant="outline">
-                        {request.status === 'pending' ? 'Xử lý' : 'Chi tiết'}
+                        {request.status === 'pending' ? t?.dashboardStaff?.action?.process : t?.dashboardStaff?.action?.detail}
                       </Button>
                     </div>
                   </div>
@@ -332,9 +334,9 @@ export default function DashboardForStaff() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-blue-500" />
-                Người hiến gần đây
+                {t?.dashboardStaff?.nearbyDonors}
               </CardTitle>
-              <CardDescription>Danh sách người hiến trong khu vực</CardDescription>
+              <CardDescription>{t?.dashboardStaff?.nearbyDonorsDesc}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -361,18 +363,18 @@ export default function DashboardForStaff() {
                             <Navigation className="h-3 w-3" />
                             {donor.distance}
                           </span>
-                          <span>Hiến gần nhất: {donor.lastDonation}</span>
-                          <span>Phản hồi: {donor.responseRate}</span>
+                          <span>{t?.dashboardStaff?.lastDonation}: {donor.lastDonation}</span>
+                          <span>{t?.dashboardStaff?.responseRate}: {donor.responseRate}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button size="sm" variant="outline">
                         <Phone className="h-4 w-4 mr-1" />
-                        Gọi
+                        {t?.dashboardStaff?.call}
                       </Button>
                       <Button size="sm">
-                        Mời hiến
+                        {t?.dashboardStaff?.invite}
                       </Button>
                     </div>
                   </div>
@@ -386,9 +388,9 @@ export default function DashboardForStaff() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-green-500" />
-                Hoạt động hôm nay
+                {t?.dashboardStaff?.todayActivities}
               </CardTitle>
-              <CardDescription>Lịch sử hoạt động trong ngày</CardDescription>
+              <CardDescription>{t?.dashboardStaff?.todayActivitiesDesc}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -408,10 +410,10 @@ export default function DashboardForStaff() {
                         <span className="text-xs text-gray-500">{activity.time}</span>
                       </div>
                       <Badge className={`mt-1 ${getStatusColor(activity.status)} text-xs`}>
-                        {activity.status === 'completed' && 'Hoàn thành'}
-                        {activity.status === 'urgent' && 'Khẩn cấp'}
-                        {activity.status === 'processing' && 'Đang xử lý'}
-                        {activity.status === 'new' && 'Mới'}
+                        {activity.status === 'completed' && t?.dashboardStaff?.status?.completed}
+                        {activity.status === 'urgent' && t?.dashboardStaff?.status?.urgent}
+                        {activity.status === 'processing' && t?.dashboardStaff?.status?.processing}
+                        {activity.status === 'new' && t?.dashboardStaff?.status?.new}
                       </Badge>
                     </div>
                   </div>
@@ -426,26 +428,26 @@ export default function DashboardForStaff() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5 text-indigo-500" />
-              Hành động nhanh
+              {t?.dashboardStaff?.quickActions}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <AlertTriangle className="h-6 w-6 text-red-500" />
-                <span className="text-sm">Yêu cầu khẩn cấp</span>
+                <span className="text-sm">{t?.dashboardStaff?.quickActionUrgent}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Users className="h-6 w-6 text-blue-500" />
-                <span className="text-sm">Tìm người hiến</span>
+                <span className="text-sm">{t?.dashboardStaff?.quickActionFindDonor}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Droplet className="h-6 w-6 text-green-500" />
-                <span className="text-sm">Cập nhật kho</span>
+                <span className="text-sm">{t?.dashboardStaff?.quickActionUpdateInventory}</span>
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
                 <Heart className="h-6 w-6 text-pink-500" />
-                <span className="text-sm">Lịch sử hiến máu</span>
+                <span className="text-sm">{t?.dashboardStaff?.quickActionDonationHistory}</span>
               </Button>
             </div>
           </CardContent>

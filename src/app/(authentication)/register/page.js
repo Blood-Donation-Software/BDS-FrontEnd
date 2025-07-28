@@ -1,5 +1,6 @@
 'use client'
 import { loginGoogle, register } from '@/apis/auth';
+import { loginGoogle, register } from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -8,6 +9,7 @@ import Image from 'next/image';
 import { genAvatar } from '@/apis/user';
 import { useUserProfile } from '@/context/user_context';
 import { resendOtp } from '@/apis/auth';
+import { useLanguage } from '@/context/language_context';
 import { validateEmail } from '@/utils/utils';
 
 export default function RegisterPage() {
@@ -17,20 +19,21 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { t } = useLanguage();
   const router = useRouter();
 
   const handleResendOtp = async () => {
-  try {
-    if (!email) {
-      toast.warning("Vui lòng nhập email trước khi gửi lại OTP!");
-      return;
+    try {
+      if (!email) {
+        toast.warning(t?.auth?.placeholder?.email);
+        return;
+      }
+      const result = await resendOtp(email);
+      toast.success(result?.message || t?.auth?.placeholder?.OtpReSendS);
+    } catch (error) {
+      toast.error(error?.message || t?.auth?.placeholder?.OtpReSendError);
     }
-    const result = await resendOtp(email);
-    toast.success(result?.message || "Đã gửi lại OTP thành công!");
-  } catch (error) {
-    toast.error(error?.message || "Gửi lại OTP thất bại!");
-  }
-};
+  };
     const handleLoginGoogle = async () => {
       await loginGoogle();
     }
@@ -41,6 +44,7 @@ export default function RegisterPage() {
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
       reader.onloadend = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
@@ -59,11 +63,11 @@ export default function RegisterPage() {
   }, [loggedIn, router, account]);
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      toast.warning("Fields must not be bank!");
+      toast.warning(t?.auth?.placeholder?.blank);
       return;
     }
     if (password !== confirmPassword) {
-      toast.warning("Password does not match!");
+      toast.warning(t?.auth?.placeholder?.passwordMismatch);
       return;
     }
     if (!validateEmail(email)) {
@@ -90,13 +94,13 @@ export default function RegisterPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Đăng Ký</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">{t?.navbar?.register}</h1>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Họ và Tên</label>
+          <label className="block text-sm font-medium mb-1">{t?.auth?.fullName}</label>
           <input
             type="text"
-            placeholder="VD: Nguyễn Văn A"
+            placeholder={t?.example?.nameExample}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -107,7 +111,7 @@ export default function RegisterPage() {
           <label className="block text-sm font-medium mb-1">Email</label>
           <input
             type="email"
-            placeholder="Vui lòng nhập email"
+            placeholder={t?.message?.plsE}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -115,10 +119,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Mật Khẩu</label>
+          <label className="block text-sm font-medium mb-1">{t?.auth?.password}</label>
           <input
             type="password"
-            placeholder="Nhập mật khẩu"
+            placeholder={t?.example?.enterPassword}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -126,10 +130,10 @@ export default function RegisterPage() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Xác nhận mật khẩu</label>
+          <label className="block text-sm font-medium mb-1">{t?.auth?.confirmPassword}</label>
           <input
             type="password"
-            placeholder="Nhập lại mật khẩu"
+            placeholder={t?.auth?.confirmPassword}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg"
@@ -144,20 +148,21 @@ export default function RegisterPage() {
           {loading ? (
             <Loader2 className="animate-spin w-5 h-5" />
           ) : (
-            'Tạo tài khoản'
+            t?.auth?.createAccount
           )}
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
           <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50" onClick={handleLoginGoogle}>
+          <button className="w-full border border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50" onClick={handleLoginGoogle}>
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
-            <span>Đăng ký qua Google</span>
+            <span>{t?.auth?.registerWithGoogle}</span>
           </button>
         </div>
 
         <p className="text-sm text-center">
-          Đã có tài khoản?{' '}
-          <a href="/login" className="text-blue-600 hover:underline">Đăng nhập ngay</a>
+          {t?.auth?.alreadyhadAccount}{' '}
+          <a href="/login" className="text-blue-600 hover:underline">{t?.auth?.loginNow}</a>
         </p>
       </div>
     </div>

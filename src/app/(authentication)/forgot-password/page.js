@@ -14,7 +14,7 @@ export default function ForgotPasswordPage() {
   const handleForgot = async (e) => {
     e.preventDefault();
     if (!email) {
-      toast.warning("Vui lòng nhập email");
+      toast.warning(dictionary?.messages?.plsE);
       return;
     }
     setLoading(true);
@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="w-full max-w-sm bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center">Quên mật khẩu</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">{dictionary?.auth?.forgotPassword}</h1>
         <form onSubmit={handleForgot}>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Email</label>

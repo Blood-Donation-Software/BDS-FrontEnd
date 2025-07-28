@@ -9,12 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { MoreVertical, Plus, Search, ArrowUpDown, CalendarIcon } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { MoreVertical, Plus, Search, ArrowUpDown, CalendarIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { addToStock, checkStock, deleteStock } from '@/apis/bloodStock'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import { useLanguage } from '@/context/language_context'
 
 // Blood type and component mappings
 const bloodTypeMap = {
@@ -38,6 +42,7 @@ const componentTypeMap = {
   PLASMA: "Plasma",
   PLATELETS: "Platelets",
   RED_BLOOD_CELLS: "Red Blood Cells"
+  RED_BLOOD_CELLS: "Red Blood Cells"
 }
 
 const componentTypeOptions = Object.entries(componentTypeMap).map(([value, label]) => ({
@@ -46,6 +51,7 @@ const componentTypeOptions = Object.entries(componentTypeMap).map(([value, label
 }))
 
 export default function BloodStockManagement() {
+  const { t } = useLanguage()
   const [bloodStock, setBloodStock] = useState([])
   const [filteredStock, setFilteredStock] = useState([])
   const [loading, setLoading] = useState(true)
@@ -64,6 +70,7 @@ export default function BloodStockManagement() {
     bloodType: '',
     componentType: '',
     quantity: 1,
+    expiryDate: null
     expiryDate: null
   })
 
@@ -92,6 +99,7 @@ export default function BloodStockManagement() {
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase()
       result = result.filter(unit =>
+      result = result.filter(unit =>
         bloodTypeMap[unit.bloodType].toLowerCase().includes(searchTerm) ||
         componentTypeMap[unit.componentType].toLowerCase().includes(searchTerm)
       )
@@ -110,6 +118,8 @@ export default function BloodStockManagement() {
       result = result.filter(unit => {
         const expiryDate = new Date(unit.expiryDate)
         const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24))
+
+        switch (filters.expiryStatus) {
 
         switch (filters.expiryStatus) {
           case 'expired': return diffDays < 0
@@ -151,19 +161,19 @@ export default function BloodStockManagement() {
     const diffTime = expiry - today
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    if (diffDays < 0) return { status: "Expired", variant: "destructive" }
-    if (diffDays <= 7) return { status: "Critical", variant: "destructive" }
-    if (diffDays <= 30) return { status: "Warning", variant: "warning" }
-    return { status: "Good", variant: "success" }
+    if (diffDays < 0) return { status: t?.StockView?.status?.expired, variant: "destructive" }
+    if (diffDays <= 7) return { status: t?.StockView?.status?.critical, variant: "destructive" }
+    if (diffDays <= 30) return { status: t?.StockView?.status?.warning, variant: "warning" }
+    return { status: t?.StockView?.status?.good, variant: "success" }
   }
 
   const handleDelete = async (id) => {
     try {
       await deleteStock(id)
       setBloodStock(bloodStock.filter(item => item.id !== id))
-      toast.success('Blood unit deleted successfully!')
+      toast.success(t?.StockView?.delete?.Success)
     } catch (error) {
-      toast.error('Failed to delete blood unit. Please try again.')
+      toast.error(t?.StockView?.delete?.Error)
     }
   }
 
@@ -181,7 +191,7 @@ export default function BloodStockManagement() {
     
     // Validate that all required fields are filled
     if (!addForm.bloodType || !addForm.componentType || !addForm.quantity || !addForm.expiryDate) {
-      toast.error('Please fill in all required fields including expiry date.')
+      toast.error(t?.StockView?.add?.error?.missingFields)
       return
     }
     
@@ -193,8 +203,9 @@ export default function BloodStockManagement() {
           componentType: addForm.componentType,
           volume: Number(addForm.quantity),
           expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd')
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd')
         })
-        toast.success('Blood unit added successfully!')
+        toast.success(t?.StockView?.add?.success)
       } else {
         // Fallback: just add locally
         const newUnit = {
@@ -203,10 +214,11 @@ export default function BloodStockManagement() {
           componentType: addForm.componentType,
           quantity: Number(addForm.quantity),
           expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd'),
+          expiryDate: format(addForm.expiryDate, 'yyyy-MM-dd'),
           volume: Number(addForm.quantity) * 450
         }
         setBloodStock([newUnit, ...bloodStock])
-        toast.success('Blood unit added locally!')
+        toast.success(t?.StockView?.add?.fallback?.success)
       }
       setAddDialogOpen(false)
       setAddForm({
@@ -214,17 +226,18 @@ export default function BloodStockManagement() {
         componentType: '',
         quantity: 1,
         expiryDate: null
+        expiryDate: null
       })
     } catch (error) {
       if (error?.message?.includes('Row was updated or deleted by another transaction')) {
-        toast.error('Failed to add: The stock record was changed or deleted. Please refresh and try again.')
+        toast.error(t?.StockView?.add?.error?.optimisticLock)
       } else {
-        toast.error('Failed to add blood unit. Please try again.')
+        toast.error(t?.StockView?.add?.error?.generic)
       }
     }
   }
 
-  if (loading) return <div className="container mx-auto px-4 py-8">Loading blood stock...</div>
+  if (loading) return <div className="container mx-auto px-4 py-8">{t?.StockView?.loading}</div>
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -232,27 +245,27 @@ export default function BloodStockManagement() {
       <Card className="mb-6">
         <CardHeader className="flex justify-between">
           <div>
-            <CardTitle>Filters</CardTitle>
-            <CardDescription>Filter blood units by specific criteria</CardDescription>
+            <CardTitle>{t?.StockView?.filters?.title}</CardTitle>
+            <CardDescription>{t?.StockView?.filters?.description}</CardDescription>
           </div>
           <div className="flex justify-between items-center">
             <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={() => setAddDialogOpen(true)}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Blood Unit
+                  {t?.StockView?.add?.button}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add Blood Unit</DialogTitle>
+                  <DialogTitle>{t?.StockView?.add?.button}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleAddSubmit} className="space-y-5">
                   <div className='space-y-3'>
-                    <Label htmlFor="bloodType">Blood Type</Label>
+                    <Label htmlFor="bloodType">{t?.user?.blood_type}</Label>
                     <Select value={addForm.bloodType} onValueChange={(v) => handleAddSelect('bloodType', v)}>
                       <SelectTrigger id="bloodType">
-                        <SelectValue placeholder="Select blood type" />
+                        <SelectValue placeholder={t?.user?.blood_type} />
                       </SelectTrigger>
                       <SelectContent>
                         {bloodTypeOptions.map((type) => (
@@ -264,7 +277,7 @@ export default function BloodStockManagement() {
                     </Select>
                   </div>
                   <div className='space-y-3'>
-                    <Label htmlFor="componentType">Component Type</Label>
+                    <Label htmlFor="componentType">{t?.StockView?.add?.componeetType?.label}</Label>
                     <Select value={addForm.componentType} onValueChange={(v) => handleAddSelect('componentType', v)}>
                       <SelectTrigger id="componentType">
                         <SelectValue placeholder="Select component" />
@@ -279,7 +292,7 @@ export default function BloodStockManagement() {
                     </Select>
                   </div>
                   <div className='space-y-3'>
-                    <Label htmlFor="quantity">Quantity</Label>
+                    <Label htmlFor="quantity"></Label>
                     <Input
                       id="quantity"
                       name="quantity"
@@ -291,7 +304,7 @@ export default function BloodStockManagement() {
                     />
                   </div>
                   <div className='space-y-3'>
-                    <Label htmlFor="expiryDate">Expiry Date</Label>
+                    <Label htmlFor="expiryDate">{t?.StockView?.add?.expiryDate?.label}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -299,7 +312,7 @@ export default function BloodStockManagement() {
                           className="w-full justify-start text-left font-normal"
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {addForm.expiryDate ? format(addForm.expiryDate, "PPP") : "Select expiry date"}
+                          {addForm.expiryDate ? format(addForm.expiryDate, "PPP") : t?.StockView?.add?.expiryDate?.placeholder}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -314,7 +327,7 @@ export default function BloodStockManagement() {
                     </Popover>
                   </div>
                   <DialogFooter>
-                    <Button type="submit">Add</Button>
+                    <Button type="submit">{t?.StockView?.add?.submit}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -324,21 +337,26 @@ export default function BloodStockManagement() {
         <CardContent>
           <div className="flex md:flex-row flex-col gap-4 items-center">
             <div className="relative flex-1/2">
+          <div className="flex md:flex-row flex-col gap-4 items-center">
+            <div className="relative flex-1/2">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search blood units..."
+                placeholder={t?.StockView?.filters?.search_placeholder}
                 className="pl-8"
                 value={filters.search}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               />
             </div>
 
             <Select value={filters.bloodType} onValueChange={(v) => setFilters({ ...filters, bloodType: v })}>
+
+            <Select value={filters.bloodType} onValueChange={(v) => setFilters({ ...filters, bloodType: v })}>
               <SelectTrigger>
-                <SelectValue placeholder="All blood types" />
+                <SelectValue placeholder={t?.StockView?.filters?.bloodType} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="*">All blood types</SelectItem>
+                <SelectItem value="*">{t?.StockView?.filters?.bloodType}</SelectItem>
                 {bloodTypeOptions.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
@@ -348,11 +366,12 @@ export default function BloodStockManagement() {
             </Select>
 
             <Select value={filters.componentType} onValueChange={(v) => setFilters({ ...filters, componentType: v })}>
+            <Select value={filters.componentType} onValueChange={(v) => setFilters({ ...filters, componentType: v })}>
               <SelectTrigger>
-                <SelectValue placeholder="All components" />
+                <SelectValue placeholder={t?.StockView?.filters?.componentType} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="*">All components</SelectItem>
+                <SelectItem value="*">{t?.StockView?.filters?.componentType}</SelectItem>
                 {componentTypeOptions.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
@@ -362,15 +381,16 @@ export default function BloodStockManagement() {
             </Select>
 
             <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({ ...filters, expiryStatus: v })}>
+            <Select value={filters.expiryStatus} onValueChange={(v) => setFilters({ ...filters, expiryStatus: v })}>
               <SelectTrigger>
                 <SelectValue placeholder="All expiry status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="*">All status</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
-                <SelectItem value="critical">Critical (≤7 days)</SelectItem>
-                <SelectItem value="warning">Warning (≤30 days)</SelectItem>
-                <SelectItem value="good">Good (&gt;30 days)</SelectItem>
+                <SelectItem value="*">{t?.StockView?.filters?.expiryStatus}</SelectItem>
+                <SelectItem value="expired">{t?.StockView?.filters?.expired}</SelectItem>
+                <SelectItem value="critical">{t?.StockView?.filters?.critical}</SelectItem>
+                <SelectItem value="warning">{t?.StockView?.filters?.warning}</SelectItem>
+                <SelectItem value="good">{t?.StockView?.filters?.good}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -380,9 +400,9 @@ export default function BloodStockManagement() {
       {/* Blood Stock Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Blood Stock Inventory</CardTitle>
+          <CardTitle>{t?.StockView?.table?.title}</CardTitle>
           <CardDescription>
-            Total units: {filteredStock.length}
+            {t?.StockView?.table?.total} {filteredStock.length}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -390,49 +410,59 @@ export default function BloodStockManagement() {
             <TableHeader>
               <TableRow>
                 <TableHead
+                <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('bloodType')}
                 >
-                  Blood Type
+                  {t?.StockView?.table?.headers?.bloodType}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('componentType')}
                 >
-                  Component
+                  {t?.StockView?.table?.headers?.component}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('quantity')}
                 >
-                  Quantity
+                  {t?.StockView?.table?.headers?.quantity}  
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('volume')}
                 >
-                  Volume (ml)
+                  {t?.StockView?.table?.headers?.volume}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
+                <TableHead
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('expiryDate')}
                 >
-                  Expiry Date
+                  {t?.StockView?.table?.headers?.expiryDate}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>
+                  {t?.StockView?.table?.headers?.status}
+                  <ArrowUpDown className="ml-2 h-4 w-4 inline" />
+                </TableHead>
+                <TableHead>
+                  {t?.StockView?.table?.headers?.actions}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredStock.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
-                    No blood units found matching your criteria.
+                    {t?.StockView?.table?.no_results}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -466,7 +496,7 @@ export default function BloodStockManagement() {
                               onClick={() => handleDelete(unit.id)}
                               className="text-red-600"
                             >
-                              Delete
+                              {t?.StockView?.table?.actions?.delete}  
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

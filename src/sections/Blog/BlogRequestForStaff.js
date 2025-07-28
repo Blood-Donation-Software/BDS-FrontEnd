@@ -12,6 +12,7 @@ import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import { getMyBlogRequests, getMyBlogRequestById } from '@/apis/blog'
 import { BASE_URL } from '@/global-config'
+import { useLanguage } from '@/context/language_context'
 
 const statusOptions = [
   { value: 'ALL', label: 'All Statuses' },
@@ -58,6 +59,7 @@ const formatCrudType = (crudType) => {
 }
 
 export default function BlogRequestForStaff() {
+  const { t } = useLanguage()
   const [requests, setRequests] = useState([])
   const [filteredRequests, setFilteredRequests] = useState([])
   const [loading, setLoading] = useState(true)
@@ -201,15 +203,15 @@ export default function BlogRequestForStaff() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5" />
-                My Blog Requests
+                {t?.staffblogRequest?.title}
               </CardTitle>
               <CardDescription>
-                View and track your blog post submissions ({pagination.totalElements} total)
+                  {t?.staffblogRequest?.description}({pagination.totalElements})
               </CardDescription>
             </div>
             <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
               <RefreshCw className="h-4 w-4 mr-2" />
-              {loading ? 'Loading...' : 'Refresh'}
+              {loading ? t?.staffBlogRequest?.refreshing : t?.staffBlogRequest?.refresh}
             </Button>
           </div>
         </CardHeader>
@@ -223,7 +225,7 @@ export default function BlogRequestForStaff() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search blog requests..."
+                placeholder= {t?.staffBlogRequest?.search_placeholder}
                 className="pl-10"
                 value={filters.search}
                 onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
@@ -265,7 +267,7 @@ export default function BlogRequestForStaff() {
               )}
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Requests per page:</span>
+              <span className="text-sm text-muted-foreground">{t?.staffBlogRequest?.requests_per_page}</span>
               <Select
                 value={pagination.size.toString()}
                 onValueChange={handlePageSizeChange}
@@ -288,21 +290,25 @@ export default function BlogRequestForStaff() {
             <TableRow>
               <TableHead>
                 <Button variant="ghost" onClick={() => handleSort('blog.title')}>
-                  Title <ArrowUpDown className="ml-2 h-4 w-4" />
+                  {t?.stafBlogRequest?.field_title} <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>
                 <Button variant="ghost" onClick={() => handleSort('status')}>
-                  Status <ArrowUpDown className="ml-2 h-4 w-4" />
+                  {t?.stafBlogRequest?.field_status} <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
               <TableHead>
                 <Button variant="ghost" onClick={() => handleSort('crudType')}>
-                  Request Type <ArrowUpDown className="ml-2 h-4 w-4" />
+                  {t?.stafBlogRequest?.field_request_Type} <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
               </TableHead>
-              <TableHead>Content Preview</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>
+                {t?.stafBlogRequest?.content_Preview}
+              </TableHead>
+              <TableHead>
+                {t?.stafBlogRequest?.actions}
+              </TableHead>
             </TableRow>
           </TableHeader>            
           <TableBody>
@@ -311,7 +317,7 @@ export default function BlogRequestForStaff() {
                   <TableCell colSpan={5} className="text-center py-8">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                      <span className="ml-2">Loading requests...</span>
+                      <span className="ml-2">{t?.stafBlogRequest?.loading_requests}</span>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -319,7 +325,7 @@ export default function BlogRequestForStaff() {
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8">
                     <div className="text-muted-foreground">
-                      {requests.length === 0 ? 'No blog requests found' : 'No requests match your filters'}
+                      {requests.length === 0 ? t?.stafBlogRequest?.no_requests_found : t?.stafBlogRequest?.no_requests_filtered}
                     </div>
                   </TableCell>
                 </TableRow>) : (filteredRequests.filter(request => request && request.id).map((request) => {
@@ -328,7 +334,7 @@ export default function BlogRequestForStaff() {
                       <TableCell>
                         <div className="font-medium">{request.blog?.title || 'Untitled'}</div>
                         <div className="text-sm text-muted-foreground">
-                          Request ID: #{request.id}
+                          {t?.stafBlogRequest?.request_id} #{request.id}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -370,9 +376,9 @@ export default function BlogRequestForStaff() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between px-2 py-4">
               <div className="text-sm text-muted-foreground">
-                Showing {pagination.page * pagination.size + 1} to{' '}
+                {t?.staffblogRequest?.showing} {pagination.page * pagination.size + 1} {t?.staffblogRequest?.to}{' '}
                 {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} of{' '}
-                {pagination.totalElements} requests
+                {pagination.totalElements} {t?.staffblogRequest?.request}
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -381,7 +387,7 @@ export default function BlogRequestForStaff() {
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page === 0 || loading}
                 >
-                  Previous
+                  {t?.staffBlogRequest?.previous}
                 </Button>
                 <div className="flex items-center space-x-1">
                   {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -416,7 +422,7 @@ export default function BlogRequestForStaff() {
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page >= pagination.totalPages - 1 || loading}
                 >
-                  Next
+                  {t?.staffBlogRequest?.next}
                 </Button>
               </div>
             </div>
@@ -447,11 +453,11 @@ export default function BlogRequestForStaff() {
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Title</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.blogManagement?.table?.title}</label>
                   <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog?.title || 'Untitled'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Request Status</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_request_status}</label>
                   <div className="mt-1">
                     <Badge variant="outline" className={getStatusBadge(selectedRequest.status)}>
                       {selectedRequest.status}
@@ -459,19 +465,19 @@ export default function BlogRequestForStaff() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Request Type</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_request_type}</label>
                   <div className="mt-1">
                     <Badge variant="outline" className={getCrudTypeBadge(selectedRequest.crudType)}>
                       {formatCrudType(selectedRequest.crudType)}
-                    </Badge>
+                    </Badge>  
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Request ID</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_request_id}</label>
                   <p className="mt-1 text-sm text-gray-900">#{selectedRequest.id}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Blog Status</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_blog_status}</label>
                   <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog?.status || 'N/A'}</p>
                 </div>
               </div>
@@ -479,7 +485,7 @@ export default function BlogRequestForStaff() {
               {/* Thumbnail */}
               {selectedRequest.blog?.thumbnail && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Thumbnail</label>
+                  <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_thumbnail}</label>
                   <div className="mt-2">
                     <img
                       src={`${BASE_URL}/${selectedRequest.blog.thumbnail}`}
@@ -492,18 +498,18 @@ export default function BlogRequestForStaff() {
 
               {/* Content */}
               <div>
-                <label className="text-sm font-medium text-gray-500">Blog Content</label>
+                <label className="text-sm font-medium text-gray-500">{t?.staffBlogRequest?.field_blog_content}</label>
                 <div
                   className="mt-2 prose prose-sm max-w-none border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
                   dangerouslySetInnerHTML={{ __html: selectedRequest.blog?.content || 'No content available' }}
                 />
               </div>
             </div>
-          )}
+          )} 
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
-              Close
+              {t?.staffBlogRequest?.close}
             </Button>
           </DialogFooter>
         </DialogContent>
