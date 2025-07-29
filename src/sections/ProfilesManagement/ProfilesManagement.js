@@ -12,7 +12,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { getAllProfile, updateProfile, createProfile, getDonationHistoryById } from '@/apis/user';
+import { getAllProfile, updateProfile, createProfile, getDonationHistoryById, getDonationHistoryByProfileId } from '@/apis/user';
 import {
     Dialog,
     DialogClose,
@@ -125,7 +125,7 @@ const DialogForm = React.memo(({
                                 onValueChange={(value) => onSelectChange('blood_type', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select blood type" />
+                                    <SelectValue placeholder={t.profileManagement.SelectBloodType} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="A_POSITIVE">A+</SelectItem>
@@ -146,7 +146,7 @@ const DialogForm = React.memo(({
                                 onValueChange={(value) => onSelectChange('gender', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select gender" />
+                                    <SelectValue placeholder={t.profileManagement.SelectGender} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="MALE">{t.profileManagement.Male}</SelectItem>
@@ -161,7 +161,7 @@ const DialogForm = React.memo(({
                                 onValueChange={(value) => onSelectChange('city', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select city/province" />
+                                    <SelectValue placeholder={t.profileManagement.SelectCityProvince} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {vietnamProvinces.map((province, index) => (
@@ -180,7 +180,7 @@ const DialogForm = React.memo(({
                                 disabled={availableDistricts.length === 0}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder={t.profileManagement.District} />
+                                    <SelectValue placeholder={t.profileManagement.SelectDistrict} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {availableDistricts.map((district, index) => (
@@ -199,7 +199,7 @@ const DialogForm = React.memo(({
                                 disabled={availableWards.length === 0}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder="Select ward" />
+                                    <SelectValue placeholder={t.profileManagement.SelectWard} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {availableWards.map((ward, index) => (
@@ -227,7 +227,7 @@ const DialogForm = React.memo(({
                                 onValueChange={(value) => onSelectChange('status', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
-                                    <SelectValue placeholder={t.profileManagement.Status} />
+                                    <SelectValue placeholder={t.profileManagement.SelectStatus} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="AVAILABLE">{t.profileManagement.Available}</SelectItem>
@@ -514,13 +514,13 @@ export default function ProfilesManagement() {
     // Handle opening history dialog
     const handleViewHistoryDialog = async (profileId) => {
         try {
-            const response = await getDonationHistoryById(profileId);
+            const response = await getDonationHistoryByProfileId(profileId);
             setSelectedHistory(response.content);
             console.log('Donation history:', response.content);
         }
         catch (error) {
             console.error('Error fetching donation history:', error);
-            alert('Failed to fetch donation history. Please try again.');
+            alert(t.profileManagement.alerts.failedToFetchDonationHistory);
         }
     };
 
@@ -559,10 +559,10 @@ export default function ProfilesManagement() {
             // Close dialog and reset form state
             handleCloseCreateDialog();
 
-            alert('Profile created successfully!');
+            alert(t.profileManagement.alerts.profileCreatedSuccessfully);
         } catch (error) {
             console.error('Error creating profile:', error);
-            alert('Failed to create profile. Please try again.');
+            alert(t.profileManagement.alerts.failedToCreateProfile);
         } finally {
             setLoading(false);
         }
@@ -609,10 +609,10 @@ export default function ProfilesManagement() {
             // Close dialog and reset form state
             handleCloseUpdateDialog();
 
-            alert('Profile updated successfully!');
+            alert(t.profileManagement.alerts.profileUpdatedSuccessfully);
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Failed to update profile. Please try again.');
+            alert(t.profileManagement.alerts.failedToUpdateProfile);
         } finally {
             setLoading(false);
         }
@@ -622,7 +622,7 @@ export default function ProfilesManagement() {
         if (!status) {
             return (
                 <Badge variant="secondary" className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold">
-                    NO STATUS
+                    {t.profileManagement.statusBadges.NoStatus}
                 </Badge>
             );
         }
@@ -632,44 +632,43 @@ export default function ProfilesManagement() {
             case 'available':
                 return (
                     <Badge variant="default" className="bg-green-200 hover:bg-green-300 text-green-900 font-bold">
-                        AVAILABLE
+                        {t.profileManagement.statusBadges.AvailableForDonate}
                     </Badge>
                 );
             case 'unavailable':
                 return (
                     <Badge variant="secondary" className="bg-red-200 hover:bg-red-300 text-red-900 font-bold">
-                        UNAVAILABLE
+                        {t.profileManagement.statusBadges.UnavailableForDonate}
                     </Badge>
                 );
             case 'pending':
                 return (
                     <Badge variant="secondary" className="bg-yellow-200 hover:bg-yellow-300 text-yellow-900 font-bold">
-                        PENDING
+                        {t.profileManagement.statusBadges.Pending}
                     </Badge>
                 );
             case 'cancelled':
                 return (
                     <Badge variant="secondary" className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold">
-                        CANCELLED
+                        {t.profileManagement.statusBadges.Cancelled}
                     </Badge>
                 );
             case 'completed':
                 return (
                     <Badge variant="default" className="bg-blue-200 hover:bg-blue-300 text-blue-900 font-bold">
-                        COMPLETED
+                        {t.profileManagement.statusBadges.Completed}
                     </Badge>
                 );
             case 'rejected':
                 return (
                     <Badge variant="secondary" className="bg-red-200 hover:bg-red-300 text-red-900 font-bold">
-                        REJECTED
+                        {t.profileManagement.statusBadges.Rejected}
                     </Badge>
                 );
-            case 'checked_in':
             case 'checked in':
                 return (
                     <Badge variant="default" className="bg-purple-200 hover:bg-purple-300 text-purple-900 font-bold">
-                        CHECKED IN
+                        {t.profileManagement.statusBadges.CheckedIn}
                     </Badge>
                 );
             default:
@@ -687,7 +686,7 @@ export default function ProfilesManagement() {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
+        if (!dateString) return t.profileManagement.NotAvailable;
         // If date is in dd-MM-yyyy format, convert to display format
         const parts = dateString.split('-');
         if (parts.length === 3) {
@@ -740,7 +739,7 @@ export default function ProfilesManagement() {
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                             <Input
                                 type="text"
-                                placeholder="Search by name, phone, ID, city, or blood type..."
+                                placeholder={t.profileManagement.SearchPlaceholder}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pl-10 pr-4"
@@ -761,7 +760,7 @@ export default function ProfilesManagement() {
                                     size="default"
                                 >
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Add new Profile
+                                    {t.profileManagement.AddNewProfile}
                                 </Button>
                             </DialogTrigger>
                             <DialogForm
@@ -815,21 +814,21 @@ export default function ProfilesManagement() {
                                                         {profile.name}
                                                     </div>
                                                     <div className="text-sm text-gray-500">
-                                                        {profile.personalId || 'No ID'}
+                                                        {profile.personalId || t.profileManagement.NoID}
                                                     </div>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-sm text-gray-900">{formatDate(profile.dateOfBirth) || 'N/A'}</span>
+                                            <span className="text-sm text-gray-900">{formatDate(profile.dateOfBirth) || t.profileManagement.NotAvailable}</span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="text-sm font-medium text-red-600">{formatBloodType(profile.bloodType) || 'N/A'}</span>
+                                            <span className="text-sm font-medium text-red-600">{formatBloodType(profile.bloodType) || t.profileManagement.NotAvailable}</span>
                                         </TableCell>
                                         <TableCell>
                                             <div className="space-y-1">
-                                                <div className="text-sm text-gray-900">{profile.phone || 'N/A'}</div>
-                                                <div className="text-sm text-gray-500">{profile.city || 'N/A'}</div>
+                                                <div className="text-sm text-gray-900">{profile.phone || t.profileManagement.NotAvailable}</div>
+                                                <div className="text-sm text-gray-500">{profile.city || t.profileManagement.NotAvailable}</div>
                                             </div>
                                         </TableCell>
                                         <TableCell>

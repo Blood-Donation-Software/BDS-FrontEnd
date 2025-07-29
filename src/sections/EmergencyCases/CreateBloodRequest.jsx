@@ -46,7 +46,10 @@ export default function CreateBloodRequest() {
     componentRequests: [],
     medicalConditions: [],
     additionalMedicalInformation: "",
-    additionalNotes: ""
+    additionalNotes: "",
+    pregnant: false,
+    disabled: false,
+    haveServed: false
   });
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -349,6 +352,13 @@ export default function CreateBloodRequest() {
     }));
   };
 
+  const handleSpecialCondition = (field, checked) => {
+    setBloodRequests((prev) => ({
+      ...prev,
+      [field]: checked,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -368,7 +378,10 @@ export default function CreateBloodRequest() {
       // Convert selected medical conditions to enum values for backend
       medicalConditions: bloodRequest.medicalConditions.map(c => c.enumValue),
       additionalMedicalInformation: bloodRequest.additionalMedicalInformation,
-      additionalNotes: bloodRequest.additionalNotes
+      additionalNotes: bloodRequest.additionalNotes,
+      pregnant: bloodRequest.pregnant,
+      disabled: bloodRequest.disabled,
+      haveServed: bloodRequest.haveServed
     };
 
     // If it's a new profile, include the profile data instead of profileId
@@ -1028,7 +1041,7 @@ export default function CreateBloodRequest() {
 
           {/* Component Selection with Volumes */}
           <div className="space-y-4">
-            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.components?.label}</Label>
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.components?.label} (ml)</Label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {bloodComponents.map((component) => {
                 const existing = bloodRequest.componentRequests.find(c => c.componentType === component.value);
@@ -1137,6 +1150,54 @@ export default function CreateBloodRequest() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Special Conditions */}
+          <div className="space-y-3">
+            <Label className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.bloodRequest?.specialConditions?.label}</Label>
+            <div className="flex flex-wrap gap-4">
+              {/* Pregnant */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="pregnant"
+                  checked={bloodRequest.pregnant}
+                  onChange={(e) => handleSpecialCondition('pregnant', e.target.checked)}
+                  className="h-3 w-3 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <Label htmlFor="pregnant" className="text-sm text-gray-700 cursor-pointer">
+                  {t?.createBloodRequest?.bloodRequest?.specialConditions?.isPregnant}
+                </Label>
+              </div>
+
+              {/* Disabled */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="disabled"
+                  checked={bloodRequest.disabled}
+                  onChange={(e) => handleSpecialCondition('disabled', e.target.checked)}
+                  className="h-3 w-3 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <Label htmlFor="disabled" className="text-sm text-gray-700 cursor-pointer">
+                  {t?.createBloodRequest?.bloodRequest?.specialConditions?.isDisabled}
+                </Label>
+              </div>
+
+              {/* Military Service */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="haveServed"
+                  checked={bloodRequest.haveServed}
+                  onChange={(e) => handleSpecialCondition('haveServed', e.target.checked)}
+                  className="h-3 w-3 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                />
+                <Label htmlFor="haveServed" className="text-sm text-gray-700 cursor-pointer">
+                  {t?.createBloodRequest?.bloodRequest?.specialConditions?.haveServed}
+                </Label>
+              </div>
             </div>
           </div>
 
@@ -1252,8 +1313,28 @@ export default function CreateBloodRequest() {
                   <strong>{t?.createBloodRequest?.confirmDialog?.medicalConditions}:</strong>
                   <ul className="list-disc list-inside ml-4 mt-1">
                     {bloodRequest.medicalConditions.map((condition, index) => (
-                      <li key={index}>{condition.condition}</li>
+                      <li key={index}>
+                        {condition.condition || 
+                         condition.enumValue?.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) ||
+                         'Medical Condition'}
+                      </li>
                     ))}
+                  </ul>
+                </div>
+              )}
+              {(bloodRequest.pregnant || bloodRequest.disabled || bloodRequest.haveServed) && (
+                <div>
+                  <strong>{t?.createBloodRequest?.confirmDialog?.specialConditions}:</strong>
+                  <ul className="list-disc list-inside ml-4 mt-1">
+                    {bloodRequest.pregnant && (
+                      <li>{t?.createBloodRequest?.bloodRequest?.specialConditions?.isPregnant}</li>
+                    )}
+                    {bloodRequest.disabled && (
+                      <li>{t?.createBloodRequest?.bloodRequest?.specialConditions?.isDisabled}</li>
+                    )}
+                    {bloodRequest.haveServed && (
+                      <li>{t?.createBloodRequest?.bloodRequest?.specialConditions?.haveServed}</li>
+                    )}
                   </ul>
                 </div>
               )}

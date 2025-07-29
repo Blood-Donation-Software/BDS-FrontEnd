@@ -1280,6 +1280,10 @@
     "needed_date": "Ngày cần",
     "components_needed": "Thành phần máu cần thiết",
     "disease_status": "Tình trạng bệnh lý",
+    "special_conditions": "Trường hợp đặc biệt",
+    "pregnant_patient": "Bệnh nhân mang thai",
+    "disabled_patient": "Bệnh nhân khuyết tật",
+    "military_veteran": "Cựu chiến binh",
     "additional_info": "Thông tin bổ sung",
     "medical_info": "Thông tin y tế",
     "notes": "Ghi chú",
@@ -1494,6 +1498,13 @@
         "traumaAndMajorSurgery": "Chấn thương và phẫu thuật lớn (High)",
         "others": "Khác"
       },
+      "specialConditions": {
+        "label": "Trường hợp đặc biệt",
+        "description": "Vui lòng cho biết nếu bệnh nhân có bất kỳ Trường hợp đặc biệt nào sau đây",
+        "isPregnant": "Bệnh nhân mang thai",
+        "isDisabled": "Bệnh nhân khuyết tật",
+        "haveServed": "Cựu chiến binh"
+      },
       "additionalInfo": "Thông tin y tế bổ sung",
       "notes": "Ghi chú bổ sung"
     },
@@ -1514,6 +1525,7 @@
       "componentsRequested": "Thành phần Yêu cầu",
       "volume": "Thể tích",
       "medicalConditions": "Tình trạng Y tế",
+      "specialConditions": "Trường hợp đặc biệt",
       "additionalMedicalInfo": "Thông tin Y tế Bổ sung",
       "cancel": "Hủy",
       "creating": "Đang tạo Yêu cầu",
@@ -1556,6 +1568,30 @@
       "traumaAndMajorSurgeryDesc": "Tai nạn giao thông, mổ tim gan, mất máu nhiều",
       "othersDesc": "Các tình trạng y tế khác cần hỗ trợ truyền máu"
     },
+
+    "bloodRequestDetails": {
+      "title": "Chi tiết yêu cầu",
+      "patientName": "Tên bệnh nhân",
+      "personalId": "Số CMND/CCCD",
+      "phone": "Điện thoại",
+      "patientBloodType": "Nhóm máu bệnh nhân",
+      "address": "Địa chỉ",
+      "requestedBloodType": "Nhóm máu yêu cầu",
+      "urgency": "Mức độ khẩn cấp",
+      "created": "Ngày tạo",
+      "requiredDate": "Ngày cần",
+      "specialCases": "Trường hợp đặc biệt",
+      "pregnant": "Có thai",
+      "servedCountry": "Từng phục vụ đất nước",
+      "disabled": "Khuyết tật",
+      "none": "Không có",
+      "medicalConditions": "Tình trạng y tế",
+      "additionalMedicalInformation": "Thông tin y tế bổ sung",
+      "additionalNotes": "Ghi chú thêm",
+      "componentRequests": "Yêu cầu thành phần máu",
+      "units": "đơn vị"
+    },
+
     "patientProfile": {
       "search": {
         "title": "Tìm kiếm hồ sơ bệnh nhân *",
@@ -1952,6 +1988,8 @@
     "viewDetails": "Xem chi tiết",
     "EditProfile": "Chỉnh sửa hồ sơ",
     "CreateProfile": "Tạo hồ sơ mới",
+    "UpdateProfileInfo": "Cập nhật thông tin hồ sơ dưới đây.",
+    "CreateProfileInfo": "Tạo hồ sơ với thông tin dưới đây.",
     "UpdateProfileInformationBelow": "Cập nhật thông tin hồ sơ dưới đây.",
     "CreateProfileWithInformationBelow": "Tạo hồ sơ với thông tin dưới đây.",
     "FullName": "Họ và tên",
@@ -1972,7 +2010,7 @@
     "Ward": "Phường/Xã",
     "SelectWard": "Chọn phường/xã",
     "Address": "Địa chỉ",
-    "Status": "Trạng thái",
+    "Status": "Đồng ý hiến",
     "SelectStatus": "Chọn trạng thái",
     "Cancel": "Hủy",
     "Updating": "Đang cập nhật...",
@@ -1989,8 +2027,8 @@
     "OMinus": "O-",
     "Male": "Nam",
     "Female": "Nữ",
-    "Available": "Có sẵn",
-    "Unavailable": "Không có sẵn",
+    "Available": "Có",
+    "Unavailable": "Không",
     "SearchProfiles": "Tìm kiếm hồ sơ...",
     "CreateNewProfile": "Tạo hồ sơ mới",
     "Name": "Tên",
@@ -2002,10 +2040,39 @@
     "Edit": "Chỉnh sửa",
     "NoProfilesFound": "Không tìm thấy hồ sơ nào.",
     "DonationHistory": "Lịch sử hiến máu",
+    "viewMembersDonationHistory": "Xem lịch sử hiến máu của thành viên",
+    "DonationName": "Tên sự kiện hiến máu",
+    "Location": "Địa điểm",
+    "Type": "Loại",
+    "DonationDate": "Ngày hiến máu",
+    "RegistrationDate": "Ngày đăng ký",
+    "Details": "Chi tiết",
     "Close": "Đóng",
     "Date": "Ngày",
     "AmountMl": "Số lượng (ml)",
-    "NoDonationHistoryAvailable": "Không có lịch sử hiến máu."
+    "NoDonationHistoryAvailable": "Không có lịch sử hiến máu.",
+    "AddNewProfile": "Thêm hồ sơ mới",
+    "loadingProfiles": "Đang tải hồ sơ...",
+    "NoID": "Không có ID",
+    "NotAvailable": "Không có",
+    "SearchPlaceholder": "Tìm kiếm theo tên, điện thoại, ID, thành phố hoặc nhóm máu...",
+    "statusBadges": {
+      "NoStatus": "KHÔNG CÓ TRẠNG THÁI",
+      "AvailableForDonate": "SẴN SÀNG HIẾN MÁU",
+      "UnavailableForDonate": "KHÔNG SẴN SÀNG HIẾN MÁU",
+      "Pending": "ĐANG CHỜ",
+      "Cancelled": "ĐÃ HỦY",
+      "Completed": "HOÀN THÀNH",
+      "Rejected": "BỊ TỪ CHỐI",
+      "CheckedIn": "ĐÃ CHECK-IN"
+    },
+    "alerts": {
+      "failedToFetchDonationHistory": "Không thể tải lịch sử hiến máu. Vui lòng thử lại.",
+      "profileCreatedSuccessfully": "Tạo hồ sơ thành công!",
+      "failedToCreateProfile": "Không thể tạo hồ sơ. Vui lòng thử lại.",
+      "profileUpdatedSuccessfully": "Cập nhật hồ sơ thành công!",
+      "failedToUpdateProfile": "Không thể cập nhật hồ sơ. Vui lòng thử lại."
+    }
   },
   "eventRequest": {
     "BloodDonationEventRequests": "Yêu cầu sự kiện hiến máu",
@@ -2070,5 +2137,168 @@
     "DeleteEvent": "Xóa sự kiện",
     "NA": "Không có",
     "Slots": "khung giờ"
+  },
+  "staffEventDetail": {
+    "title": "Chi Tiết Sự Kiện",
+    "backToEvents": "Quay Lại Danh Sách Sự Kiện",
+    "loading": "Đang tải chi tiết sự kiện...",
+    "eventNotFound": "Không tìm thấy sự kiện",
+    "eventOverview": "Tổng Quan Sự Kiện",
+    "location": "Địa điểm",
+    "date": "Ngày",
+    "donationType": "Loại hiến máu",
+    "registrationStatus": "Trạng thái đăng ký",
+    "registered": "đã đăng ký",
+    "spotsRemaining": "chỗ còn lại",
+    "organizerInfo": "Thông Tin Người Tổ Chức",
+    "contact": "Liên hệ",
+    "email": "Email",
+    "phone": "Điện thoại",
+    "website": "Website",
+    "eventManagement": "Quản Lý Sự Kiện",
+    "editEventDetails": "Chỉnh Sửa Chi Tiết Sự Kiện",
+    "viewDonorList": "Xem Danh Sách Người Hiến",
+    "registerOffline": "Đăng Ký Offline",
+    "reportFinishedEvent": "Báo Cáo Sự Kiện Hoàn Thành",
+    "requestDeletion": "Yêu Cầu Xóa",
+    "submitting": "Đang gửi...",
+    "scheduledTimeSlots": "Khung Thời Gian Đã Lên Lịch",
+    "capacity": "Sức chứa",
+    "availableSlots": "Khung giờ có sẵn",
+    "noTimeSlots": "Không có khung thời gian nào được lên lịch cho sự kiện này",
+    "deleteDialog": {
+      "title": "Gửi Yêu Cầu Xóa",
+      "description": "Bạn có chắc chắn muốn gửi yêu cầu xóa \"{eventName}\"? Điều này sẽ tạo một yêu cầu xóa cần được quản trị viên phê duyệt.",
+      "cancel": "Hủy",
+      "confirm": "Gửi Yêu Cầu Xóa"
+    },
+    "donorList": {
+      "title": "Người Hiến Đã Đăng Ký",
+      "description": "{count} người hiến đã đăng ký cho sự kiện này",
+      "loading": "Đang tải danh sách người hiến...",
+      "noDonors": "Chưa có người hiến nào đăng ký",
+      "noDonorsDescription": "Những người hiến đã đăng ký sẽ xuất hiện ở đây khi họ đăng ký tham gia sự kiện này",
+      "searchPlaceholder": "Tìm kiếm người hiến theo tên, điện thoại, địa chỉ hoặc vị trí...",
+      "showing": "Hiển thị {filtered} trong tổng số {total} người hiến",
+      "table": {
+        "name": "Tên",
+        "phone": "Điện thoại",
+        "address": "Địa chỉ",
+        "bloodType": "Nhóm máu",
+        "gender": "Giới tính",
+        "age": "Tuổi",
+        "status": "Trạng thái"
+      },
+      "pagination": {
+        "showing": "Hiển thị từ {start} đến {end} trong tổng số {total} người hiến",
+        "previous": "Trước",
+        "next": "Sau"
+      }
+    },
+    "reportModal": {
+      "title": "Báo Cáo Sự Kiện Hoàn Thành",
+      "description": "Nhập thể tích hiến máu cho từng người hiến (tính bằng ml). Bạn có thể lọc theo trạng thái thể tích và phân trang qua danh sách.",
+      "noDonors": "Không có người hiến nào để báo cáo",
+      "searchPlaceholder": "Tìm kiếm người hiến theo tên, điện thoại, địa chỉ...",
+      "filterAll": "Tất Cả Người Hiến",
+      "filterNoVolume": "Chưa Nhập Thể Tích",
+      "filterHasVolume": "Đã Nhập Thể Tích",
+      "filterBy": "Lọc theo thể tích",
+      "showingFiltered": "Hiển thị {showing} trong tổng số {filtered} người hiến",
+      "filteredFrom": "(đã lọc từ {total} tổng cộng)",
+      "donorsWithoutVolume": "{count} người hiến chưa có thể tích",
+      "donorsWithVolume": "{count} người hiến đã có thể tích",
+      "table": {
+        "name": "Tên",
+        "phone": "Điện thoại",
+        "bloodType": "Nhóm máu",
+        "gender": "Giới tính",
+        "age": "Tuổi",
+        "volume": "Thể tích (ml)"
+      },
+      "pagination": {
+        "showing": "Hiển thị từ {start} đến {end} trong tổng số {total} người hiến",
+        "previous": "Trước",
+        "next": "Sau"
+      },
+      "summary": {
+        "totalDonors": "Tổng số người hiến: {count}",
+        "volumesEntered": "Thể tích đã nhập: {entered} / {total}"
+      },
+      "actions": {
+        "cancel": "Hủy",
+        "submit": "Gửi Báo Cáo ({count} người hiến)"
+      }
+    },
+    "status": {
+      "pending": "Đang chờ",
+      "approved": "Đã phê duyệt",
+      "ongoing": "Đang diễn ra",
+      "completed": "Đã hoàn thành",
+      "cancelled": "Đã hủy",
+      "rejected": "Đã từ chối"
+    },
+    "donationTypes": {
+      "wholeBlood": "Máu toàn phần",
+      "platelet": "Tiểu cầu",
+      "plasma": "Huyết tương",
+      "redBloodCell": "Hồng cầu"
+    },
+    "messages": {
+      "deleteRequestSubmitted": "Yêu cầu xóa đã được gửi thành công!",
+      "deleteRequestFailed": "Không thể gửi yêu cầu xóa. Vui lòng thử lại.",
+      "donorListFailed": "Không thể tải danh sách người hiến",
+      "reportFailed": "Không thể tải danh sách người hiến để báo cáo",
+      "volumeValidation": "Vui lòng nhập thể tích hợp lệ cho tất cả người hiến (lớn hơn 0)",
+      "reportSuccess": "Đã ghi nhận thành công việc hiến máu cho {count} người hiến",
+      "reportError": "Không thể ghi nhận việc hiến máu: {error}",
+      "reportErrorGeneric": "Không thể ghi nhận việc hiến máu. Vui lòng thử lại.",
+      "offlineRegistrationSuccess": "Đã đăng ký thành công người tham gia offline!",
+      "offlineRegistrationFailed": "Không thể đăng ký người tham gia offline. Vui lòng thử lại.",
+      "personalIdRequired": "Số CMND/CCCD là bắt buộc",
+      "personalIdInvalid": "Vui lòng nhập số CMND/CCCD hợp lệ",
+      "profileFound": "Đã tìm thấy hồ sơ thành công!",
+      "profileNotFound": "Không tìm thấy hồ sơ với số CMND/CCCD này",
+      "profileSearchError": "Lỗi khi tìm kiếm hồ sơ. Vui lòng thử lại.",
+      "profileSearchRequired": "Vui lòng tìm kiếm và chọn một hồ sơ hợp lệ trước"
+    },
+    "offlineRegistration": {
+      "title": "Đăng Ký Người Tham Gia Offline",
+      "description": "Đăng ký cho người tham gia không thể đăng ký trực tuyến bằng cách điền khảo sát sức khỏe.",
+      "personalIdLabel": "Số CMND/CCCD",
+      "personalIdPlaceholder": "Nhập số CMND hoặc CCCD",
+      "personalIdHelp": "Nhập số CMND/CCCD của người tham gia và nhấn tìm kiếm để tìm hồ sơ",
+      "profileFound": "Đã Tìm Thấy Hồ Sơ",
+      "searchRequired": "Vui lòng nhấn nút tìm kiếm để tìm hồ sơ",
+      "surveyTitle": "Câu Hỏi Khảo Sát Sức Khỏe",
+      "questions": {
+        "experience": "1. Người tham gia đã từng hiến máu trước đây chưa?",
+        "currentHealth": "2. Hiện tại người tham gia có đang mắc bệnh gì không?",
+        "pastDiseases": "3. Người tham gia đã từng mắc các bệnh nghiêm trọng nào không?",
+        "recentActivities": "4. Trong 3 tháng gần đây, người tham gia có thực hiện các hoạt động sau không?"
+      },
+      "answers": {
+        "yes": "Có, đã từng hiến máu",
+        "no": "Không, lần đầu tiên hiến máu",
+        "hasIllness": "Có, đang có vấn đề sức khỏe",
+        "healthy": "Không, hoàn toàn khỏe mạnh",
+        "hadSeriousDisease": "Có, đã từng mắc bệnh nghiêm trọng",
+        "noSeriousDisease": "Không, chưa từng mắc bệnh nghiêm trọng",
+        "hadActivities": "Có (phẫu thuật, tiêm vaccine, xăm mình, v.v.)",
+        "noSpecialActivities": "Không có hoạt động đặc biệt nào"
+      },
+      "detailsLabel": "Vui lòng mô tả kinh nghiệm:",
+      "detailsPlaceholder": "Ví dụ: Đã hiến máu 3 lần, lần gần nhất là 6 tháng trước...",
+      "healthDetailsLabel": "Vui lòng mô tả tình trạng sức khỏe hiện tại:",
+      "healthDetailsPlaceholder": "Mô tả tình trạng sức khỏe...",
+      "pastDiseasesLabel": "Vui lòng liệt kê các bệnh đã từng mắc:",
+      "pastDiseasesPlaceholder": "Ví dụ: Cao huyết áp, tiểu đường, bệnh tim...",
+      "activitiesLabel": "Vui lòng mô tả các hoạt động:",
+      "activitiesPlaceholder": "Mô tả các hoạt động trong 3 tháng gần đây...",
+      "actions": {
+        "cancel": "Hủy",
+        "register": "Đăng Ký Người Tham Gia"
+      }
+    }
   }
 }

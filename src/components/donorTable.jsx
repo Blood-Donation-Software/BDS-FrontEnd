@@ -44,6 +44,7 @@ export default function DonorTable({ donors, handleSort, setActiveTab, setDonor,
   );
 
   const isEligibleToDonate = (nextEligibleDonationDate) => {
+    if (!nextEligibleDonationDate) return true;
     const today = new Date();
     const eligibleDate = new Date(nextEligibleDonationDate);
     return eligibleDate <= today;

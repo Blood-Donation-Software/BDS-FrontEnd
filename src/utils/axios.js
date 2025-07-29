@@ -47,7 +47,9 @@ export const endpoint = {
     updateStatus: (accountId) => `${BASE_URL}/api/user/account/${accountId}/status`,
     updateRole: (accountId) => `${BASE_URL}/api/user/account/${accountId}/role`,
     updatePassword: `${BASE_URL}/api/user/account/update-password`,
-    getDonationHistoryById: (profileId) => `${BASE_URL}/api/user/profile/list-profile/${profileId}/history`,
+    getDonationHistoryById: (accountId) => `${BASE_URL}/api/user/profile/list-profile/${accountId}/history`,
+    getDonationHistoryByProfileId: (profileId) => `${BASE_URL}/api/user/profile/${profileId}/history`,
+    getProfileByPersonalId: (personalId) => `${BASE_URL}/api/user/profile/search-by-personal-id?personalId=${personalId}`,
     create: `${BASE_URL}/api/user/profile/create`,
   },
   profileDistance: {
@@ -137,7 +139,6 @@ export const endpoint = {
     getDonationEventStats: `${BASE_URL}/api/dashboard/donation-events/stats`,
     getBloodStock: `${BASE_URL}/api/dashboard/blood-stock`,
     getDonationEventChart: (timeframe) => `${BASE_URL}/api/dashboard/donation-events/chart?timeframe=${timeframe}`,
-    // Admin Dashboard endpoints
     getAdminDashboard: `${BASE_URL}/api/dashboard/admin`,
     getAdminTotalStats: `${BASE_URL}/api/dashboard/admin/total-stats`,
     getAdminRecentActivities: `${BASE_URL}/api/dashboard/admin/recent-activities`,

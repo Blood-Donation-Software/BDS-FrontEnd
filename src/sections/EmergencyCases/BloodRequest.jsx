@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CheckCircle, AlertCircle, Archive, Clock, PlusCircle, ArrowUpDown, Eye, User, Calendar, FileText, Activity } from "lucide-react"
+import { CheckCircle, AlertCircle, Archive, Clock, PlusCircle, ArrowUpDown, Eye, User, Calendar, FileText, Activity, Shield } from "lucide-react"
 import { convertBloodType } from "@/utils/utils"
 import { useState } from "react"
 import { format } from "date-fns"
@@ -160,17 +160,31 @@ export default function BloodRequest() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => viewRequestDetails(request)}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="bg-blue-500 hover:bg-blue-600 text-white border-0 px-3 py-1.5 rounded font-medium text-xs"
                 >
-                  <Eye className="h-4 w-4 mr-1" />
+                  <Eye className="h-3 w-3 mr-1.5" />
                   {t?.blogRequest?.details}
                 </Button>
                 {showActions && request.status !== 'FULFILLED' && (
                   <>
                     <Link href={`/staffs/emergency-request/${request.id}/view-donors`}>
-                      <Button variant="outline" size="sm">{t?.blogRequest?.process}</Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="bg-green-500 hover:bg-green-600 text-white border-0 px-3 py-1.5 rounded font-medium text-xs"
+                      >
+                        <CheckCircle className="h-3 w-3 mr-1.5" />
+                        {t?.blogRequest?.process}
+                      </Button>
                     </Link>
-                    <Button variant="outline" size="sm">{t?.blogRequest?.cancel}</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="bg-red-500 hover:bg-red-600 text-white border-0 px-3 py-1.5 rounded font-medium text-xs"
+                    >
+                      <AlertCircle className="h-3 w-3 mr-1.5" />
+                      {t?.blogRequest?.cancel}
+                    </Button>
                   </>
                 )}
               </TableCell>
@@ -338,6 +352,53 @@ export default function BloodRequest() {
                         • {condition.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Special Conditions */}
+              {(selectedRequest.pregnant || selectedRequest.disabled || selectedRequest.haveServed) && (
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-5 shadow-sm">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-purple-100 p-2 rounded-lg mr-3">
+                      <Shield className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-purple-900 text-lg">{t?.blogRequest?.special_conditions}</h3>
+                      <p className="text-purple-600 text-sm opacity-80">Patient special circumstances</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {selectedRequest.pregnant && (
+                      <div className="bg-white bg-opacity-70 rounded-lg p-3 border border-pink-200 shadow-sm">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-pink-500 rounded-full mr-2 flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-pink-800">
+                            {t?.blogRequest?.pregnant_patient}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    {selectedRequest.disabled && (
+                      <div className="bg-white bg-opacity-70 rounded-lg p-3 border border-blue-200 shadow-sm">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full mr-2 flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-blue-800">
+                            {t?.blogRequest?.disabled_patient}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    {selectedRequest.haveServed && (
+                      <div className="bg-white bg-opacity-70 rounded-lg p-3 border border-green-200 shadow-sm">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-green-500 rounded-full mr-2 flex-shrink-0"></div>
+                          <span className="text-sm font-medium text-green-800">
+                            {t?.blogRequest?.military_veteran}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

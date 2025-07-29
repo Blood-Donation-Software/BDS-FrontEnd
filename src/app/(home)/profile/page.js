@@ -261,7 +261,7 @@ export default function ProfilePage() {
       });
 
       await updateProfile(profileData);
-      toast.success(profilePage?.profileUpdate?.success);
+      toast.success(t?.profilePage?.profileUpdate?.success);
       
       // Refresh user profile to get updated data
       await fetchUserProfile();

@@ -42,7 +42,7 @@ const donationTypeMap = {
 };
 
 function Dashboard() {
-    const {t} =useLanguage();
+    const { t } = useLanguage();
     const { profile, account, loggedIn, isLoading: userLoading } = useContext(UserContext);
     const router = useRouter();
     const [donationHistory, setDonationHistory] = useState([]);
@@ -90,9 +90,9 @@ function Dashboard() {
     // Calculate statistics
     const stats = {
         totalDonations: totalElements,
-        completedDonations: donationHistory.filter(item => item.registrationStatus === 'COMPLETED').length,
+        completedDonations: donationHistory.filter(item => item.registrationDonationRegistrationStatus === 'COMPLETED').length,
         totalVolume: donationHistory
-            .filter(item => item.donationVolume && item.registrationStatus === 'COMPLETED')
+            .filter(item => item.donationVolume && item.registrationDonationRegistrationStatus === 'COMPLETED')
             .reduce((sum, item) => sum + item.donationVolume, 0),
         mostRecentDonation: donationHistory.length > 0 ? donationHistory[0] : null
     };
@@ -245,8 +245,8 @@ function Dashboard() {
                             <>
                                 <div className="divide-y divide-gray-100 cursor-pointer">
                                     {donationHistory.map((donation, index) => {
-                                        const status = statusMap[donation.registrationStatus] ||
-                                            { label: donation.registrationStatus, color: 'bg-gray-100 text-gray-800' };
+                                        const status = statusMap[donation.registrationDonationRegistrationStatus] ||
+                                            { label: donation.registrationDonationRegistrationStatus, color: 'bg-gray-100 text-gray-800' };
 
                                         return (
                                             <Link href={`/donation-events/${donation.donationId}/register/success`} key={donation.registrationId || index}>
@@ -257,9 +257,6 @@ function Dashboard() {
                                                                 <h3 className="text-lg font-semibold text-gray-900 mb-1">
                                                                     {donation.donationName || 'Sự kiện hiến máu'}
                                                                 </h3>
-                                                                <Badge className={`${status.color} border-0 ml-4`}>
-                                                                    {status.label}
-                                                                </Badge>
                                                             </div>
 
                                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-600">
@@ -275,13 +272,12 @@ function Dashboard() {
                                                                     </div>
                                                                 )}
 
-                                                                {donation.donationDate && (
+                                                                {donation.registrationDonationRegistrationStatus && (
                                                                     <div className="flex items-center">
-                                                                        <Clock className="h-4 w-4 mr-2" />
-                                                                        <span>Trạng thái: {convertDonationRegistrationStatus(donation.registrationStatus)}</span>
+                                                                        <Activity className="h-4 w-4 mr-2" />
+                                                                        <span>Trạng thái: {convertDonationRegistrationStatus(donation.registrationDonationRegistrationStatus)}</span>
                                                                     </div>
-                                                                )}
-
+                                                                )}                                                                
                                                                 {donation.donationLocation && (
                                                                     <div className="flex items-center">
                                                                         <MapPin className="h-4 w-4 mr-2" />

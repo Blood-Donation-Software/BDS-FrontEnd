@@ -51,8 +51,18 @@ export const updatePassword = (oldPassword, newPassword) => {
     }).then(res => res.data);
 }
 
-export const getDonationHistoryById = (profileId) => {
-    return axiosInstance.get(endpoint.user.getDonationHistoryById(profileId))
+export const getDonationHistoryById = (accountId) => {
+    return axiosInstance.get(endpoint.user.getDonationHistoryById(accountId))
+        .then(res => res.data);
+}
+
+export const getDonationHistoryByProfileId = (profileId) => {
+    return axiosInstance.get(endpoint.user.getDonationHistoryByProfileId(profileId))
+        .then(res => res.data);
+}
+
+export const getProfileByPersonalId = (personalId) => {
+    return axiosInstance.get(endpoint.user.getProfileByPersonalId(personalId))
         .then(res => res.data);
 }
 
