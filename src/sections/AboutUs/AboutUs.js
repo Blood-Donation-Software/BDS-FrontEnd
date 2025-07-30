@@ -58,8 +58,8 @@ const AboutUs = () => {
                         </Card> */}
 
                         <Image
-                            width={50}
-                            height={50}
+                            width={600}
+                            height={400}
                             src="/aboutus2.webp"
                             alt="Vision"
                             className="w-full h-full object-cover rounded-lg"
@@ -114,8 +114,8 @@ const AboutUs = () => {
                             </CardContent>
                         </Card> */}
                         <Image
-                            width={50}
-                            height={50}
+                            width={600}
+                            height={400}
                             src="/aboutus1.jpg"
                             alt="Mission"
                             className="w-full h-full object-cover rounded-lg"
