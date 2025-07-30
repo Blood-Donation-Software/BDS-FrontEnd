@@ -95,11 +95,9 @@ export default function LoginPage() {
             <Image src="https://www.svgrepo.com/show/475656/google-color.svg" width={10} height={10} alt="Google" className="w-5 h-5" />
             <span>{t?.auth?.loginWithGoogle}</span>
           </button>
-
-          
         </div>
         <p className="text-sm text-center mb-2">
-          <a href="/forgot-password" className="text-blue-600 hover:underline">{t?.auth?.forgotPassword}</a>
+          <a href="/forgot-password" className="text-blue-600 hover:underline">{t?.auth?.forgot_password}</a>
         </p>
 
         <p className="text-sm text-center">
