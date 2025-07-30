@@ -1,6 +1,7 @@
 // Profile API functions
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { BASE_URL } from "@/global-config";
+
 
 export const searchProfiles = async (query) => {
   try {
