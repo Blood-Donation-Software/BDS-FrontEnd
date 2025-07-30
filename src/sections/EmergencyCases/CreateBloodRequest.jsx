@@ -1015,7 +1015,7 @@ export default function CreateBloodRequest() {
             )}
           </div>
           {/* Date Selection */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="requiredDate" className="font-semibold text-gray-800 text-sm">{t?.createBloodRequest?.bloodRequest?.requiredDate} *</Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -1037,7 +1037,7 @@ export default function CreateBloodRequest() {
                 />
               </PopoverContent>
             </Popover>
-          </div>
+          </div> */}
 
           {/* Component Selection with Volumes */}
           <div className="space-y-4">
