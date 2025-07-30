@@ -20,6 +20,12 @@
     "loginNow": "Đăng nhập ngay",
     "fullName": "Họ và Tên",
     "confirmPassword": "Xác nhận mật khẩu",
+    "pleaseEnterEmail": "Vui lòng nhập email của bạn",
+    "otpSentSuccess": "Đã gửi mã OTP về email!",
+    "otpSendFailed": "Gửi OTP thất bại. Vui lòng thử lại!",
+    "enterRegisteredEmail": "Nhập email đã đăng ký",
+    "sending": "Đang gửi...",
+    "sendOTP": "Gửi mã OTP",
     "placeholder": {
       "email": "Nhập địa chỉ email của bạn",
       "password": "Nhập mật khẩu",

@@ -334,9 +334,29 @@ export default function StaffEventDetailPage() {
         return
       }
     } else {
-      // New guest registration
-      if (!newGuestProfile.name.trim() || !newGuestProfile.phone.trim() || !newGuestProfile.personalId.trim()) {
-        toast.error(t?.staffEventDetail?.messages?.guestProfileRequired || 'Name, phone, and personal ID are required for new guest registration')
+      // New guest registration - Enhanced validation
+      if (!newGuestProfile.name.trim() || newGuestProfile.name.trim().length < 5) {
+        toast.error(t?.staffEventDetail?.messages?.nameRequired || 'Name must be at least 5 characters long')
+        return
+      }
+      
+      if (!newGuestProfile.phone.trim() || !/^[0-9]{10}$/.test(newGuestProfile.phone.trim())) {
+        toast.error(t?.staffEventDetail?.messages?.phoneInvalid || 'Phone number must be exactly 10 digits')
+        return
+      }
+      
+      if (!newGuestProfile.personalId.trim() || !/^[0-9]{12}$/.test(newGuestProfile.personalId.trim())) {
+        toast.error(t?.staffEventDetail?.messages?.personalIdInvalid || 'Personal ID must be exactly 12 digits')
+        return
+      }
+      
+      if (!newGuestProfile.address.trim()) {
+        toast.error(t?.staffEventDetail?.messages?.addressRequired || 'Address is required')
+        return
+      }
+      
+      if (!newGuestProfile.ward.trim() || !newGuestProfile.district.trim() || !newGuestProfile.city.trim()) {
+        toast.error(t?.staffEventDetail?.messages?.locationRequired || 'Please select ward, district, and city')
         return
       }
     }
@@ -396,21 +416,23 @@ export default function StaffEventDetailPage() {
         } : {
           id: null,
           accountId: null,
-          name: newGuestProfile.name,
-          phone: newGuestProfile.phone,
-          address: newGuestProfile.address,
-          ward: newGuestProfile.ward,
-          district: newGuestProfile.district,
-          city: newGuestProfile.city,
+          name: newGuestProfile.name.trim(),
+          phone: newGuestProfile.phone.trim().replace(/\D/g, ''), // Remove non-digits
+          address: newGuestProfile.address.trim(),
+          ward: newGuestProfile.ward.trim(),
+          district: newGuestProfile.district.trim(),
+          city: newGuestProfile.city.trim(),
           bloodType: newGuestProfile.bloodType,
           gender: newGuestProfile.gender,
           dateOfBirth: newGuestProfile.dateOfBirth || null,
           lastDonationDate: null,
           nextEligibleDonationDate: null,
-          status: 'ACTIVE',
-          personalId: newGuestProfile.personalId
+          status: 'AVAILABLE',
+          personalId: newGuestProfile.personalId.trim().replace(/\D/g, '') // Remove non-digits
         },
-        jsonForm: JSON.stringify(formData)
+        jsonForm: JSON.stringify(formData),
+        status: 'CHECKED_IN',
+        checkinToken: ""
       }
 
       // Use appropriate API based on registration mode

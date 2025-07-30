@@ -98,10 +98,10 @@ const DialogForm = React.memo(({
                         <div>
                             <label className="block text-gray-600 mb-1">{t.profileManagement.DateOfBirth}</label>
                             <input
-                                name="dob"
+                                name="dateOfBirth"
                                 type="date"
                                 required
-                                value={formData?.dob || ''}
+                                value={formData?.dateOfBirth || ''}
                                 className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4"
                                 onChange={onChange}
                             />
@@ -121,8 +121,8 @@ const DialogForm = React.memo(({
                         <div>
                             <label className="block text-gray-600 mb-1">{t.profileManagement.BloodType}</label>
                             <Select
-                                value={formData?.blood_type || ''}
-                                onValueChange={(value) => onSelectChange('blood_type', value)}
+                                value={formData?.bloodType || ''}
+                                onValueChange={(value) => onSelectChange('bloodType', value)}
                             >
                                 <SelectTrigger className="w-full bg-gray-100 rounded-lg px-4 py-2 mb-4 h-auto">
                                     <SelectValue placeholder={t.profileManagement.SelectBloodType} />
@@ -295,18 +295,6 @@ export default function ProfilesManagement() {
         return dateString;
     };
 
-    const convertDateForServer = (dateString) => {
-        if (!dateString) return '';
-
-        // Check if it's in YYYY-MM-DD format
-        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            const [year, month, day] = dateString.split('-');
-            return `${day}-${month}-${year}`;
-        }
-
-        return dateString;
-    };
-
     useEffect(() => {
         if (selectedProfile) {
             const data = {
@@ -316,11 +304,11 @@ export default function ProfilesManagement() {
                 phone: selectedProfile.phone || '',
                 personalId: selectedProfile.personalId || '',
                 address: selectedProfile.address || '',
-                blood_type: selectedProfile.bloodType || '',
+                bloodType: selectedProfile.bloodType || '',
                 ward: selectedProfile.ward || '',
                 gender: selectedProfile.gender || '',
                 district: selectedProfile.district || '',
-                dob: convertDateFormat(selectedProfile.dateOfBirth) || '',
+                dateOfBirth: convertDateFormat(selectedProfile.dateOfBirth) || '',
                 lastDonationDate: convertDateFormat(selectedProfile.lastDonationDate) || '',
                 city: selectedProfile.city || '',
                 status: selectedProfile.status || ''
@@ -474,11 +462,11 @@ export default function ProfilesManagement() {
             phone: '',
             personalId: '',
             address: '',
-            blood_type: '',
+            bloodType: '',
             ward: '',
             gender: '',
             district: '',
-            dob: '',
+            dateOfBirth: '',
             lastDonationDate: '',
             city: '',
             status: 'AVAILABLE'
@@ -538,12 +526,12 @@ export default function ProfilesManagement() {
                 phone: createForm.phone,
                 personalId: createForm.personalId,
                 address: createForm.address,
-                bloodType: createForm.blood_type,
+                bloodType: createForm.bloodType,
                 ward: createForm.ward,
                 gender: createForm.gender,
                 district: createForm.district,
-                dateOfBirth: convertDateForServer(createForm.dob),
-                lastDonationDate: convertDateForServer(createForm.lastDonationDate),
+                dateOfBirth: createForm.dateOfBirth || null,
+                lastDonationDate: createForm.lastDonationDate || null,
                 city: createForm.city,
                 status: createForm.status
             };
@@ -588,12 +576,12 @@ export default function ProfilesManagement() {
                 phone: form.phone,
                 personalId: form.personalId,
                 address: form.address,
-                bloodType: form.blood_type,
+                bloodType: form.bloodType,
                 ward: form.ward,
                 gender: form.gender,
                 district: form.district,
-                dateOfBirth: convertDateForServer(form.dob),
-                lastDonationDate: convertDateForServer(form.lastDonationDate),
+                dateOfBirth: form.dateOfBirth || null,
+                lastDonationDate: form.lastDonationDate || null,
                 city: form.city,
                 status: form.status
             };

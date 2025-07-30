@@ -20,6 +20,12 @@
     "loginNow": "Login Now",
     "fullName": "Full Name",
     "confirmPassword": "Confirm Password",
+    "pleaseEnterEmail": "Please enter your email",
+    "otpSentSuccess": "OTP code has been sent to your email!",
+    "otpSendFailed": "Failed to send OTP. Please try again!",
+    "enterRegisteredEmail": "Enter your registered email",
+    "sending": "Sending...",
+    "sendOTP": "Send OTP Code",
     "placeholder": {
       "email": "Enter your email address",
       "password": "Enter your password",
