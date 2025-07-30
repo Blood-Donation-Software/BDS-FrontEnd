@@ -406,13 +406,13 @@ export default function BloodStockManagement() {
                   {t?.StockView?.table?.headers?.component || 'Component'}
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
                 </TableHead>
-                <TableHead
+                {/* <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('quantity')}
                 >
                   {t?.StockView?.table?.headers?.quantity || 'Quantity'}  
                   <ArrowUpDown className="ml-2 h-4 w-4 inline" />
-                </TableHead>
+                </TableHead> */}
                 <TableHead
                   className="cursor-pointer"
                   onClick={() => handleSort('volume')}
