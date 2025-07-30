@@ -36,6 +36,17 @@ export default function UserProvider({ children }) {
     const fetchUserProfile = async () => {
         try{
             setIsLoading(true);
+            
+            // Check if user has a valid token/session before fetching
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            if (!token) {
+                setLoggedIn(false);
+                setProfile(null);
+                setAccount(null);
+                setUserRole(ROLES.GUEST);
+                return;
+            }
+
             const myProfile = await getProfile();
             const myAccount = await getAccount();
             setProfile(myProfile);
@@ -100,6 +111,9 @@ export default function UserProvider({ children }) {
         setProfile(null);
         setAccount(null);
         setUserRole(ROLES.GUEST);
+        // Clear tokens from storage
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
     };
 
     return (

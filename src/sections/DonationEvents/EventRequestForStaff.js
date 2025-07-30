@@ -404,7 +404,7 @@ export default function EventRequestForStaff() {
                       <TableCell>
                         <div className="font-medium">{displayData?.name || 'Untitled Event'}</div>
                         <div className="text-sm text-muted-foreground">
-                          {t?.eventRequestForStaff?.table?.requestId}
+                          {t?.eventRequestForStaff?.table?.requestId + request.id}
                         </div>
                       </TableCell>
                       <TableCell>

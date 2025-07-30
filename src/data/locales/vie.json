@@ -166,8 +166,8 @@
   "validation": {
     "required": "Bắt buộc",
     "invalid_email": "Email không hợp lệ",
-    "min_length": "Độ dài tối thiểu là {{min}}",
-    "max_length": "Độ dài tối đa là {{max}}"
+    "min_length": "Độ dài tối thiểu là ",
+    "max_length": "Độ dài tối đa là "
   },
   "common": {
     "yes": "Có",
@@ -579,7 +579,7 @@
     "loading": "Đang tải thông tin sự kiện...",
     "notSpecified": "Không xác định",
     "timeSlots": "Các khoảng thời gian",
-    "slotCapacity": "{{count}} suất",
+    "slotCapacity": "suất",
     "selectToChoose": "Ấn để chọn",
     "selected": "Đã chọn",
     "selectedSlot": "Khoảng thời gian đã chọn",
@@ -1197,7 +1197,7 @@
     },
     "table": {
       "title": "Kho dự trữ máu",
-      "total": "Tổng số đơn vị: {{count}}",
+      "total": "Tổng số đơn vị: ",
       "headers": {
         "bloodType": "Nhóm máu",
         "component": "Thành phần",

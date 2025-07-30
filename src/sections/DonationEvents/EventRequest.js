@@ -72,8 +72,8 @@
         }
       } catch (error) {
         console.error('Error fetching requests:', error)
-        setError(t.eventRequest.FailedToLoadEventRequests)
-        toast.error(t.eventRequest.FailedToLoadEventRequests)
+        setError(t?.eventRequest?.FailedToLoadEventRequests || 'Failed to load event requests')
+        toast.error(t?.eventRequest?.FailedToLoadEventRequests || 'Failed to load event requests')
       } finally {
         setLoading(false)
       }
@@ -145,24 +145,24 @@
   // Helper function to format CRUD type for display
   const formatCrudType = (crudType,t) => {
     const types = {
-      CREATE: t.eventRequest.CreateEvent,
-      UPDATE: t.eventRequest.UpdateEvent,
-      DELETE: t.eventRequest.DeleteEvent
+      CREATE: t?.eventRequest?.CreateEvent || 'Create Event',
+      UPDATE: t?.eventRequest?.UpdateEvent || 'Update Event',
+      DELETE: t?.eventRequest?.DeleteEvent || 'Delete Event'
     }
     return types[crudType] || crudType
   }
       const statusOptions = [
-    { value: 'ALL', label: t.eventRequest.AllStatuses },
-    { value: 'PENDING', label: t.eventRequest.Pending },
-    { value: 'APPROVED', label: t.eventRequest.Approved },
-    { value: 'REJECTED', label: t.eventRequest.Rejected }
+    { value: 'ALL', label: t?.eventRequest?.AllStatuses || 'All Statuses' },
+    { value: 'PENDING', label: t?.eventRequest?.Pending || 'Pending' },
+    { value: 'APPROVED', label: t?.eventRequest?.Approved || 'Approved' },
+    { value: 'REJECTED', label: t?.eventRequest?.Rejected || 'Rejected' }
   ]
 
   const crudTypeOptions = [
-    { value: 'ALL', label: t.eventRequest.AllRequestTypes },
-    { value: 'CREATE', label: t.eventRequest.CreateEvent },
-    { value: 'UPDATE', label: t.eventRequest.UpdateEvent },
-    { value: 'DELETE', label: t.eventRequest.DeleteEvent }
+    { value: 'ALL', label: t?.eventRequest?.AllRequestTypes || 'All Request Types' },
+    { value: 'CREATE', label: t?.eventRequest?.CreateEvent || 'Create Event' },
+    { value: 'UPDATE', label: t?.eventRequest?.UpdateEvent || 'Update Event' },
+    { value: 'DELETE', label: t?.eventRequest?.DeleteEvent || 'Delete Event' }
   ]
 
     useEffect(() => {
@@ -245,8 +245,8 @@
         setSelectedRequest(request)
         setViewDialogOpen(true)
       } catch (error) {
-        console.error(t.eventRequest.FailedToLoadRequestDetails, error)
-        toast.error(t.eventRequest.FailedToLoadRequestDetails)
+        console.error(t?.eventRequest?.FailedToLoadRequestDetails || 'Failed to load request details', error)
+        toast.error(t?.eventRequest?.FailedToLoadRequestDetails || 'Failed to load request details')
       }
     }
 
@@ -280,14 +280,14 @@
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  {t.eventRequest.BloodDonationEventRequests}
+                  {t?.eventRequest?.BloodDonationEventRequests || 'Blood Donation Event Requests'}
                 </CardTitle>
                 <CardDescription>
-                  {t.eventRequest.ReviewAndManageRequests} ({pagination.totalElements} {t.eventRequest.TotalRequests})
+                  {t?.eventRequest?.ReviewAndManageRequests || 'Review and manage requests'} ({pagination.totalElements} {t?.eventRequest?.TotalRequests || 'total requests'})
                 </CardDescription>
               </div>
               <Button onClick={handleRefresh} disabled={loading} className="bg-red-600 hover:bg-red-700">
-                {loading ? t.eventRequest.Loading : t.eventRequest.Refresh}
+                {loading ? (t?.eventRequest?.Loading || 'Loading') : (t?.eventRequest?.Refresh || 'Refresh')}
               </Button>
             </div>
           </CardHeader>
@@ -301,7 +301,7 @@
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t.eventRequest.SearchRequests}
+                  placeholder={t?.eventRequest?.SearchRequests || 'Search requests...'}
                   className="pl-8"
                   value={filters.search}
                   onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
@@ -312,7 +312,7 @@
                 onValueChange={value => setFilters(f => ({ ...f, status: value }))}
               >
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder={t.eventRequest.Status} />
+                  <SelectValue placeholder={t?.eventRequest?.Status || 'Status'} />
                 </SelectTrigger>
                 <SelectContent>
                   {statusOptions.map(opt => (
@@ -325,7 +325,7 @@
                 onValueChange={value => setFilters(f => ({ ...f, crudType: value }))}
               >
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder={t.eventRequest.RequestType} />
+                  <SelectValue placeholder={t?.eventRequest?.RequestType || 'Request Type'} />
                 </SelectTrigger>
                 <SelectContent>
                   {crudTypeOptions.map(opt => (
@@ -343,7 +343,7 @@
                 )}
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">{t.eventRequest.RequestsPerPage}:</span>
+                <span className="text-sm text-muted-foreground">{t?.eventRequest?.RequestsPerPage || 'Requests per page'}:</span>
                 <Select
                   value={pagination.size.toString()}
                   onValueChange={handlePageSizeChange}
@@ -365,31 +365,31 @@
                 <TableRow>
                   <TableHead>
                     <Button variant="ghost" onClick={() => handleSort('newDonationEventDto.name')}>
-                      {t.eventRequest.EventName} <ArrowUpDown className="ml-2 h-4 w-4" />
+                      {t?.eventRequest?.EventName || 'Event Name'} <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
                   <TableHead>
                     <Button variant="ghost" onClick={() => handleSort('newDonationEventDto.hospital')}>
-                      {t.eventRequest.Location} <ArrowUpDown className="ml-2 h-4 w-4" />
+                      {t?.eventRequest?.Location || 'Location'} <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
                   <TableHead>
                     <Button variant="ghost" onClick={() => handleSort('newDonationEventDto.donationDate')}>
-                      {t.eventRequest.Date} <ArrowUpDown className="ml-2 h-4 w-4" />
+                      {t?.eventRequest?.Date || 'Date'} <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
                   <TableHead>
                     <Button variant="ghost" onClick={() => handleSort('status')}>
-                      {t.eventRequest.Status} <ArrowUpDown className="ml-2 h-4 w-4" />
+                      {t?.eventRequest?.Status || 'Status'} <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
                   <TableHead>
                     <Button variant="ghost" onClick={() => handleSort('crudType')}>
-                      {t.eventRequest.RequestType} <ArrowUpDown className="ml-2 h-4 w-4" /> 
+                      {t?.eventRequest?.RequestType || 'Request Type'} <ArrowUpDown className="ml-2 h-4 w-4" /> 
                     </Button>
                   </TableHead>
-                  <TableHead>{t.eventRequest.Organizer}</TableHead>
-                  <TableHead>{t.eventRequest.Actions}</TableHead>
+                  <TableHead>{t?.eventRequest?.Organizer || 'Organizer'}</TableHead>
+                  <TableHead>{t?.eventRequest?.Actions || 'Actions'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -398,7 +398,7 @@
                     <TableCell colSpan={6} className="text-center py-8">
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                        <span className="ml-2">{t.eventRequest.Loading}...</span>
+                        <span className="ml-2">{t?.eventRequest?.Loading || 'Loading'}...</span>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -406,7 +406,7 @@
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
                       <div className="text-muted-foreground">
-                        {requests.length === 0 ? t.eventRequest.NoRequestsFound : t.eventRequest.NoRequestsMatchYourFilters}
+                        {requests.length === 0 ? (t?.eventRequest?.NoRequestsFound || 'No requests found') : (t?.eventRequest?.NoRequestsMatchYourFilters || 'No requests match your filters')}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -443,7 +443,7 @@
                               <div className="text-muted-foreground">
                                 {displayData?.timeSlotDtos?.length > 0 ? (
                                   `${displayData.timeSlotDtos[0].startTime} - ${displayData.timeSlotDtos[displayData.timeSlotDtos.length - 1].endTime}`
-                                ) : t.eventRequest.NoTimeSlots}
+                                ) : (t?.eventRequest?.NoTimeSlots || 'No time slots')}
                               </div>
                             </div>
                           </div>
@@ -464,7 +464,7 @@
                               <div className="font-medium">{displayData.organizer.organizationName}</div>
                               <div className="text-muted-foreground">{displayData.organizer.contactPersonName}</div>
                             </div>) : (
-                            <span className="text-muted-foreground">{t.eventRequest.NoOrganizer}</span>
+                            <span className="text-muted-foreground">{t?.eventRequest?.NoOrganizer || 'No organizer'}</span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -489,18 +489,18 @@
                                       disabled={actionLoading}
                                     >
                                       <Check className="h-4 w-4 mr-1" />
-                                      {t.eventRequest.Approve}
+                                      {t?.eventRequest?.Approve || 'Approve'}
                                     </Button>
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>{t.eventRequest.ApproveRequest}</AlertDialogTitle>
+                                      <AlertDialogTitle>{t?.eventRequest?.ApproveRequest || 'Approve Request'}</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        {t.eventRequest.AreYouSureYouWantToApproveThisEventRequest}
+                                        {t?.eventRequest?.AreYouSureYouWantToApproveThisEventRequest || 'Are you sure you want to approve this event request?'}
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>{t.eventRequest.Cancel}</AlertDialogCancel>
+                                      <AlertDialogCancel>{t?.eventRequest?.Cancel || 'Cancel'}</AlertDialogCancel>
                                       <AlertDialogAction
                                         onClick={() => handleVerifyRequest(request.id, 'APPROVE')}
                                         className="bg-green-600 hover:bg-green-700"
@@ -520,23 +520,23 @@
                                       disabled={actionLoading}
                                     >
                                       <X className="h-4 w-4 mr-1" />
-                                      {t.eventRequest.Reject}
+                                      {t?.eventRequest?.Reject || 'Reject'}
                                     </Button>
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>{t.eventRequest.RejectRequest}</AlertDialogTitle>
+                                      <AlertDialogTitle>{t?.eventRequest?.RejectRequest || 'Reject Request'}</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        {t.eventRequest.AreYouSureYouWantToRejectThisEventRequest}
+                                        {t?.eventRequest?.AreYouSureYouWantToRejectThisEventRequest || 'Are you sure you want to reject this event request?'}
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>{t.eventRequest.Cancel}</AlertDialogCancel>
+                                      <AlertDialogCancel>{t?.eventRequest?.Cancel || 'Cancel'}</AlertDialogCancel>
                                       <AlertDialogAction
                                         onClick={() => handleVerifyRequest(request.id, 'REJECT')}
                                         className="bg-red-600 hover:bg-red-700"
                                       >
-                                        {t.eventRequest.Reject}
+                                        {t?.eventRequest?.Reject || 'Reject'}
                                       </AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
@@ -555,9 +555,9 @@
             {pagination.totalPages > 1 && (
               <div className="flex items-center justify-between px-2 py-4">
                 <div className="text-sm text-muted-foreground">
-                  {t.eventRequest.Showing} {pagination.page * pagination.size + 1} to{' '}
+                  {t?.eventRequest?.Showing || 'Showing'} {pagination.page * pagination.size + 1} to{' '}
                   {Math.min((pagination.page + 1) * pagination.size, pagination.totalElements)} of{' '}
-                  {pagination.totalElements} {t.eventRequest.Requests}
+                  {pagination.totalElements} {t?.eventRequest?.Requests || 'requests'}
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button
@@ -601,7 +601,7 @@
                     onClick={() => handlePageChange(pagination.page + 1)}
                     disabled={pagination.page >= pagination.totalPages - 1 || loading}
                   >
-                    {t.eventRequest.NextPage}
+                    {t?.eventRequest?.NextPage || 'Next Page'}
                   </Button>
                 </div>
               </div>
@@ -615,16 +615,16 @@
             <DialogHeader className="pb-4 border-b">
               <DialogTitle className="flex items-center gap-2 text-xl">
                 <FileText className="h-6 w-6 text-red-600" />
-                {selectedRequest?.crudType === 'CREATE' && t.eventRequest.NewEventRequestDetails}
-                {selectedRequest?.crudType === 'UPDATE' && t.eventRequest.EventUpdateRequestDetails}
-                {selectedRequest?.crudType === 'DELETE' && t.eventRequest.EventDeletionRequestDetails}
-                {!selectedRequest?.crudType && t.eventRequest.EventRequestDetails}
+                {selectedRequest?.crudType === 'CREATE' && (t?.eventRequest?.NewEventRequestDetails || 'New Event Request Details')}
+                {selectedRequest?.crudType === 'UPDATE' && (t?.eventRequest?.EventUpdateRequestDetails || 'Event Update Request Details')}
+                {selectedRequest?.crudType === 'DELETE' && (t?.eventRequest?.EventDeletionRequestDetails || 'Event Deletion Request Details')}
+                {!selectedRequest?.crudType && (t?.eventRequest?.EventRequestDetails || 'Event Request Details')}
               </DialogTitle>
               <DialogDescription className="text-base">
-                {selectedRequest?.crudType === 'CREATE' && t.eventRequest.ReviewTheDetailsOfYourNewEventRequest}
-                {selectedRequest?.crudType === 'UPDATE' && t.eventRequest.ReviewTheProposedChangesToYourEvent}
-                {selectedRequest?.crudType === 'DELETE' && t.eventRequest.ReviewTheEventThatYouRequestedToBeDeleted}
-                {!selectedRequest?.crudType && t.eventRequest.ReviewYourCompleteEventRequest}
+                {selectedRequest?.crudType === 'CREATE' && (t?.eventRequest?.ReviewTheDetailsOfYourNewEventRequest || 'Review the details of your new event request')}
+                {selectedRequest?.crudType === 'UPDATE' && (t?.eventRequest?.ReviewTheProposedChangesToYourEvent || 'Review the proposed changes to your event')}
+                {selectedRequest?.crudType === 'DELETE' && (t?.eventRequest?.ReviewTheEventThatYouRequestedToBeDeleted || 'Review the event that you requested to be deleted')}
+                {!selectedRequest?.crudType && (t?.eventRequest?.ReviewYourCompleteEventRequest || 'Review your complete event request')}
               </DialogDescription>
             </DialogHeader>
 
@@ -634,7 +634,7 @@
                 <div className="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl border border-red-200">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t.eventRequest.RequestStatus}</label>
+                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequest?.RequestStatus || 'Request Status'}</label>
                       <div className="mt-2">
                         <Badge variant="outline" className={`${getStatusBadge(selectedRequest.status)} text-sm px-3 py-1`}>
                           {selectedRequest.status}
@@ -642,15 +642,15 @@
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t.eventRequest.RequestType}</label>
+                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequest?.RequestType || 'Request Type'}</label>
                       <div className="mt-2">
                         <Badge variant="outline" className={`${getCrudTypeBadge(selectedRequest.crudType)} text-sm px-3 py-1`}>
-                          {formatCrudType(selectedRequest.crudType)}
+                          {formatCrudType(selectedRequest.crudType, t)}
                         </Badge>
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t.eventRequest.RequestID}</label>
+                      <label className="text-sm font-semibold text-red-700 uppercase tracking-wide">{t?.eventRequest?.RequestID || 'Request ID'}</label>
                       <p className="mt-2 text-lg font-bold text-red-800">#{selectedRequest.id}</p>
                     </div>
                   </div>
@@ -667,53 +667,53 @@
                       <div className="bg-white border rounded-xl p-6 shadow-sm">
                         <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                           <Calendar className="h-5 w-5 text-red-600" />
-                          {t.eventRequest.EventInformation} 
+                          {t?.eventRequest?.EventInformation || 'Event Information'} 
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-4">
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.EventName}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.EventName || 'Event Name'}</label>
                               <p className="mt-1 text-lg font-semibold text-gray-900">{displayData?.name || 'N/A'}</p>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.Hospital}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.Hospital || 'Hospital'}</label>
                               <p className="mt-1 text-base text-gray-900">{displayData?.hospital || 'N/A'}</p>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.DonationDate}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.DonationDate || 'Donation Date'}</label>
                               <div className="mt-1 flex items-center gap-2">
                                 <Calendar className="h-4 w-4 text-red-600" />
                                 <p className="text-base font-medium text-gray-900">{formatDate(displayData?.donationDate)}</p>
                               </div>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.DonationType}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.DonationType || 'Donation Type'}</label>
                               <p className="mt-1 text-base text-gray-900">{formatDonationType(displayData?.donationType)}</p>
                             </div>
                           </div>
 
                           <div className="space-y-4">
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.Address}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.Address || 'Address'}</label>
                               <div className="mt-1 flex items-start gap-2">
                                 <MapPin className="h-4 w-4 text-red-600 mt-0.5" />
                                 <p className="text-base text-gray-900">{displayData?.address || 'N/A'}</p>
                               </div>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.City}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.City || 'City'}</label>
                               <p className="mt-1 text-base text-gray-900">{displayData?.city || 'N/A'}</p>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.TimeSlots}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.TimeSlots || 'Time Slots'}</label>
                               <div className="mt-1 flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-red-600" />
                                 <p className="text-base font-medium text-gray-900">{getTimeSlotDisplay(displayData?.timeSlotDtos)}</p>
                               </div>
                             </div>
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.MaxParticipants}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.MaxParticipants || 'Max Participants'}</label>
                               <div className="mt-1 flex items-center gap-2">
                                 <Users className="h-4 w-4 text-red-600" />
                                 <p className="text-base font-medium text-gray-900">{displayData?.totalMemberCount || 'N/A'}</p>
@@ -728,7 +728,7 @@
                         <div className="bg-white border rounded-xl p-6 shadow-sm">
                           <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                             <Clock className="h-5 w-5 text-red-600" />
-                            {t.eventRequest.TimeSlotsDetails}
+                            {t?.eventRequest?.TimeSlotsDetails || 'Time Slots Details'}
                             <span className="text-sm font-normal text-gray-500 ml-2">
                               ({displayData.timeSlotDtos.length} {displayData.timeSlotDtos.length === 1 ? 'slot' : 'slots'})
                             </span>
@@ -745,7 +745,7 @@
                                         <Clock className="h-4 w-4 text-white" />
                                       </div>
                                       <span className="font-semibold text-red-800">
-                                        {t.eventRequest.Slot} {index + 1}
+                                        {t?.eventRequest?.Slot || 'Slot'} {index + 1}
                                       </span>
                                     </div>
                                     <div className="text-xs text-red-600 font-medium uppercase tracking-wide">
@@ -760,7 +760,7 @@
                                         {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                                       </div>
                                       <div className="text-sm text-red-600">
-                                        {t.eventRequest.Duration}: {(() => {
+                                        {t?.eventRequest?.Duration || 'Duration'}: {(() => {
                                           try {
                                             const start = new Date(`2000-01-01T${slot.startTime}`)
                                             const end = new Date(`2000-01-01T${slot.endTime}`)
@@ -787,22 +787,22 @@
                           <div className="bg-gray-50 border rounded-lg p-4">
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                               <FileText className="h-4 w-4 text-red-600" />
-                              {t.eventRequest.Summary}
+                              {t?.eventRequest?.Summary || 'Summary'}
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                               <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-red-600" />
-                                <span className="text-gray-600">{t.eventRequest.TotalSlots}:</span>
+                                <span className="text-gray-600">{t?.eventRequest?.TotalSlots || 'Total Slots'}:</span>
                                 <span className="font-semibold text-gray-900">{displayData.timeSlotDtos.length}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-red-600" />
-                                <span className="text-gray-600">{t.eventRequest.StartTime}:</span>
+                                <span className="text-gray-600">{t?.eventRequest?.StartTime || 'Start Time'}:</span>
                                 <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[0]?.startTime)}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-red-600" />
-                                <span className="text-gray-600">{t.eventRequest.EndTime}:</span>
+                                <span className="text-gray-600">{t?.eventRequest?.EndTime || 'End Time'}:</span>
                                 <span className="font-semibold text-gray-900">{formatTime(displayData.timeSlotDtos[displayData.timeSlotDtos.length - 1]?.endTime)}</span>
                               </div>
                             </div>
@@ -815,7 +815,7 @@
                         <div className="bg-white border rounded-xl p-6 shadow-sm">
                           <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <FileText className="h-5 w-5 text-red-600" />
-                            {t.eventRequest.Description}
+                            {t?.eventRequest?.Description || 'Description'}
                           </h3>
                           <div className="bg-gray-50 p-4 rounded-lg border">
                             <p className="text-gray-900 leading-relaxed">{displayData.description}</p>
@@ -828,11 +828,11 @@
                         <div className="bg-white border rounded-xl p-6 shadow-sm">
                           <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <Users className="h-5 w-5 text-red-600" />
-                            {t.eventRequest.OrganizerInformation}
+                            {t?.eventRequest?.OrganizerInformation || 'Organizer Information'}
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.OrganizationName}</label>
+                              <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.OrganizationName || 'Organization Name'}</label>
                               <p className="mt-1 text-base font-semibold text-gray-900">{displayData.organizer.organizationName || 'N/A'}</p>
                             </div>
                             {displayData.organizer.email && (
@@ -843,7 +843,7 @@
                             )}
                             {displayData.organizer.phoneNumber && (
                               <div>
-                                <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t.eventRequest.Phone}</label>
+                                <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">{t?.eventRequest?.Phone || 'Phone'}</label>
                                 <p className="mt-1 text-base text-gray-900">{displayData.organizer.phoneNumber}</p>
                               </div>
                             )}
@@ -858,27 +858,27 @@
                         <div className="bg-white border rounded-xl p-6 shadow-sm">
                           <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                             <ArrowUpDown className="h-5 w-5 text-red-600" />
-                            {t.eventRequest.ChangesComparison}
+                            {t?.eventRequest?.ChangesComparison || 'Changes Comparison'}
                           </h3>
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Original Data */}
                             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                              <h4 className="font-semibold text-red-800 mb-4">{t.eventRequest.OriginalEvent}</h4>
+                              <h4 className="font-semibold text-red-800 mb-4">{t?.eventRequest?.OriginalEvent || 'Original Event'}</h4>
                               <div className="space-y-3">
                                 <div>
-                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t.eventRequest.Name}</label>
+                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequest?.Name || 'Name'}</label>
                                   <p className="text-sm text-red-900">{originalData.name || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t.eventRequest.Date}</label>
+                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequest?.Date || 'Date'}</label>
                                   <p className="text-sm text-red-900">{formatDate(originalData.donationDate)}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t.eventRequest.Time}</label>
+                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequest?.Time || 'Time'}</label>
                                   <p className="text-sm text-red-900">{getTimeSlotDisplay(originalData.timeSlotDtos)}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t.eventRequest.Location}</label>
+                                  <label className="text-xs font-medium text-red-600 uppercase tracking-wide">{t?.eventRequest?.Location || 'Location'}</label>
                                   <p className="text-sm text-red-900">{originalData.hospital || 'N/A'}</p>
                                 </div>
                               </div>
@@ -886,22 +886,22 @@
 
                             {/* New Data */}
                             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                              <h4 className="font-semibold text-green-800 mb-4">{t.eventRequest.UpdatedEvent}</h4>
+                              <h4 className="font-semibold text-green-800 mb-4">{t?.eventRequest?.UpdatedEvent || 'Updated Event'}</h4>
                               <div className="space-y-3">
                                 <div>
-                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t.eventRequest.Name}</label>
+                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequest?.Name || 'Name'}</label>
                                   <p className="text-sm text-green-900">{displayData.name || 'N/A'}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t.eventRequest.Date}</label>
+                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequest?.Date || 'Date'}</label>
                                   <p className="text-sm text-green-900">{formatDate(displayData.donationDate)}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t.eventRequest.Time}</label>
+                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequest?.Time || 'Time'}</label>
                                   <p className="text-sm text-green-900">{getTimeSlotDisplay(displayData.timeSlotDtos)}</p>
                                 </div>
                                 <div>
-                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t.eventRequest.Location}</label>
+                                  <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t?.eventRequest?.Location || 'Location'}</label>
                                   <p className="text-sm text-green-900">{displayData.hospital || 'N/A'}</p>
                                 </div>
                               </div>
@@ -921,7 +921,7 @@
                 onClick={() => setViewDialogOpen(false)}
                 className="px-6 py-2"
               >
-                {t.eventRequest.Close}
+                {t?.eventRequest?.Close || 'Close'}
               </Button>
             </DialogFooter>
           </DialogContent>

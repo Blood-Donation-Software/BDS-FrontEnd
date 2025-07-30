@@ -65,7 +65,7 @@ const donationEventSchema = z.object({
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return date >= today
-  }, "Donation date must be today or in the future"), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELETS'], {
+  }, "Donation date must be today or in the future"), donationType: z.enum(['WHOLE_BLOOD', 'PLASMA', 'PLATELET'], {
     required_error: "Please select a donation type"
   }),
   totalMemberCount: z.number()
@@ -131,8 +131,7 @@ const organizerSchema = z.object({
 
 const donationTypes = [
   { value: 'WHOLE_BLOOD', label: 'Whole Blood' },
-  { value: 'PLASMA', label: 'Plasma' },
-  { value: 'PLATELETS', label: 'Platelets' },
+  { value: 'PLATELET', label: 'Platelet' },
 ]
 
 export default function CreateDonationEventPage() {
@@ -495,8 +494,8 @@ export default function CreateDonationEventPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">{t?.createEvent?.title}</h1>
-          <p className="text-muted-foreground mt-2">{t?.createEvent?.description}</p>
+          <h1 className="text-3xl font-bold">{t?.createEvent?.title || 'Create Donation Event'}</h1>
+          <p className="text-muted-foreground mt-2">{t?.createEvent?.description || 'Fill out the form below to create a new blood donation event'}</p>
         </div>
       </div>
 
@@ -504,11 +503,11 @@ export default function CreateDonationEventPage() {
         <TabsList className="grid w-full grid-cols-2" key={activeTab}>
           <TabsTrigger value="event" className="flex items-center gap-2">
             <Droplet className="h-4 w-4" />
-            {toast?.createEvent?.tabs?.event}
+            {t?.createEvent?.tabs?.event || 'Event Info'}
           </TabsTrigger>
           <TabsTrigger value="organizer" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            {t?.createEvent?.tabs?.organizer}
+            {t?.createEvent?.tabs?.organizer || 'Organizer'}
           </TabsTrigger>
         </TabsList>
 
@@ -520,7 +519,7 @@ export default function CreateDonationEventPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Droplet className="h-6 w-6 text-red-500" />
-                    <span>{t?.createEvent?.eventInfo?.title}</span>
+                    <span>{t?.createEvent?.eventInfo?.title || 'Event Information'}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -531,9 +530,9 @@ export default function CreateDonationEventPage() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.name}</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.name || 'Event Name'}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t?.createEvent?.eventInfo?.fields?.namePlaceholder} {...field} />
+                            <Input placeholder={t?.createEvent?.eventInfo?.fields?.namePlaceholder || 'Enter event name'} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -545,11 +544,11 @@ export default function CreateDonationEventPage() {
                       name="donationType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.donationType}</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.donationType || 'Donation Type'}</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder={t?.createEvent?.eventInfo?.fields?.donationTypePlaceholder} />
+                                <SelectValue placeholder={t?.createEvent?.eventInfo?.fields?.donationTypePlaceholder || 'Select donation type'} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -604,7 +603,7 @@ export default function CreateDonationEventPage() {
 
                   {/* Location Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.location?.title}</h3>
+                    <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.location?.title || 'Location Details'}</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
@@ -612,9 +611,9 @@ export default function CreateDonationEventPage() {
                         name="hospital"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.hospital}</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.hospital || 'Hospital/Venue'}</FormLabel>
                             <FormControl>
-                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.hospitalPlaceholder} {...field} />
+                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.hospitalPlaceholder || 'Enter hospital or venue name'} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -626,9 +625,9 @@ export default function CreateDonationEventPage() {
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.address}</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.location?.address || 'Address'}</FormLabel>
                             <FormControl>
-                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.addressPlaceholder} {...field} />
+                              <Input placeholder={t?.createEvent?.eventInfo?.fields?.location?.addressPlaceholder || 'Enter full address'} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -721,7 +720,7 @@ export default function CreateDonationEventPage() {
                       name="donationDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.eventInfo?.field?.date}</FormLabel>
+                          <FormLabel>{t?.createEvent?.eventInfo?.fields?.date || 'Date'}</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
@@ -733,7 +732,7 @@ export default function CreateDonationEventPage() {
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {field.value ? format(field.value, "PPP") : <span>{t?.createEvent?.eventInfo?.fields?.datePlaceholder}</span>}
+                                  {field.value ? format(field.value, "PPP") : <span>{t?.createEvent?.eventInfo?.fields?.datePlaceholder || 'Pick a date'}</span>}
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
@@ -757,7 +756,7 @@ export default function CreateDonationEventPage() {
                       render={({ field }) => {
                         return (
                           <FormItem>
-                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.capacity}</FormLabel>
+                            <FormLabel>{t?.createEvent?.eventInfo?.fields?.capacity || 'Maximum Capacity'}</FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
@@ -768,7 +767,7 @@ export default function CreateDonationEventPage() {
                             </FormControl>
                             <FormMessage />
                             <p className="text-sm text-muted-foreground">
-                              {t?.createEvent?.eventInfo?.fields?.capacityNote}
+                              {t?.createEvent?.eventInfo?.fields?.capacityNote || 'This will be calculated from time slots'}
                             </p>
                           </FormItem>
                         );
@@ -780,9 +779,9 @@ export default function CreateDonationEventPage() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.timeSlot?.title}</h3>
+                        <h3 className="text-lg font-semibold">{t?.createEvent?.eventInfo?.fields?.timeSlot?.title || 'Time Slots'}</h3>
                         <p className="text-sm text-muted-foreground">
-                          {t?.createEvent?.eventInfo?.fields?.timeSlots?.totalCapa} {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}
+                          {t?.createEvent?.eventInfo?.fields?.timeSlots?.totalCapa || 'Total capacity:'} {watchedTimeSlots?.reduce((sum, slot) => sum + (slot.maxCapacity || 0), 0) || 0} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people || 'people'}
                         </p>
                       </div>
                       <Button
@@ -793,7 +792,7 @@ export default function CreateDonationEventPage() {
                         disabled={fields.length >= 10}
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        {t?.createEvent?.eventInfo?.fields?.timeSlots?.addButton}
+                        {t?.createEvent?.eventInfo?.fields?.timeSlots?.addButton || 'Add Time Slot'}
                       </Button>
                     </div>
                     <div className="space-y-4">
@@ -923,16 +922,16 @@ export default function CreateDonationEventPage() {
                     onClick={() => router.push('/blood-donation-events')}
                     disabled={isSubmitting}
                   >
-                    {t?.createEvent?.buttons?.cancel}
+                    {t?.createEvent?.buttons?.cancel || 'Cancel'}
                   </Button>
                   <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t?.createEvent?.buttons?.submitting}
+                        {t?.createEvent?.buttons?.submitting || 'Creating...'}
                       </>
                     ) : (
-                      t?.createEvent?.buttons?.submit
+                      t?.createEvent?.buttons?.submit || 'Create Event'
                     )}
                   </Button>
                 </CardFooter>
@@ -949,7 +948,7 @@ export default function CreateDonationEventPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-6 w-6 text-blue-500" />
-                    <span>{t?.createEvent?.organizerInfo?.title}</span>
+                    <span>{t?.createEvent?.organizerInfo?.title || 'Organizer Information'}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -960,9 +959,9 @@ export default function CreateDonationEventPage() {
                       name="organizationName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.organizerInfo?.info?.orgName}</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.info?.orgName || 'Organization Name'}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.orgNamePlaceholder} {...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.orgNamePlaceholder || 'Enter organization name'} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -974,9 +973,9 @@ export default function CreateDonationEventPage() {
                       name="contactPersonName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.oragninfo?.fields?.contactPersonName}</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.contactPersonName || 'Contact Person Name'}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.contactPersonPlaceholder} {...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.contactPersonPlaceholder || 'Enter contact person name'} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -990,9 +989,9 @@ export default function CreateDonationEventPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.email}</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.email || 'Email'}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder={t?.createEvent?.organizerInfo?.fields?.emailPlaceholder}{...field} />
+                            <Input type="email" placeholder={t?.createEvent?.organizerInfo?.fields?.emailPlaceholder || 'Enter email address'} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1067,9 +1066,9 @@ export default function CreateDonationEventPage() {
                       name="address"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.street}</FormLabel>
+                          <FormLabel>{t?.createEvent?.organizerInfo?.fields?.address?.street || 'Street Address'}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.address?.streetPlaceholder}{...field} />
+                            <Input placeholder={t?.createEvent?.organizerInfo?.fields?.address?.streetPlaceholder || 'Enter street address'} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1159,16 +1158,16 @@ export default function CreateDonationEventPage() {
                     onClick={() => setActiveTab("event")}
                     disabled={isCreatingOrganizer}
                   >
-                    {t?.createEvent?.organizerInfo?.buttons?.back}
+                    {t?.createEvent?.organizerInfo?.buttons?.back || 'Back'}
                   </Button>
                   <Button type="submit" disabled={isCreatingOrganizer}>
                     {isCreatingOrganizer ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t?.createEvent?.buttons?.creatingOrganizer}
+                        {t?.createEvent?.buttons?.creatingOrganizer || 'Creating...'}
                       </>
                     ) : (
-                      t?.createEvent?.buttons?.createOrganizer
+                      t?.createEvent?.buttons?.createOrganizer || 'Create Organizer'
                     )}
                   </Button>
                 </CardFooter>
@@ -1182,27 +1181,27 @@ export default function CreateDonationEventPage() {
       <Dialog open={showConfirmDialog} onOpenChange={(open) => !open && cancelEventCreation()}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t?.createEvent?.confirmation?.title}</DialogTitle>
+            <DialogTitle>{t?.createEvent?.confirmation?.title || 'Confirm Event Creation'}</DialogTitle>
             <DialogDescription>
-              {t?.createEvent?.confirmation?.description}
+              {t?.createEvent?.confirmation?.description || 'Please review the event details before confirming.'}
             </DialogDescription>
           </DialogHeader>
 
           {pendingEventData && (
             <div className="space-y-2 py-4">
-              <div><strong>{t?.createEvent?.confirmation?.eventName}:</strong> {pendingEventData.name}</div>
-              <div><strong>{t?.createEvent?.confirmation?.hospital}:</strong> {pendingEventData.hospital}</div>
-              <div><strong>{t?.createEvent?.confirmation?.date}:</strong> {pendingEventData.donationDate}</div>
-              <div><strong>{t?.createEvent?.confirmation?.location}:</strong> {pendingEventData.address}, {pendingEventData.ward}, {pendingEventData.district}, {pendingEventData.city}</div>
-              <div><strong>{t?.createEvent?.confirmation?.totalCapacity}:</strong> {pendingEventData.totalMemberCount} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people}</div>
-              <div><strong>{t?.createEvent?.confirmation?.donationType}:</strong> {pendingEventData.donationType}</div>
+              <div><strong>{t?.createEvent?.confirmation?.eventName || 'Event Name'}:</strong> {pendingEventData.name}</div>
+              <div><strong>{t?.createEvent?.confirmation?.hospital || 'Hospital'}:</strong> {pendingEventData.hospital}</div>
+              <div><strong>{t?.createEvent?.confirmation?.date || 'Date'}:</strong> {pendingEventData.donationDate}</div>
+              <div><strong>{t?.createEvent?.confirmation?.location || 'Location'}:</strong> {pendingEventData.address}, {pendingEventData.ward}, {pendingEventData.district}, {pendingEventData.city}</div>
+              <div><strong>{t?.createEvent?.confirmation?.totalCapacity || 'Total Capacity'}:</strong> {pendingEventData.totalMemberCount} {t?.createEvent?.eventInfo?.fields?.timeSlots?.people || 'people'}</div>
+              <div><strong>{t?.createEvent?.confirmation?.donationType || 'Donation Type'}:</strong> {pendingEventData.donationType}</div>
               {pendingEventData.timeSlotDtos && pendingEventData.timeSlotDtos.length > 0 && (
                 <div>
                   <strong>{t?.createEvent?.confirmation?.timeSlots}:</strong>
                   <ul className="list-disc list-inside ml-4 mt-1">
                     {pendingEventData.timeSlotDtos.map((slot, index) => (
                       <li key={index}>
-                        {t?.createEvent?.confirmation?.timeSlotItem
+                        {(t?.createEvent?.confirmation?.timeSlotItem || '{startTime} - {endTime} (Max: {maxCapacity} people)')
                           ?.replace('{startTime}', slot.startTime)
                           ?.replace('{endTime}', slot.endTime)
                           ?.replace('{maxCapacity}', slot.maxCapacity)}
@@ -1224,7 +1223,7 @@ export default function CreateDonationEventPage() {
               onClick={cancelEventCreation}
               disabled={isSubmitting}
             >
-              {t?.createEvent?.confirmation?.cancel}
+              {t?.createEvent?.confirmation?.cancel || 'Cancel'}
             </Button>
             <Button
               type="button"
@@ -1234,10 +1233,10 @@ export default function CreateDonationEventPage() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t?.createEvent?.confirmation?.creating}
+                  {t?.createEvent?.confirmation?.creating || 'Creating...'}
                 </>
               ) : (
-                t?.createEvent?.confirmation?.confirm
+                t?.createEvent?.confirmation?.confirm || 'Confirm'
               )}
             </Button>
           </DialogFooter>

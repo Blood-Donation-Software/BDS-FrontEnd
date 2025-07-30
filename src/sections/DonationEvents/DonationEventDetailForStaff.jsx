@@ -31,12 +31,13 @@ import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
-import { getEventById, deleteEventRequest, getEventDonors, recordDonations, registerForEventOffline } from '@/apis/bloodDonation'
+import { getEventById, deleteEventRequest, getEventDonors, recordDonations, registerForEventOffline, registerGuestForEvent } from '@/apis/bloodDonation'
 import { getProfileByPersonalId } from '@/apis/user'
 import { convertBloodType } from '@/utils/utils'
 import { Label } from '@/components/ui/label'
 import { CheckCircle } from 'lucide-react'
 import React from 'react'
+import vietnamProvinces from '@/data/vietnam-provinces.json'
 
 // Survey form components for offline registration
 const FormRadioGroup = ({ value, onValueChange, children, className = "" }) => {
@@ -44,9 +45,9 @@ const FormRadioGroup = ({ value, onValueChange, children, className = "" }) => {
     <div className={`space-y-3 ${className}`} role="radiogroup">
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child, { 
-            selectedValue: value, 
-            onValueChange 
+          return React.cloneElement(child, {
+            selectedValue: value,
+            onValueChange
           });
         }
         return child;
@@ -57,12 +58,11 @@ const FormRadioGroup = ({ value, onValueChange, children, className = "" }) => {
 
 const FormRadioItem = ({ value, id, selectedValue, onValueChange, children, className = "" }) => {
   const isSelected = selectedValue === value;
-  
+
   return (
-    <div className={`flex items-start space-x-3 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-      isSelected ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300 hover:bg-gray-50'
-    } ${className}`}
-    onClick={() => onValueChange && onValueChange(value)}>
+    <div className={`flex items-start space-x-3 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer ${isSelected ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300 hover:bg-gray-50'
+      } ${className}`}
+      onClick={() => onValueChange && onValueChange(value)}>
       <div className="relative mt-1">
         <input
           type="radio"
@@ -72,11 +72,10 @@ const FormRadioItem = ({ value, id, selectedValue, onValueChange, children, clas
           onChange={() => onValueChange && onValueChange(value)}
           className="sr-only"
         />
-        <div className={`h-4 w-4 rounded-full border-2 transition-all duration-200 ${
-          isSelected 
-            ? 'border-red-600 bg-red-600' 
+        <div className={`h-4 w-4 rounded-full border-2 transition-all duration-200 ${isSelected
+            ? 'border-red-600 bg-red-600'
             : 'border-gray-300 bg-white'
-        }`}>
+          }`}>
           {isSelected && (
             <div className="h-full w-full rounded-full bg-red-600 flex items-center justify-center">
               <div className="h-2 w-2 rounded-full bg-white"></div>
@@ -145,6 +144,26 @@ export default function StaffEventDetailPage() {
   const [profileSearchLoading, setProfileSearchLoading] = useState(false)
   const [surveyAnswers, setSurveyAnswers] = useState({})
   const [surveyOtherTexts, setSurveyOtherTexts] = useState({})
+  const [registrationMode, setRegistrationMode] = useState('existing') // 'existing' or 'new'
+  const [newGuestProfile, setNewGuestProfile] = useState({
+    name: '',
+    phone: '',
+    address: '',
+    ward: '',
+    district: '',
+    city: '',
+    bloodType: 'O_POSITIVE',
+    gender: 'MALE',
+    dateOfBirth: '',
+    personalId: ''
+  })
+
+  // Location selection state
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedDistrict, setSelectedDistrict] = useState('')
+  const [selectedWard, setSelectedWard] = useState('')
+  const [availableDistricts, setAvailableDistricts] = useState([])
+  const [availableWards, setAvailableWards] = useState([])
 
   // Report modal pagination and filtering
   const [filteredReportDonors, setFilteredReportDonors] = useState([])
@@ -280,23 +299,51 @@ export default function StaffEventDetailPage() {
     setSearchedProfile(null)
     setSurveyAnswers({})
     setSurveyOtherTexts({})
+    setRegistrationMode('existing')
+    setNewGuestProfile({
+      name: '',
+      phone: '',
+      address: '',
+      ward: '',
+      district: '',
+      city: '',
+      bloodType: 'O_POSITIVE',
+      gender: 'MALE',
+      dateOfBirth: '',
+      personalId: ''
+    })
+    // Reset location selection
+    setSelectedCity('')
+    setSelectedDistrict('')
+    setSelectedWard('')
+    setAvailableDistricts([])
+    setAvailableWards([])
   }
 
   // Handle offline registration submission
   const handleOfflineRegistrationSubmit = async () => {
-    if (!personalId.trim()) {
-      toast.error(t?.staffEventDetail?.messages?.personalIdRequired || 'Personal ID is required')
-      return
-    }
+    if (registrationMode === 'existing') {
+      // Existing profile registration
+      if (!personalId.trim()) {
+        toast.error(t?.staffEventDetail?.messages?.personalIdRequired || 'Personal ID is required')
+        return
+      }
 
-    if (!searchedProfile) {
-      toast.error(t?.staffEventDetail?.messages?.profileSearchRequired || 'Please search and select a valid profile first')
-      return
+      if (!searchedProfile) {
+        toast.error(t?.staffEventDetail?.messages?.profileSearchRequired || 'Please search and select a valid profile first')
+        return
+      }
+    } else {
+      // New guest registration
+      if (!newGuestProfile.name.trim() || !newGuestProfile.phone.trim() || !newGuestProfile.personalId.trim()) {
+        toast.error(t?.staffEventDetail?.messages?.guestProfileRequired || 'Name, phone, and personal ID are required for new guest registration')
+        return
+      }
     }
 
     try {
       setOfflineRegistrationLoading(true)
-      
+
       // Create form data in the same format as online registration
       const formData = {
         experience: surveyAnswers.experience || '',
@@ -310,39 +357,103 @@ export default function StaffEventDetailPage() {
         answers: surveyAnswers,
         otherText: surveyOtherTexts,
         submittedAt: new Date().toISOString(),
-        registrationType: 'offline',
-        profileInfo: {
+        registrationType: registrationMode === 'existing' ? 'offline' : 'guest',
+        profileInfo: registrationMode === 'existing' ? {
           name: searchedProfile.name,
           phone: searchedProfile.phone,
           bloodType: searchedProfile.bloodType,
           gender: searchedProfile.gender,
           address: searchedProfile.address,
           personalId: personalId.trim()
+        } : {
+          name: newGuestProfile.name,
+          phone: newGuestProfile.phone,
+          bloodType: newGuestProfile.bloodType,
+          gender: newGuestProfile.gender,
+          address: newGuestProfile.address,
+          personalId: newGuestProfile.personalId
         }
       }
-      
-      const jsonFormData = JSON.stringify(formData)
 
-      await registerForEventOffline(params.id, personalId.trim(), jsonFormData)
-      
-      toast.success(t?.staffEventDetail?.messages?.offlineRegistrationSuccess || 'Successfully registered offline participant!')
-      
+      // Create ProfileWithFormResponseDto structure
+      const profileWithFormData = {
+        profile: registrationMode === 'existing' ? {
+          id: searchedProfile.id || null,
+          accountId: searchedProfile.accountId || null,
+          name: searchedProfile.name || '',
+          phone: searchedProfile.phone || '',
+          address: searchedProfile.address || '',
+          ward: searchedProfile.ward || '',
+          district: searchedProfile.district || '',
+          city: searchedProfile.city || '',
+          bloodType: searchedProfile.bloodType || 'O_POSITIVE',
+          gender: searchedProfile.gender || 'MALE',
+          dateOfBirth: searchedProfile.dateOfBirth || null,
+          lastDonationDate: searchedProfile.lastDonationDate || null,
+          nextEligibleDonationDate: searchedProfile.nextEligibleDonationDate || null,
+          status: searchedProfile.status || 'ACTIVE',
+          personalId: personalId.trim()
+        } : {
+          id: null,
+          accountId: null,
+          name: newGuestProfile.name,
+          phone: newGuestProfile.phone,
+          address: newGuestProfile.address,
+          ward: newGuestProfile.ward,
+          district: newGuestProfile.district,
+          city: newGuestProfile.city,
+          bloodType: newGuestProfile.bloodType,
+          gender: newGuestProfile.gender,
+          dateOfBirth: newGuestProfile.dateOfBirth || null,
+          lastDonationDate: null,
+          nextEligibleDonationDate: null,
+          status: 'ACTIVE',
+          personalId: newGuestProfile.personalId
+        },
+        jsonForm: JSON.stringify(formData)
+      }
+
+      // Use appropriate API based on registration mode
+      if (registrationMode === 'existing') {
+        await registerForEventOffline(params.id, personalId.trim(), JSON.stringify(formData))
+        toast.success(t?.staffEventDetail?.messages?.offlineRegistrationSuccess || 'Successfully registered offline participant!')
+      } else {
+        await registerGuestForEvent(params.id, profileWithFormData)
+        toast.success(t?.staffEventDetail?.messages?.guestRegistrationSuccess || 'Successfully registered new guest participant!')
+      }
+
       setOfflineRegistrationModal(false)
       setPersonalId('')
       setSearchedProfile(null)
       setSurveyAnswers({})
       setSurveyOtherTexts({})
-      
+      setRegistrationMode('existing')
+      setNewGuestProfile({
+        name: '',
+        phone: '',
+        address: '',
+        ward: '',
+        district: '',
+        city: '',
+        bloodType: 'O_POSITIVE',
+        gender: 'MALE',
+        dateOfBirth: '',
+        personalId: ''
+      })
+
       // Refresh event details to update registration count
       const response = await getEventById(params.id)
       setEvent(response)
-      
+
     } catch (error) {
-      console.error('Error registering offline participant:', error)
+      console.error('Error registering participant:', error)
       if (error.response?.data?.message) {
         toast.error(error.response.data.message)
       } else {
-        toast.error(t?.staffEventDetail?.messages?.offlineRegistrationFailed || 'Failed to register offline participant. Please try again.')
+        const errorMessage = registrationMode === 'existing' 
+          ? (t?.staffEventDetail?.messages?.offlineRegistrationFailed || 'Failed to register offline participant. Please try again.')
+          : (t?.staffEventDetail?.messages?.guestRegistrationFailed || 'Failed to register guest participant. Please try again.')
+        toast.error(errorMessage)
       }
     } finally {
       setOfflineRegistrationLoading(false)
@@ -374,7 +485,7 @@ export default function StaffEventDetailPage() {
     try {
       setProfileSearchLoading(true)
       const profileData = await getProfileByPersonalId(personalId.trim())
-      
+
       if (profileData && profileData.length > 0) {
         setSearchedProfile(profileData[0]) // Take the first profile if multiple exist
         toast.success(t?.staffEventDetail?.messages?.profileFound || 'Profile found successfully!')
@@ -397,6 +508,76 @@ export default function StaffEventDetailPage() {
     if (searchedProfile) {
       setSearchedProfile(null) // Clear previous search when ID changes
     }
+  }
+
+  // Handle new guest profile changes
+  const handleNewGuestProfileChange = (field, value) => {
+    setNewGuestProfile(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  // Handle location selection
+  const handleCityChange = (cityName) => {
+    setSelectedCity(cityName)
+    setSelectedDistrict('')
+    setSelectedWard('')
+    
+    // Find the selected city and update available districts
+    const city = vietnamProvinces.find(province => province.name === cityName)
+    setAvailableDistricts(city ? city.districts : [])
+    setAvailableWards([])
+    
+    // Update the guest profile
+    handleNewGuestProfileChange('city', cityName)
+    handleNewGuestProfileChange('district', '')
+    handleNewGuestProfileChange('ward', '')
+  }
+
+  const handleDistrictChange = (districtName) => {
+    setSelectedDistrict(districtName)
+    setSelectedWard('')
+    
+    // Find the selected district and update available wards
+    const city = vietnamProvinces.find(province => province.name === selectedCity)
+    const district = city?.districts.find(dist => dist.name === districtName)
+    setAvailableWards(district ? district.wards : [])
+    
+    // Update the guest profile
+    handleNewGuestProfileChange('district', districtName)
+    handleNewGuestProfileChange('ward', '')
+  }
+
+  const handleWardChange = (wardName) => {
+    setSelectedWard(wardName)
+    handleNewGuestProfileChange('ward', wardName)
+  }
+
+  // Handle registration mode change
+  const handleRegistrationModeChange = (mode) => {
+    setRegistrationMode(mode)
+    // Clear form data when switching modes
+    setPersonalId('')
+    setSearchedProfile(null)
+    setNewGuestProfile({
+      name: '',
+      phone: '',
+      address: '',
+      ward: '',
+      district: '',
+      city: '',
+      bloodType: 'O_POSITIVE',
+      gender: 'MALE',
+      dateOfBirth: '',
+      personalId: ''
+    })
+    // Reset location selection
+    setSelectedCity('')
+    setSelectedDistrict('')
+    setSelectedWard('')
+    setAvailableDistricts([])
+    setAvailableWards([])
   }
 
   // Fetch donors for the event
@@ -648,7 +829,7 @@ export default function StaffEventDetailPage() {
     try {
       const donationDate = parseDate(dateString)
       const today = new Date()
-      
+
       return (
         donationDate.getDate() === today.getDate() &&
         donationDate.getMonth() === today.getMonth() &&
@@ -670,7 +851,7 @@ export default function StaffEventDetailPage() {
       const now = new Date()
       const today = new Date()
       const donationDate = parseDate(event.donationDate)
-      
+
       // If donation date is not today, check if it's in the past
       if (!isToday(event.donationDate)) {
         return donationDate < today
@@ -818,7 +999,7 @@ export default function StaffEventDetailPage() {
             <CardTitle>{t?.staffEventDetail?.eventManagement || 'Event Management'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {event.status === 'AVAILABLE' &&  <Button className="w-full" onClick={handleEditEvent}>
+            {event.status === 'AVAILABLE' && <Button className="w-full" onClick={handleEditEvent}>
               <Edit className="h-4 w-4 mr-2" />
               {t?.staffEventDetail?.editEventDetails || 'Edit Event Details'}
             </Button>}
@@ -1021,7 +1202,7 @@ export default function StaffEventDetailPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          
+
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1331,99 +1512,329 @@ export default function StaffEventDetailPage() {
 
       {/* Offline Registration Modal */}
       <Dialog open={offlineRegistrationModal} onOpenChange={setOfflineRegistrationModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="min-w-[1000px] max-h-[90vh] overflow-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
-              {t?.staffEventDetail?.offlineRegistration?.title || 'Register Offline Participant'}
+              {t?.staffEventDetail?.registration?.title || 'Register Participant'}
             </DialogTitle>
             <DialogDescription>
-              {t?.staffEventDetail?.offlineRegistration?.description || 'Register a participant who cannot register online by filling out the health survey.'}
+              {t?.staffEventDetail?.registration?.description || 'Register a participant for this donation event either by searching existing profiles or creating a new guest profile.'}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6">
-            {/* Personal ID Search */}
+            {/* Registration Mode Toggle */}
             <div className="space-y-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t?.staffEventDetail?.offlineRegistration?.personalIdLabel || 'Personal ID / National ID'} *
-                </label>
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    placeholder={t?.staffEventDetail?.offlineRegistration?.personalIdPlaceholder || 'Enter personal ID or national ID number'}
-                    value={personalId}
-                    onChange={(e) => handlePersonalIdChange(e.target.value)}
-                    disabled={offlineRegistrationLoading || profileSearchLoading}
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleProfileSearch}
-                    disabled={!personalId.trim() || offlineRegistrationLoading || profileSearchLoading}
-                    variant="outline"
-                    className="px-4"
-                  >
-                    {profileSearchLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Search className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {t?.staffEventDetail?.offlineRegistration?.personalIdHelp || "Enter the participant's ID and click search to find their profile"}
-                </p>
+              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => handleRegistrationModeChange('existing')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    registrationMode === 'existing'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {t?.staffEventDetail?.registration?.modes?.existing || 'Existing Profile'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRegistrationModeChange('new')}
+                  className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    registrationMode === 'new'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {t?.staffEventDetail?.registration?.modes?.newGuest || 'New Guest'}
+                </button>
               </div>
+              <p className="text-xs text-muted-foreground">
+                {registrationMode === 'existing' 
+                  ? (t?.staffEventDetail?.registration?.modeHelp?.existing || 'Search for existing profiles in the database')
+                  : (t?.staffEventDetail?.registration?.modeHelp?.newGuest || 'Create a new guest profile for first-time participants')
+                }
+              </p>
+            </div>
+            {/* Existing Profile Search */}
+            {registrationMode === 'existing' && (
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t?.staffEventDetail?.registration?.personalIdLabel || 'Personal ID / National ID'} *
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder={t?.staffEventDetail?.registration?.personalIdPlaceholder || 'Enter personal ID or national ID number'}
+                      value={personalId}
+                      onChange={(e) => handlePersonalIdChange(e.target.value)}
+                      disabled={offlineRegistrationLoading || profileSearchLoading}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleProfileSearch}
+                      disabled={!personalId.trim() || offlineRegistrationLoading || profileSearchLoading}
+                      variant="outline"
+                      className="px-4"
+                    >
+                      {profileSearchLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Search className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t?.staffEventDetail?.registration?.personalIdHelp || "Enter the participant's ID and click search to find their profile"}
+                  </p>
+                </div>
 
-              {/* Profile Search Result */}
-              {searchedProfile && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-green-800">
-                        {t?.staffEventDetail?.offlineRegistration?.profileFound || 'Profile Found'}
-                      </h4>
-                      <div className="mt-2 space-y-1 text-xs text-green-700">
-                        <div><span className="font-medium">Name:</span> {searchedProfile.name}</div>
-                        <div><span className="font-medium">Phone:</span> {searchedProfile.phone}</div>
-                        <div><span className="font-medium">Blood Type:</span> {searchedProfile.bloodType}</div>
-                        <div><span className="font-medium">Gender:</span> {searchedProfile.gender}</div>
-                        {searchedProfile.address && (
-                          <div><span className="font-medium">Address:</span> {searchedProfile.address}</div>
-                        )}
+                {/* Profile Search Result */}
+                {searchedProfile && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-green-800">
+                          {t?.staffEventDetail?.registration?.profileFound || 'Profile Found'}
+                        </h4>
+                        <div className="mt-2 space-y-1 text-xs text-green-700">
+                          <div><span className="font-medium">Name:</span> {searchedProfile.name}</div>
+                          <div><span className="font-medium">Phone:</span> {searchedProfile.phone}</div>
+                          <div><span className="font-medium">Blood Type:</span> {searchedProfile.bloodType}</div>
+                          <div><span className="font-medium">Gender:</span> {searchedProfile.gender}</div>
+                          {searchedProfile.address && (
+                            <div><span className="font-medium">Address:</span> {searchedProfile.address}</div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {personalId.trim() && !searchedProfile && !profileSearchLoading && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-xs text-yellow-700">
-                    {t?.staffEventDetail?.offlineRegistration?.searchRequired || 'Please click the search button to find the profile'}
-                  </p>
+                {personalId.trim() && !searchedProfile && !profileSearchLoading && (
+                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-xs text-yellow-700">
+                      {t?.staffEventDetail?.registration?.searchRequired || 'Please click the search button to find the profile'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* New Guest Profile Form */}
+            {registrationMode === 'new' && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {t?.staffEventDetail?.registration?.guestProfileTitle || 'Guest Profile Information'}
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.name || 'Full Name'} *
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder={t?.staffEventDetail?.registration?.placeholders?.name || 'Enter full name'}
+                      value={newGuestProfile.name}
+                      onChange={(e) => handleNewGuestProfileChange('name', e.target.value)}
+                      disabled={offlineRegistrationLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.phone || 'Phone Number'} *
+                    </label>
+                    <Input
+                      type="tel"
+                      placeholder={t?.staffEventDetail?.registration?.placeholders?.phone || 'Enter phone number'}
+                      value={newGuestProfile.phone}
+                      onChange={(e) => handleNewGuestProfileChange('phone', e.target.value)}
+                      disabled={offlineRegistrationLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.personalId || 'Personal ID'} *
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder={t?.staffEventDetail?.registration?.placeholders?.personalId || 'Enter personal ID'}
+                      value={newGuestProfile.personalId}
+                      onChange={(e) => handleNewGuestProfileChange('personalId', e.target.value)}
+                      disabled={offlineRegistrationLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.dateOfBirth || 'Date of Birth'}
+                    </label>
+                    <Input
+                      type="date"
+                      value={newGuestProfile.dateOfBirth}
+                      onChange={(e) => handleNewGuestProfileChange('dateOfBirth', e.target.value)}
+                      disabled={offlineRegistrationLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.bloodType || 'Blood Type'}
+                    </label>
+                    <Select 
+                      value={newGuestProfile.bloodType} 
+                      onValueChange={(value) => handleNewGuestProfileChange('bloodType', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="O_POSITIVE">O+</SelectItem>
+                        <SelectItem value="O_NEGATIVE">O-</SelectItem>
+                        <SelectItem value="A_POSITIVE">A+</SelectItem>
+                        <SelectItem value="A_NEGATIVE">A-</SelectItem>
+                        <SelectItem value="B_POSITIVE">B+</SelectItem>
+                        <SelectItem value="B_NEGATIVE">B-</SelectItem>
+                        <SelectItem value="AB_POSITIVE">AB+</SelectItem>
+                        <SelectItem value="AB_NEGATIVE">AB-</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.gender || 'Gender'}
+                    </label>
+                    <Select 
+                      value={newGuestProfile.gender} 
+                      onValueChange={(value) => handleNewGuestProfileChange('gender', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MALE">{t?.staffEventDetail?.registration?.genders?.male || 'Male'}</SelectItem>
+                        <SelectItem value="FEMALE">{t?.staffEventDetail?.registration?.genders?.female || 'Female'}</SelectItem>
+                        <SelectItem value="OTHER">{t?.staffEventDetail?.registration?.genders?.other || 'Other'}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              )}
-            </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {t?.staffEventDetail?.registration?.fields?.address || 'Address'}
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder={t?.staffEventDetail?.registration?.placeholders?.address || 'Enter street address'}
+                    value={newGuestProfile.address}
+                    onChange={(e) => handleNewGuestProfileChange('address', e.target.value)}
+                    disabled={offlineRegistrationLoading}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.city || 'City'} *
+                    </label>
+                    <Select 
+                      value={selectedCity} 
+                      onValueChange={handleCityChange}
+                      disabled={offlineRegistrationLoading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t?.staffEventDetail?.registration?.placeholders?.city || 'Select city'} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {vietnamProvinces.map((province) => (
+                          <SelectItem key={province.name} value={province.name}>
+                            {province.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.district || 'District'} *
+                    </label>
+                    <Select 
+                      value={selectedDistrict} 
+                      onValueChange={handleDistrictChange}
+                      disabled={offlineRegistrationLoading || !selectedCity}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={
+                          !selectedCity 
+                            ? (t?.staffEventDetail?.registration?.placeholders?.selectCityFirst || 'Select city first')
+                            : (t?.staffEventDetail?.registration?.placeholders?.district || 'Select district')
+                        } />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableDistricts.map((district) => (
+                          <SelectItem key={district.name} value={district.name}>
+                            {district.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      {t?.staffEventDetail?.registration?.fields?.ward || 'Ward'} *
+                    </label>
+                    <Select 
+                      value={selectedWard} 
+                      onValueChange={handleWardChange}
+                      disabled={offlineRegistrationLoading || !selectedDistrict}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={
+                          !selectedDistrict 
+                            ? (t?.staffEventDetail?.registration?.placeholders?.selectDistrictFirst || 'Select district first')
+                            : (t?.staffEventDetail?.registration?.placeholders?.ward || 'Select ward')
+                        } />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableWards.map((ward) => (
+                          <SelectItem key={ward.name} value={ward.name}>
+                            {ward.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Survey Questions */}
-            <div className="space-y-6 max-h-96 overflow-y-auto border rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-900">
-                {t?.staffEventDetail?.offlineRegistration?.surveyTitle || 'Health Survey Questions'}
-              </h3>
-              
+            {((registrationMode === 'existing' && searchedProfile) || registrationMode === 'new') && (
+              <div className="space-y-6 max-h-96 overflow-y-auto border rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {t?.staffEventDetail?.registration?.surveyTitle || 'Health Survey Questions'}
+                </h3>
+
               {/* Experience Question */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">
                   {t?.staffEventDetail?.offlineRegistration?.questions?.experience || '1. Has the participant donated blood before?'}
                 </Label>
-                <FormRadioGroup 
-                  value={surveyAnswers.experience} 
+                <FormRadioGroup
+                  value={surveyAnswers.experience}
                   onValueChange={(value) => handleSurveyAnswerChange('experience', value)}
                 >
                   <FormRadioItem value="yes" id="exp-yes">
@@ -1433,7 +1844,7 @@ export default function StaffEventDetailPage() {
                     {t?.staffEventDetail?.offlineRegistration?.answers?.no || 'No, first time donating'}
                   </FormRadioItem>
                 </FormRadioGroup>
-                
+
                 {surveyAnswers.experience === 'yes' && (
                   <div className="mt-3">
                     <Label htmlFor="exp-details" className="text-xs font-medium">
@@ -1457,8 +1868,8 @@ export default function StaffEventDetailPage() {
                 <Label className="text-sm font-medium">
                   {t?.staffEventDetail?.offlineRegistration?.questions?.currentHealth || '2. Does the participant currently have any health issues?'}
                 </Label>
-                <FormRadioGroup 
-                  value={surveyAnswers.current_illness} 
+                <FormRadioGroup
+                  value={surveyAnswers.current_illness}
                   onValueChange={(value) => handleSurveyAnswerChange('current_illness', value)}
                 >
                   <FormRadioItem value="yes" id="illness-yes">
@@ -1468,7 +1879,7 @@ export default function StaffEventDetailPage() {
                     {t?.staffEventDetail?.offlineRegistration?.answers?.healthy || 'No, completely healthy'}
                   </FormRadioItem>
                 </FormRadioGroup>
-                
+
                 {surveyAnswers.current_illness === 'yes' && (
                   <div className="mt-3">
                     <Label htmlFor="illness-details" className="text-xs font-medium">
@@ -1492,8 +1903,8 @@ export default function StaffEventDetailPage() {
                 <Label className="text-sm font-medium">
                   {t?.staffEventDetail?.offlineRegistration?.questions?.pastDiseases || '3. Has the participant ever had any serious diseases?'}
                 </Label>
-                <FormRadioGroup 
-                  value={surveyAnswers.past_diseases} 
+                <FormRadioGroup
+                  value={surveyAnswers.past_diseases}
                   onValueChange={(value) => handleSurveyAnswerChange('past_diseases', value)}
                 >
                   <FormRadioItem value="yes" id="past-yes">
@@ -1503,7 +1914,7 @@ export default function StaffEventDetailPage() {
                     {t?.staffEventDetail?.offlineRegistration?.answers?.noSeriousDisease || 'No, never had serious diseases'}
                   </FormRadioItem>
                 </FormRadioGroup>
-                
+
                 {surveyAnswers.past_diseases === 'yes' && (
                   <div className="mt-3">
                     <Label htmlFor="past-details" className="text-xs font-medium">
@@ -1527,8 +1938,8 @@ export default function StaffEventDetailPage() {
                 <Label className="text-sm font-medium">
                   {t?.staffEventDetail?.offlineRegistration?.questions?.recentActivities || '4. In the past 3 months, has the participant had any of the following activities?'}
                 </Label>
-                <FormRadioGroup 
-                  value={surveyAnswers.recent_activities} 
+                <FormRadioGroup
+                  value={surveyAnswers.recent_activities}
                   onValueChange={(value) => handleSurveyAnswerChange('recent_activities', value)}
                 >
                   <FormRadioItem value="yes" id="activities-yes">
@@ -1538,7 +1949,7 @@ export default function StaffEventDetailPage() {
                     {t?.staffEventDetail?.offlineRegistration?.answers?.noSpecialActivities || 'No special activities'}
                   </FormRadioItem>
                 </FormRadioGroup>
-                
+
                 {surveyAnswers.recent_activities === 'yes' && (
                   <div className="mt-3">
                     <Label htmlFor="activities-details" className="text-xs font-medium">
@@ -1557,6 +1968,7 @@ export default function StaffEventDetailPage() {
                 )}
               </div>
             </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex justify-end gap-3 pt-4 border-t">
@@ -1565,11 +1977,15 @@ export default function StaffEventDetailPage() {
                 onClick={() => setOfflineRegistrationModal(false)}
                 disabled={offlineRegistrationLoading}
               >
-                {t?.staffEventDetail?.offlineRegistration?.actions?.cancel || 'Cancel'}
+                {t?.staffEventDetail?.registration?.actions?.cancel || 'Cancel'}
               </Button>
               <Button
                 onClick={handleOfflineRegistrationSubmit}
-                disabled={offlineRegistrationLoading || !personalId.trim() || !searchedProfile || profileSearchLoading}
+                disabled={
+                  offlineRegistrationLoading ||
+                  (registrationMode === 'existing' && (!personalId.trim() || !searchedProfile || profileSearchLoading)) ||
+                  (registrationMode === 'new' && (!newGuestProfile.name || !newGuestProfile.phone || !newGuestProfile.personalId || !selectedCity || !selectedDistrict || !selectedWard))
+                }
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 {offlineRegistrationLoading ? (
@@ -1580,7 +1996,10 @@ export default function StaffEventDetailPage() {
                 ) : (
                   <>
                     <UserPlus className="h-4 w-4 mr-2" />
-                    {t?.staffEventDetail?.offlineRegistration?.actions?.register || 'Register Participant'}
+                    {registrationMode === 'existing' 
+                      ? (t?.staffEventDetail?.registration?.actions?.registerExisting || 'Register Participant')
+                      : (t?.staffEventDetail?.registration?.actions?.registerGuest || 'Register Guest')
+                    }
                   </>
                 )}
               </Button>

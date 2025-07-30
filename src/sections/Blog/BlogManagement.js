@@ -324,16 +324,6 @@ export default function BlogManagement() {
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    onClick={() => {
-                                                        // Navigate to edit page
-                                                        window.location.href = `/blog/edit/${blog.id}`
-                                                    }}
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
                                                         <Button size="sm" variant="ghost" className="text-red-600" disabled={actionLoading}>

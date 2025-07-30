@@ -28,24 +28,24 @@ export const getMyBlogById = (blogId) => {
 // Create blog request
 export const createBlogRequest = (blogData, thumbnail) => {
   const formData = new FormData()
-  
+
   // Create blog object without thumbnail for JSON part
   const blogDto = {
     title: blogData.title,
     content: blogData.content,
     status: blogData.status?.toUpperCase() === 'PUBLISHED' ? 'ACTIVE' : 'INACTIVE'
   }
-  
+
   // Add blog data as JSON part
   formData.append('blog', new Blob([JSON.stringify(blogDto)], {
     type: 'application/json'
   }))
-  
+
   // Add thumbnail file
   if (thumbnail) {
     formData.append('thumbnail', thumbnail)
   }
-  
+
   return axiosInstance.post(endpoint.blog.createBlogRequest, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -56,21 +56,21 @@ export const createBlogRequest = (blogData, thumbnail) => {
 // Update blog
 export const updateBlog = (blogId, blogData, thumbnail) => {
   const formData = new FormData()
-  
+
   const blogDto = {
     title: blogData.title,
     content: blogData.content,
     status: blogData.status?.toUpperCase() === 'PUBLISHED' ? 'ACTIVE' : 'INACTIVE'
   }
-  
+
   formData.append('blog', new Blob([JSON.stringify(blogDto)], {
     type: 'application/json'
   }))
-  
+
   if (thumbnail) {
     formData.append('thumbnail', thumbnail)
   }
-  
+
   return axiosInstance.put(endpoint.blog.updateBlog(blogId), formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

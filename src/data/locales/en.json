@@ -576,7 +576,7 @@
       "loading": "Loading event information...",
       "notSpecified": "Not specified",
       "timeSlots": "Time Slots",
-      "slotCapacity": "{{count}} slots",
+      "slotCapacity": "slots",
       "selectToChoose": "Tap to select",
       "selected": "Selected",
       "selectedSlot": "Selected Time Slot",

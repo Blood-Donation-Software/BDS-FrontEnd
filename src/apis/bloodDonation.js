@@ -86,7 +86,6 @@ export const registerForEvent = (eventId, timeSlotId, jsonForm) => {
     }).then(res => res.data);
 }
 
-// Register offline for event (for staff)
 export const registerForEventOffline = (eventId, personalId, jsonForm) => {
     return axiosInstance.post(endpoint.eventRegistration.registerOffline(eventId), jsonForm, {
         params: { personalId },
@@ -96,9 +95,9 @@ export const registerForEventOffline = (eventId, personalId, jsonForm) => {
     }).then(res => res.data);
 }
 
-// Register guest for event (for staff)  
+// Register guest for event (for staff)
 export const registerGuestForEvent = (eventId, profileWithFormData) => {
-    return axiosInstance.post(`${endpoint.eventRegistration.registerOffline(eventId).replace('/registerOffline', '/register-guest')}`, profileWithFormData)
+    return axiosInstance.post(`${endpoint.eventRegistration.registerForGuest(eventId)}`, profileWithFormData)
         .then(res => res.data);
 }
 

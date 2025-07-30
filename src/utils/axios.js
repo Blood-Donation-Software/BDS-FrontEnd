@@ -95,6 +95,7 @@ export const endpoint = {
   eventRegistration: {
     register: (eventId, timeSlotId) => `${BASE_URL}/api/event-registration/${eventId}/${timeSlotId}/register`,
     registerOffline: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/registerOffline`,
+    registerForGuest: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/register-guest`,
     cancel: (eventId) => `${BASE_URL}/api/event-registration/${eventId}/cancel`,
   },  
   checkin: {
