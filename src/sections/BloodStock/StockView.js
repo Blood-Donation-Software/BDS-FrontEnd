@@ -454,7 +454,7 @@ export default function BloodStockManagement() {
                       <TableCell>
                         {componentTypeMap[unit.componentType]}
                       </TableCell>
-                      <TableCell>{unit.quantity}</TableCell>
+                      {/* <TableCell>{unit.quantity}</TableCell> */}
                       <TableCell>{unit.volume}</TableCell>
                       <TableCell>
                         {format(new Date(unit.expiryDate), 'MMM dd, yyyy')}
