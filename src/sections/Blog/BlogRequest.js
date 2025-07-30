@@ -382,7 +382,7 @@ export default function BlogRequest() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span>{request.blog.authorName || "Unknown"}</span>
+                          <span>{request?.blog?.authorName || "Unknown"}</span>
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={getStatusBadge(request.status)}>
@@ -558,7 +558,7 @@ export default function BlogRequest() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">{t.blogRequest.Author}</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedRequest.blog.authorName || 'Unknown'}</p>
+                    <p className="mt-1 text-sm text-gray-900">{selectedRequest?.blog?.authorName || 'Unknown'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">{t.blogRequest.RequestStatus}</label>
